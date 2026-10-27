@@ -1,0 +1,2366 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Jour 15 &#183; Anglais &#8212; to be (am, is, are)</title>
+<style>
+/* ============================================================
+   Feuille de style commune \002014 spec V2.3 \0000a76.7 (couleurs d'accent)
+   Variante "omar" : \0000a73.1 (corps large, interlignage, espacement)
+   Pilote V3 : ajout du bloc \0000ab papier \0000bb (consignes sur feuille)
+   ============================================================ */
+
+:root {
+  --notion:      #4338ca;   /* indigo \002014 couleur principale */
+  --notion-bg:   #eef2ff;
+  --voc:         #0f766e;   /* bleu-vert */
+  --voc-bg:      #f0fdfa;
+  --methode:     #b45309;   /* ambre */
+  --methode-bg:  #fffbeb;
+  --piege:       #b91c1c;   /* rouge */
+  --piege-bg:    #fef2f2;
+  --exemple:     #15803d;   /* vert */
+  --exemple-bg:  #f0fdf4;
+
+  --p1: #15803d;            /* palier basique      \002014 vert   */
+  --p1-bg: #f0fdf4;
+  --p2: #b45309;            /* palier interm\0000e9diaire \002014 ambre  */
+  --p2-bg: #fffbeb;
+  --p3: #6d28d9;            /* palier avanc\0000e9        \002014 violet */
+  --p3-bg: #f5f3ff;
+
+  --encre:   #1c1917;
+  --encre-2: #57534e;
+  --trait:   #e7e5e4;
+  --fond:    #fafaf9;
+  --carte:   #ffffff;
+
+  --matiere: var(--notion);
+  --corps: 16.5px;
+  --interligne: 1.65;
+  --lettres: 0;
+  --rayon: 12px;
+}
+
+body[data-profil="omar"] {
+  --corps: 19.5px;
+  --interligne: 1.85;
+  --lettres: 0.018em;
+  --rayon: 16px;
+}
+
+body[data-matiere="maths"]                { --matiere: #1d4ed8; }
+body[data-matiere="francais"]             { --matiere: #a21caf; }
+body[data-matiere="histoire-geo"]         { --matiere: #b45309; }
+body[data-matiere="sciences-technologie"] { --matiere: #047857; }
+body[data-matiere="svt"]                  { --matiere: #15803d; }
+body[data-matiere="physique-chimie"]      { --matiere: #0e7490; }
+body[data-matiere="technologie"]          { --matiere: #4b5563; }
+body[data-matiere="anglais"]              { --matiere: #b91c1c; }
+body[data-matiere="arabe"]                { --matiere: #6d28d9; }
+
+[lang="ar"] {
+  direction: rtl;
+  text-align: right;
+  unicode-bidi: isolate;
+  font-size: 1.15em;
+  line-height: 2;
+}
+[lang="ar"] .btn-voix { display: none; }
+
+* { box-sizing: border-box; }
+
+html { -webkit-text-size-adjust: 100%; }
+
+body {
+  margin: 0;
+  background: var(--fond);
+  color: var(--encre);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  font-size: var(--corps);
+  line-height: var(--interligne);
+  letter-spacing: var(--lettres);
+  text-align: left;
+}
+
+body[data-profil="omar"] p,
+body[data-profil="omar"] li,
+body[data-profil="omar"] .enonce { text-align: left; text-wrap: pretty; }
+
+.page { max-width: 780px; margin: 0 auto; padding: 0 16px 80px; }
+
+/* ---------- Bandeau ---------- */
+.bandeau {
+  background: var(--matiere);
+  color: #fff;
+  padding: 18px 16px 16px;
+  margin: 0 -16px 22px;
+  border-radius: 0 0 var(--rayon) var(--rayon);
+}
+.bandeau .eleve {
+  font-size: 0.78em; text-transform: uppercase; letter-spacing: 0.09em;
+  opacity: 0.85; margin: 0 0 4px;
+}
+.bandeau h1 { margin: 0; font-size: 1.42em; line-height: 1.25; font-weight: 700; }
+.bandeau .sous { margin: 6px 0 0; font-size: 0.86em; opacity: 0.9; }
+
+/* ---------- Blocs de le\0000e7on ---------- */
+.bloc {
+  background: var(--carte);
+  border: 1px solid var(--trait);
+  border-left: 5px solid var(--accent, var(--notion));
+  border-radius: var(--rayon);
+  padding: 16px 18px;
+  margin: 0 0 16px;
+}
+.bloc > h3 {
+  margin: 0 0 10px;
+  font-size: 1.02em;
+  color: var(--accent, var(--notion));
+  letter-spacing: 0.01em;
+}
+.bloc.notion  { --accent: var(--notion); }
+.bloc.voc     { --accent: var(--voc); }
+.bloc.methode { --accent: var(--methode); }
+.bloc.piege   { --accent: var(--piege); background: var(--piege-bg); }
+.bloc.resume  { --accent: var(--notion); background: var(--notion-bg); }
+
+.exemples {
+  background: var(--exemple-bg);
+  border: 1px dashed #86efac;
+  border-radius: 10px;
+  padding: 10px 14px;
+  margin: 12px 0 0;
+}
+.exemples .etiq {
+  font-size: 0.75em; text-transform: uppercase; letter-spacing: 0.08em;
+  color: var(--exemple); font-weight: 700; display: block; margin-bottom: 4px;
+}
+.exemples ul { margin: 0; padding-left: 18px; }
+.exemples li { margin: 3px 0; }
+
+.calc { font-family: ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace; font-size: 0.97em; }
+
+.etapes { margin: 8px 0 0; padding-left: 20px; }
+.etapes li { margin: 4px 0; }
+
+/* ---------- Second angle (\0000a76.7) ---------- */
+.angle-btn {
+  margin-top: 12px; background: transparent; color: var(--notion);
+  border: 1px solid var(--notion); border-radius: 999px;
+  padding: 7px 14px; font-size: 0.86em; font-family: inherit; cursor: pointer;
+  min-height: 40px;
+}
+.angle-btn:hover { background: var(--notion-bg); }
+.angle-txt {
+  display: none; margin-top: 10px; padding: 11px 14px;
+  background: var(--notion-bg); border-radius: 10px; font-style: italic;
+}
+.angle-txt.ouvert { display: block; }
+
+/* ---------- Vocabulaire cliquable (\0000a73.1) ---------- */
+.def {
+  border-bottom: 2px dotted var(--voc); cursor: pointer;
+  color: var(--voc); font-weight: 600;
+}
+.bulle {
+  position: fixed; left: 12px; right: 12px; bottom: 84px; z-index: 90;
+  background: #0f766e; color: #fff; padding: 14px 16px; border-radius: 12px;
+  box-shadow: 0 8px 28px rgba(0,0,0,.28); display: none; font-size: 0.95em;
+}
+.bulle.ouvert { display: block; }
+.bulle b { display: block; margin-bottom: 3px; }
+
+/* ---------- Bouton lecture \0000e0 voix haute (\0000a73.1) ---------- */
+.lire {
+  background: #fff; border: 1px solid var(--trait); border-radius: 999px;
+  min-width: 42px; min-height: 42px; font-size: 1.05em; cursor: pointer;
+  vertical-align: middle; margin-left: 6px; line-height: 1;
+}
+.lire:hover { background: var(--notion-bg); }
+.lire[hidden] { display: none; }
+
+/* ---------- S\0000e9ance ---------- */
+.sep {
+  margin: 34px 0 18px; text-align: center; color: var(--encre-2);
+  font-size: 0.78em; text-transform: uppercase; letter-spacing: 0.13em;
+}
+.sep::before, .sep::after {
+  content: ""; display: block; height: 1px; background: var(--trait); margin: 10px 0;
+}
+
+.demarrer {
+  display: block; width: 100%; padding: 16px; font-size: 1.05em; font-family: inherit;
+  background: var(--matiere); color: #fff; border: 0; border-radius: var(--rayon);
+  cursor: pointer; font-weight: 600; min-height: 54px;
+}
+
+.exo { display: none; }
+.exo.actif { display: block; }
+
+.barre {
+  display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
+  margin: 0 0 12px; font-size: 0.85em; color: var(--encre-2);
+}
+.badge {
+  border-radius: 999px; padding: 4px 11px; font-weight: 700; font-size: 0.92em;
+  background: var(--pbg); color: var(--pc);
+}
+.exo[data-palier="0"] { --pc: #4338ca; --pbg: #eef2ff; }
+.exo[data-palier="1"] { --pc: var(--p1); --pbg: var(--p1-bg); }
+.exo[data-palier="2"] { --pc: var(--p2); --pbg: var(--p2-bg); }
+.exo[data-palier="3"] { --pc: var(--p3); --pbg: var(--p3-bg); }
+.jauge { flex: 1; height: 6px; background: var(--trait); border-radius: 99px; overflow: hidden; min-width: 70px; }
+.jauge i { display: block; height: 100%; background: var(--matiere); }
+
+.carte-exo {
+  background: var(--carte); border: 1px solid var(--trait);
+  border-radius: var(--rayon); padding: 18px; margin-bottom: 14px;
+}
+
+.cas {
+  background: var(--exemple-bg); border: 1px solid #bbf7d0;
+  border-radius: 12px; padding: 13px 15px; margin: 0 0 16px;
+}
+.cas .etiq {
+  font-size: 0.75em; text-transform: uppercase; letter-spacing: 0.08em;
+  color: var(--exemple); font-weight: 700; display: block; margin-bottom: 5px;
+}
+
+.enonce { font-size: 1.06em; margin: 0 0 14px; }
+.enonce strong { font-weight: 700; }
+
+.schema { margin: 14px 0; overflow-x: auto; }
+.schema svg { width: 100%; max-width: 420px; height: auto; display: block; }
+.cas svg { width: 100%; height: auto; display: block; }
+#lecon svg { width: 100%; height: auto; display: block; }
+
+/* ---------- Champs de r\0000e9ponse ---------- */
+.champ-num { display: flex; align-items: center; gap: 8px; margin: 10px 0; flex-wrap: wrap; }
+input[type="text"] {
+  font: inherit; padding: 13px 14px; border: 2px solid var(--trait);
+  border-radius: 10px; width: 170px; background: #fff; min-height: 50px;
+}
+input[type="text"]:focus { outline: 3px solid var(--matiere); outline-offset: 1px; border-color: var(--matiere); }
+.moins {
+  font: inherit; font-weight: 700; font-size: 1.3em; min-width: 54px; min-height: 50px;
+  border: 2px solid var(--trait); border-radius: 10px; background: #fff; cursor: pointer;
+}
+.unite { color: var(--encre-2); }
+
+.opts { display: grid; gap: 9px; margin: 10px 0; }
+.opt {
+  display: flex; align-items: flex-start; gap: 10px; padding: 13px 14px;
+  border: 2px solid var(--trait); border-radius: 12px; background: #fff;
+  cursor: pointer; text-align: left; font: inherit; min-height: 52px;
+}
+.opt:hover { border-color: var(--matiere); }
+.opt.choisi { border-color: var(--matiere); background: var(--notion-bg); }
+.opt .puce {
+  flex: 0 0 auto; width: 24px; height: 24px; border-radius: 50%;
+  border: 2px solid var(--trait); margin-top: 1px;
+}
+.opt.choisi .puce { border-color: var(--matiere); background: var(--matiere); }
+.opt > span:last-child { flex: 1 1 auto; min-width: 0; }
+.opt svg { width: 100%; max-width: 320px; height: auto; display: block; }
+
+.mots { display: flex; flex-wrap: wrap; gap: 8px; margin: 12px 0; }
+.mot {
+  padding: 11px 14px; border: 2px solid var(--trait); border-radius: 10px;
+  background: #fff; cursor: pointer; font: inherit; min-height: 46px;
+}
+.mot.choisi { border-color: var(--matiere); background: var(--notion-bg); font-weight: 600; }
+
+.paires { display: grid; gap: 10px; margin: 12px 0; }
+.paire { display: grid; grid-template-columns: 1fr auto; gap: 10px; align-items: center; }
+.paire .gauche {
+  padding: 11px 13px; background: var(--notion-bg); border-radius: 10px; font-weight: 600;
+}
+.paire .gauche svg { width: 100%; max-width: 320px; height: auto; display: block; background: #fff; border-radius: 8px; }
+select {
+  font: inherit; padding: 12px 10px; border: 2px solid var(--trait);
+  border-radius: 10px; background: #fff; min-height: 50px; max-width: 100%;
+}
+select:focus { outline: 3px solid var(--matiere); outline-offset: 1px; }
+
+.rangs { display: grid; gap: 9px; margin: 12px 0; }
+.rang { display: grid; grid-template-columns: auto 1fr auto auto; gap: 8px; align-items: center; }
+.rang .num { color: var(--encre-2); font-size: 0.85em; width: 22px; }
+.rang .val { padding: 11px 13px; background: #fff; border: 2px solid var(--trait); border-radius: 10px; }
+.fleche {
+  font: inherit; min-width: 46px; min-height: 46px; border: 2px solid var(--trait);
+  border-radius: 10px; background: #fff; cursor: pointer;
+}
+.fleche:disabled { opacity: .35; cursor: default; }
+
+.etape-bloc {
+  border: 1px solid var(--trait); border-radius: 12px; padding: 13px 15px; margin: 0 0 11px;
+}
+.etape-bloc.verrou { opacity: .45; pointer-events: none; }
+.etape-bloc .consigne { font-weight: 600; margin: 0 0 8px; }
+
+/* ---------- Actions et retours ---------- */
+.actions { display: flex; gap: 9px; flex-wrap: wrap; margin-top: 14px; }
+.btn {
+  font: inherit; padding: 13px 18px; border-radius: 10px; border: 0;
+  cursor: pointer; font-weight: 600; min-height: 50px;
+}
+.btn.valider { background: var(--matiere); color: #fff; flex: 1; min-width: 140px; }
+.btn.valider:disabled { background: #d6d3d1; cursor: default; }
+.btn.sec { background: #fff; border: 2px solid var(--trait); color: var(--encre-2); }
+.btn.sec:disabled { opacity: .4; cursor: default; }
+
+.indice {
+  display: none; margin-top: 12px; padding: 12px 14px;
+  background: var(--methode-bg); border-left: 4px solid var(--methode); border-radius: 8px;
+}
+.indice.ouvert { display: block; }
+
+.retour { display: none; margin-top: 14px; padding: 14px 16px; border-radius: 12px; }
+.retour.ouvert { display: block; }
+.retour.juste { background: var(--exemple-bg); border: 1px solid #86efac; }
+.retour.faux  { background: var(--piege-bg);  border: 1px solid #fecaca; }
+.retour.presque { background: var(--methode-bg); border: 1px solid #fcd34d; }
+.retour .verdict { font-weight: 700; margin: 0 0 7px; }
+.retour.juste .verdict { color: var(--exemple); }
+.retour.faux .verdict  { color: var(--piege); }
+.retour.presque .verdict { color: var(--methode); }
+.retour .cible {
+  margin: 9px 0 0; padding: 10px 12px; background: rgba(255,255,255,.75);
+  border-radius: 8px; border-left: 3px solid currentColor;
+}
+.signaler {
+  margin-top: 12px; background: none; border: 0; color: var(--encre-2);
+  font: inherit; font-size: 0.84em; text-decoration: underline; cursor: pointer;
+  padding: 8px 0; min-height: 40px;
+}
+.signaler.fait { color: var(--piege); text-decoration: none; font-weight: 600; }
+
+/* ---------- Bilan ---------- */
+#bilan { display: none; }
+#bilan.ouvert { display: block; }
+.score-grand {
+  text-align: center; font-size: 3.4em; font-weight: 800;
+  color: var(--matiere); line-height: 1; margin: 6px 0 2px;
+}
+.score-sous { text-align: center; color: var(--encre-2); font-size: 0.9em; margin-bottom: 18px; }
+.paliers { display: grid; gap: 9px; margin: 16px 0; }
+.pal { display: flex; justify-content: space-between; align-items: center;
+       padding: 12px 15px; border-radius: 11px; font-weight: 600; }
+.pal.p1 { background: var(--p1-bg); color: var(--p1); }
+.pal.p2 { background: var(--p2-bg); color: var(--p2); }
+.pal.p3 { background: var(--p3-bg); color: var(--p3); }
+.message {
+  padding: 16px 18px; border-radius: 12px; background: var(--notion-bg);
+  border-left: 5px solid var(--notion); margin: 16px 0; font-size: 1.04em;
+}
+.envoi {
+  margin-top: 18px; padding: 13px 15px; border-radius: 11px;
+  background: #f5f5f4; color: var(--encre-2); font-size: 0.9em;
+}
+.envoi.ok { background: var(--exemple-bg); color: var(--exemple); }
+.envoi.ko { background: var(--piege-bg); color: var(--piege); }
+pre.bilan-txt {
+  white-space: pre-wrap; word-break: break-word; background: #fff;
+  border: 1px solid var(--trait); border-radius: 11px; padding: 14px;
+  font-size: 0.84em; line-height: 1.55; margin: 12px 0;
+}
+
+/* ---------- Pilote V3 : consignes sur feuille ---------- */
+.papier {
+  background: var(--methode-bg);
+  border: 2px solid #fcd34d;
+  border-left: 6px solid var(--methode);
+  border-radius: var(--rayon);
+  padding: 16px 18px;
+  margin: 0 0 18px;
+}
+.papier > h2 {
+  margin: 0 0 8px; font-size: 1.04em; color: var(--methode);
+}
+.papier ol, .papier ul { margin: 6px 0 0; padding-left: 22px; }
+.papier li { margin: 5px 0; }
+.papier .duree { font-size: 0.82em; color: var(--encre-2); font-weight: 600; }
+
+/* ---------- Pilote V3, lot 2 : blocs par mati\0000e8re ---------- */
+.matiere-etiq {
+  border-radius: 999px; padding: 4px 11px; font-weight: 700; font-size: 0.92em;
+  background: #f5f5f4; color: var(--encre); border: 1px solid var(--trait);
+}
+.pal.pm { background: #f5f5f4; color: var(--encre); }
+
+/* ---------- 21 octobre : acc\0000e8s \0000e0 la le\0000e7on et reprise de s\0000e9ance ---------- */
+.exo .barre {
+  position: sticky; top: 0; z-index: 20;
+  background: var(--fond); padding: 8px 0; margin: 0 0 10px;
+}
+.lecon-btn {
+  margin-left: auto; font: inherit; font-weight: 600; font-size: 0.9em;
+  background: var(--matiere); color: #fff; border: 0; border-radius: 999px;
+  padding: 8px 15px; min-height: 44px; cursor: pointer; white-space: nowrap;
+}
+.lecon-btn:focus-visible { outline: 3px solid var(--encre); outline-offset: 2px; }
+.toast {
+  position: fixed; left: 12px; right: 12px; bottom: 18px; z-index: 95;
+  background: #1c1917; color: #fff; padding: 13px 16px; border-radius: 12px;
+  box-shadow: 0 8px 28px rgba(0,0,0,.28); display: none; font-size: 0.95em;
+}
+.toast.ouvert { display: block; }
+.reprise-zone {
+  background: var(--exemple-bg); border: 2px solid #86efac; border-radius: var(--rayon);
+  padding: 14px 16px; margin: 0 0 18px;
+}
+.reprise-zone p { margin: 0 0 4px; }
+
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; } }
+@media (max-width: 420px) {
+  .paire { grid-template-columns: 1fr; }
+  .rang { grid-template-columns: auto 1fr auto auto; }
+}
+
+
+/* ---------- Rappel de le\0000e7on consultable pendant la s\0000e9ance ---------- */
+.panneau-tete { display: none; }
+
+.panneau.flottant {
+  position: fixed; inset: 0; z-index: 80; background: var(--fond);
+  overflow-y: auto; -webkit-overflow-scrolling: touch;
+  padding: 0 16px 48px; display: none;
+}
+.panneau.flottant.ouvert { display: block; }
+.panneau.flottant .panneau-tete {
+  display: flex; justify-content: space-between; align-items: center; gap: 12px;
+  position: sticky; top: 0; z-index: 3;
+  background: var(--matiere); color: #fff;
+  margin: 0 -16px 14px; padding: 12px 16px;
+}
+.panneau.flottant .panneau-tete b { font-size: 0.98em; }
+.panneau-tete .fermer {
+  font: inherit; font-weight: 600; background: rgba(255,255,255,.18); color: #fff;
+  border: 1px solid rgba(255,255,255,.45); border-radius: 999px;
+  padding: 9px 16px; min-height: 44px; cursor: pointer;
+}
+.panneau-tete .fermer:hover { background: rgba(255,255,255,.3); }
+
+.sommaire { display: none; }
+.panneau.flottant .sommaire {
+  display: flex; flex-wrap: wrap; gap: 7px; margin: 0 0 16px;
+}
+.panneau.flottant .sommaire a {
+  font-size: 0.83em; text-decoration: none; color: var(--encre-2);
+  border: 1px solid var(--trait); background: #fff;
+  border-radius: 999px; padding: 8px 12px; min-height: 38px; line-height: 22px;
+}
+.panneau.flottant .sommaire a:hover { border-color: var(--matiere); color: var(--matiere); }
+
+.rappel-btn {
+  position: fixed; right: 14px; bottom: 14px; z-index: 70;
+  font: inherit; font-weight: 600; font-size: 0.92em;
+  background: var(--matiere); color: #fff; border: 0;
+  border-radius: 999px; padding: 13px 20px; min-height: 50px;
+  box-shadow: 0 6px 20px rgba(0,0,0,.22); cursor: pointer; display: none;
+}
+.rappel-btn.visible { display: block; }
+.rappel-btn:focus-visible { outline: 3px solid #fff; outline-offset: 2px; }
+
+.cible-rappel { animation: souligne 1.6s ease-out 1; }
+@keyframes souligne {
+  0%, 40% { background: #fef08a; }
+  100% { background: transparent; }
+}
+
+
+/* Banni\0000e8re affich\0000e9e seulement quand JavaScript est d\0000e9sactiv\0000e9 */
+.sans-js {
+  background: #fef2f2; border: 2px solid #fecaca; border-left: 6px solid #b91c1c;
+  color: #7f1d1d; border-radius: 12px; padding: 16px 18px; margin: 16px 0 0;
+  line-height: 1.6;
+}
+
+
+#diagnostic { display: none; }
+#diagnostic.diag {
+  display: block; background: #fef2f2; border: 2px solid #b91c1c; color: #7f1d1d;
+  border-radius: 12px; padding: 14px 16px; margin: 16px 0; font-size: 0.9em;
+  word-break: break-word;
+}
+
+/* ============================================================
+   Pilote V3 \002014 format en onglets (prototype du 22 octobre 2026)
+   Ajout\0000e9 apr\0000e8s styles.css par construire_onglets.py.
+   ============================================================ */
+
+[hidden] { display: none !important; }
+
+.bandeau.compact { padding: 12px 16px 12px; margin-bottom: 6px; }
+.bandeau.compact h1 { font-size: 1.12em; }
+.bandeau.compact .sous { font-size: 0.78em; margin-top: 3px; }
+
+/* ---------- Barre d'onglets, coll\0000e9e en haut ---------- */
+.onglets {
+  position: sticky; top: 0; z-index: 40;
+  display: flex; gap: 5px;
+  background: var(--fond);
+  padding: 8px 0; margin: 0 0 12px;
+  border-bottom: 1px solid var(--trait);
+}
+.onglet {
+  flex: 1 1 0; min-width: 0; position: relative;
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px;
+  font: inherit; font-size: 0.64em; line-height: 1.15; font-weight: 700; letter-spacing: 0;
+  padding: 7px 2px 6px; min-height: 58px;
+  border: 2px solid var(--trait); border-radius: 12px;
+  background: #fff; color: var(--encre-2); cursor: pointer;
+}
+.onglet .ico { font-size: 1.6em; line-height: 1; }
+.onglet .nom { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%; line-height: 1.4; padding-top: 1px; }
+.onglet.actif { border-color: var(--matiere); color: var(--matiere); background: var(--notion-bg); }
+.onglet.fait::after {
+  content: "\2713"; position: absolute; top: 1px; right: 4px;
+  font-size: 1.15em; color: var(--exemple);
+}
+.onglet.verrou { opacity: 0.38; }
+.onglet.verrou .ico { filter: grayscale(1); }
+.onglet.bloque { opacity: 0.5; }
+
+/* ---------- Vues ---------- */
+.vue { display: none; }
+.vue.ouverte { display: block; }
+.vue .bloc { scroll-margin-top: 92px; }
+.consigne-vue { color: var(--encre-2); margin: 0 0 12px; }
+.titre-vue { font-size: 1.1em; margin: 0 0 6px; }
+.petit { font-size: 0.86em; color: var(--encre-2); }
+
+/* Dans les onglets, la barre d'exercice n'est plus collante : c'est la barre d'onglets qui l'est. */
+.vue .exo .barre { position: static; padding: 0; background: none; }
+
+/* ---------- Le\0000e7on ---------- */
+.papier.fait { opacity: 0.6; }
+.retour-exo { position: sticky; top: 82px; z-index: 30; margin: 0 0 12px; }
+.retour-exo .btn { width: 100%; box-shadow: 0 6px 18px rgba(0,0,0,.18); }
+#lecon-corps > .actions { margin: 6px 0 24px; }
+#lecon-corps > .actions .btn { width: 100%; }
+
+/* ---------- \0000c9couter ---------- */
+.ecoute { margin: 12px 0; }
+.ecoute-ligne {
+  display: flex; align-items: center; gap: 12px;
+  background: #fff; border: 1px solid var(--trait); border-radius: 12px;
+  padding: 10px 12px; margin: 0 0 9px;
+}
+.lire-gros {
+  flex: 0 0 auto; min-width: 54px; min-height: 54px; border-radius: 999px;
+  border: 2px solid var(--matiere); background: #fff; font-size: 1.3em; cursor: pointer;
+}
+.ecoute-en { font-weight: 700; font-size: 1.05em; }
+.ecoute-fr { color: var(--encre-2); font-size: 0.88em; }
+.note-voix {
+  background: var(--methode-bg); border-left: 4px solid var(--methode);
+  border-radius: 8px; padding: 9px 12px; font-size: 0.9em;
+}
+
+/* ---------- Cartes ---------- */
+.cartes-tete { display: flex; align-items: center; gap: 10px; margin: 0 0 10px; font-size: 0.85em; color: var(--encre-2); }
+.flash {
+  background: var(--carte); border: 2px solid var(--trait); border-radius: var(--rayon);
+  padding: 20px 18px; min-height: 230px;
+  display: flex; flex-direction: column; gap: 12px;
+  box-shadow: 0 6px 18px rgba(0,0,0,.06);
+}
+.flash[hidden] { display: none; }
+.flash-origine { font-size: 0.74em; color: var(--encre-2); text-transform: uppercase; letter-spacing: .07em; font-weight: 700; }
+.flash-recto { font-size: 1.12em; font-weight: 700; }
+.flash-consigne { color: var(--encre-2); font-size: 0.88em; margin: 0; }
+.flash-verso {
+  background: var(--exemple-bg); border: 1px solid #86efac; border-radius: 12px;
+  padding: 12px 14px; font-size: 1.03em;
+}
+.flash-choix .btn { flex: 1; }
+.btn.ok { background: var(--exemple); color: #fff; }
+.flash-fin {
+  background: var(--carte); border: 1px solid var(--trait); border-radius: var(--rayon); padding: 16px 18px;
+}
+.flash-score { font-size: 1.05em; margin-top: 0; }
+
+/* ---------- Exercices ---------- */
+.fin-exos {
+  background: var(--exemple-bg); border: 2px solid #86efac; border-radius: var(--rayon);
+  padding: 16px 18px; margin: 10px 0;
+}
+.fin-exos .btn { width: 100%; }
+
+/* ---------- D\0000e9fi ---------- */
+.defi-intro {
+  background: var(--p3-bg); border: 2px solid #c4b5fd; border-radius: var(--rayon); padding: 16px 18px;
+}
+.defi-intro h2 { margin: 0 0 8px; color: var(--p3); font-size: 1.12em; }
+.defi-intro .btn { width: 100%; }
+.exo[data-palier="defi"] { --pc: var(--p3); --pbg: var(--p3-bg); }
+.corr-defi h3 { margin: 18px 0 8px; }
+.corr-item {
+  background: #fff; border: 1px solid var(--trait); border-left: 5px solid var(--exemple);
+  border-radius: 12px; padding: 10px 14px; margin: 0 0 10px;
+}
+.corr-item.faux { border-left-color: var(--piege); }
+.corr-item p { margin: 4px 0; }
+.corr-q { font-weight: 600; }
+.corr-expl { color: var(--encre-2); font-size: 0.92em; }
+
+/* ---------- Fin et erreurs ---------- */
+.fin .papier { margin-top: 16px; }
+.fin details summary { cursor: pointer; padding: 10px 0; color: var(--encre-2); }
+.fin a.btn { text-decoration: none; line-height: 24px; }
+.err-bloc {
+  background: #fff; border: 1px solid var(--trait); border-left: 5px solid var(--piege);
+  border-radius: 12px; padding: 10px 14px; margin: 0 0 10px;
+}
+.err-bloc p { margin: 4px 0; }
+.err-q { font-weight: 600; }
+.err-e { color: var(--encre-2); font-size: 0.92em; }
+.err-aucune {
+  background: var(--exemple-bg); border: 1px solid #86efac; border-radius: 12px; padding: 14px 16px;
+}
+.vide { color: var(--encre-2); }
+
+/* ---------- Validation de la s\0000e9ance (26 octobre 2026) ---------- */
+.validation { border-radius: 12px; padding: 12px 15px; margin: 0 0 14px; font-size: 1.02em; }
+.validation b { display: block; margin-bottom: 2px; }
+.validation.ok { background: var(--exemple-bg); border: 2px solid #86efac; color: #14532d; }
+.validation.ko { background: var(--methode-bg); border: 2px solid #fcd34d; color: #78350f; }
+
+/* Amor\0000e7age : se comparer \0000e0 la le\0000e7on (27 octobre 2026) */
+.amorce { background: var(--notion-bg); border-left: 4px solid var(--notion); border-radius: var(--rayon); padding: 14px 16px; margin: 0 0 18px; }
+.amorce h2 { margin: 0 0 4px; font-size: 1.08em; }
+.amorce p { margin: 0 0 10px; }
+.amorce .opt .puce { border-radius: 5px; }
+.amorce.faite { background: var(--exemple-bg); border-left-color: var(--exemple); }
+.amorce.faite p { margin: 0; }
+#lecon-suite:disabled { opacity: .55; cursor: not-allowed; }
+
+</style>
+</head>
+<body data-profil="omar" data-matiere="anglais" data-format="onglets">
+<div class="page">
+
+  <noscript>
+    <div class="sans-js">
+      <b>Cette page a besoin de JavaScript pour fonctionner.</b>
+      Ouvre le fichier avec <b>Chrome</b> : appuie longuement sur le fichier,
+      puis choisis &#171; Ouvrir avec &#187; &#8594; Chrome.
+    </div>
+  </noscript>
+
+  <header class="bandeau compact">
+    <p class="eleve">Omar &#183; 6e</p>
+    <h1>Jour 15 &#183; Anglais &#8212; to be (am, is, are)</h1>
+    <p class="sous">S&#233;ance demand&#233;e &#183; environ 15 minutes &#183; &#233;cran, puis feuille</p>
+  </header>
+
+  <nav class="onglets" id="onglets" aria-label="&#201;tapes de la s&#233;ance"></nav>
+
+  <section class="vue ouverte" id="vue-lecon">
+    <div class="papier" id="avant">
+<h2>Avant de lire la le&#231;on &#8212; sur ta feuille</h2>
+<p class="duree">2 minutes &#183; sans regarder ton cahier</p>
+<ol><li>&#201;cris <span lang="en">to be</span> au pr&#233;sent avec
+<span lang="en">I, you, he, she, it, we, you, they</span>.</li>
+<li>&#201;cris une phrase avec <span lang="en">not</span>. Puis &#233;cris une question.</li></ol>
+<p>Ensuite seulement, lis la le&#231;on.</p>
+      <div class="actions"><button class="btn valider" id="avant-ok" type="button">C'est fait : je lis la le&#231;on</button></div>
+    </div>
+    <div id="lecon-corps" hidden>
+      <div class="retour-exo" id="retour-exo" hidden><button class="btn valider" type="button">Revenir &#224; l'exercice</button></div>
+      <main id="lecon">
+<div class="bloc notion" id="e-be">
+<h3>to be au pr&#233;sent</h3>
+<p data-lire><b>to be</b> = &#234;tre. Au pr&#233;sent :</p><table style="border-collapse:collapse;margin:6px 0;font-size:1.02em"><tr><td style="padding:3px 14px 3px 0"><span lang="en">I <b>am</b></span></td><td style="padding:3px 0"><span lang="en">we <b>are</b></span></td></tr><tr><td style="padding:3px 14px 3px 0"><span lang="en">you <b>are</b></span></td><td style="padding:3px 0"><span lang="en">you <b>are</b></span></td></tr><tr><td style="padding:3px 14px 3px 0"><span lang="en">he <b>is</b> &#183; she <b>is</b> &#183; it <b>is</b></span></td><td style="padding:3px 0"><span lang="en">they <b>are</b></span></td></tr></table><p data-lire>Pour l'&#226;ge, l'anglais dit &#171; &#234;tre &#187; : <span lang="en">I am eleven.</span> = j'ai onze ans.</p><button class="angle-btn" type="button">Une autre fa&#231;on de le voir</button><div class="angle-txt">Avec I : am. Un seul (he, she, it) : is. Plusieurs (we, you, they) : are. You : toujours are.</div><div class="exemples"><span class="etiq">Exemples</span><ul><li><span class="ex"><span lang="en">My mother is a nurse.</span> &#8212; Ma m&#232;re est infirmi&#232;re.</span></li><li><span class="ex"><span lang="en">The cats are black.</span> &#8212; Les chats sont noirs.</span></li></ul></div>
+</div>
+<div class="bloc notion" id="e-be-nom">
+<h3>Quand le sujet est un nom</h3>
+<p data-lire>Le sujet est un nom ? Remplace-le par <span lang="en">he</span>, <span lang="en">she</span>, <span lang="en">it</span> ou <span lang="en">they</span>. Puis choisis.</p><ul><li><span lang="en">my uncle</span> = he &#8594; <span lang="en">My uncle <b>is</b> tall.</span></li><li><span lang="en">the apples</span> = they &#8594; <span lang="en">The apples <b>are</b> green.</span></li><li><span lang="en">Mia and Tom</span> = they &#8594; <span lang="en">Mia and Tom <b>are</b> cousins.</span></li></ul><button class="angle-btn" type="button">Une autre fa&#231;on de le voir</button><div class="angle-txt">Un nom au <span class="def" data-def="Plusieurs personnes ou plusieurs choses.">pluriel</span> (deux, trois, des&#8230;) prend toujours are.</div><div class="exemples"><span class="etiq">Exemples</span><ul><li><span class="ex"><span lang="en">My phone is black.</span> &#8212; Mon t&#233;l&#233;phone est noir.</span></li><li><span class="ex"><span lang="en">My parents are at work.</span> &#8212; Mes parents sont au travail.</span></li></ul></div>
+</div>
+<div class="bloc notion" id="e-be-negq">
+<h3>Dire non, poser une question</h3>
+<p data-lire><b>La <span class="def" data-def="Une phrase qui dit non.">n&#233;gation</span></b> : on met <span lang="en">not</span> apr&#232;s am, is, are.</p><table style="border-collapse:collapse;margin:6px 0;font-size:1.02em"><tr><td style="padding:3px 14px 3px 0"><span lang="en">I am not &#8594; I<b>'m not</b></span></td><td style="padding:3px 0"><span lang="en"></span></td></tr><tr><td style="padding:3px 14px 3px 0"><span lang="en">he is not &#8594; he <b>isn't</b></span></td><td style="padding:3px 0"><span lang="en"></span></td></tr><tr><td style="padding:3px 14px 3px 0"><span lang="en">they are not &#8594; they <b>aren't</b></span></td><td style="padding:3px 0"><span lang="en"></span></td></tr></table><p data-lire><b>La question</b> : is ou are passe devant le sujet.</p><p><span lang="en">She is happy.</span> &#8594; <span lang="en"><b>Is</b> she happy?</span></p><p data-lire>Avec un mot question, il vient en premier : <span lang="en"><b>Where</b> are my keys?</span> &#183; <span lang="en"><b>How old</b> is your brother?</span></p><button class="angle-btn" type="button">Une autre fa&#231;on de le voir</button><div class="angle-txt">Pour la question, deux mots changent de place : she is &#8594; is she.</div><div class="exemples"><span class="etiq">Exemples</span><ul><li><span class="ex"><span lang="en">They aren't at home.</span> &#8212; Ils ne sont pas &#224; la maison.</span></li><li><span class="ex"><span lang="en">Is your bag new?</span> &#8212; Ton sac est-il neuf ?</span></li></ul></div>
+</div>
+<div class="bloc piege" id="e-be-piege">
+<h3>Pi&#232;ges</h3>
+<ul><li>Jamais <span lang="en">I is</span> ni <span lang="en">I are</span> : on dit <span lang="en">I am.</span></li><li>Un nom au pluriel prend are : <span lang="en">my friends are</span>, pas <span lang="en">my friends is.</span></li><li>Dans une question, is ou are vient d'abord : <span lang="en">Is he&#8230;? Are they&#8230;?</span></li><li>L'&#226;ge et la faim : <span lang="en">I am eleven.</span> (j'ai onze ans) &#183; <span lang="en">We are hungry.</span> (nous avons faim)</li></ul>
+</div>
+<div class="bloc resume" id="par-coeur">
+<h3>&#192; savoir par c&#339;ur</h3>
+<p>R&#233;cite ces phrases sans regarder. Ce soir, on te les demandera.</p><ol><li><span lang="en">I am &#183; you are &#183; he, she, it is &#183; we, you, they are.</span></li><li>Un nom au pluriel prend <span lang="en">are</span> : <span lang="en">my parents are.</span></li><li>N&#233;gation : <span lang="en">I'm not &#183; he isn't &#183; they aren't.</span></li><li>Question : is ou are passe devant le sujet : <span lang="en">Is he&#8230;? Are they&#8230;?</span></li><li>L'&#226;ge : <span lang="en">I am eleven.</span> = j'ai onze ans.</li></ol>
+</div>
+<div class="sep" style="margin-top:26px">Les jours d'avant</div>
+<div class="bloc resume" id="e-psneg">
+<h3>don't, doesn't (jour 5)</h3>
+<ul><li>I, you, we, they : <span lang="en">don't</span> &#183; he, she, it : <span lang="en">doesn't</span></li><li>Apr&#232;s don't ou doesn't, le verbe n'a pas de s : <span lang="en">She doesn't like fish.</span></li></ul>
+</div>
+
+      </main>
+      <div class="actions"><button class="btn valider" id="lecon-suite" type="button">J'ai lu la le&#231;on</button></div>
+    </div>
+  </section>
+
+  <section class="vue" id="vue-ecouter"></section>
+  <section class="vue" id="vue-cartes"></section>
+  <section class="vue" id="vue-exercices"><div id="seance"></div></section>
+  <section class="vue" id="vue-defi"></section>
+  <section class="vue" id="vue-erreurs"><p class="vide">Cet onglet s'ouvre &#224; la fin de la s&#233;ance.</p></section>
+
+  <div id="apres-src" hidden>
+<h2>Maintenant, sur ta feuille &#8212; comme en classe</h2>
+<p class="duree">5 minutes</p>
+<ol><li>&#201;cris le num&#233;ro et le mot qui manque : <span lang="en">am</span>, <span lang="en">is</span>
+ou <span lang="en">are</span>.
+<ol lang="en">
+<li>My grandmother ______ in the garden.</li>
+<li>The pencils ______ in my bag.</li>
+<li>I ______ not sleepy.</li>
+<li>______ your dad in the car?</li>
+<li>Omar and his friends ______ at the beach.</li>
+<li>It ______ not my phone.</li>
+<li>______ we late?</li>
+<li>What ______ your name?</li>
+</ol></li>
+<li>Pose la question : <span lang="en">They are hungry.</span></li>
+<li>Ce soir, montre ta feuille.</li></ol>
+  </div>
+  <div id="diagnostic"></div>
+</div>
+<script>
+window.addEventListener("error", function (e) {
+  var d = document.getElementById("diagnostic");
+  if (!d) return;
+  d.className = "diag";
+  d.textContent = "Erreur technique : " + (e.message || "inconnue") + "  [ligne " + (e.lineno || "?") + "]";
+});
+</script>
+<script>window.LECON = {"profil": "omar", "identifiant": "omar-6e-pilote-j15-anglais", "titre": "Jour 15 \u00b7 Anglais \u2014 to be (am, is, are)", "orthographeEvaluee": false, "messages": ["Les bases ne sont pas encore en place. Ce n'est pas grave. Ce soir, trois questions \u00e0 l'oral sur to be.", "Les bases sont en place. Ce soir, trois questions \u00e0 l'oral sur to be.", "Bien jou\u00e9 : tu sais appliquer la le\u00e7on. Ce soir, trois questions \u00e0 l'oral sur to be.", "Excellent : m\u00eame les questions les plus difficiles sont r\u00e9ussies. Ce soir, trois questions \u00e0 l'oral sur to be."], "exercices": [{"type": "classement", "palier": 1, "ancre": "e-be-nom", "competence": "Choisir am, is ou are", "resume": "to be : am, is ou are", "casCorrige": "<span lang=\"en\">My uncles ___ tall.<\/span> \u2192 my uncles = they \u2192 <b lang=\"en\">are<\/b> : <span lang=\"en\">My uncles are tall.<\/span>", "enonce": "Choisis <span lang=\"en\">am<\/span>, <span lang=\"en\">is<\/span> ou <span lang=\"en\">are<\/span> pour chaque phrase.", "categories": ["am", "is", "are"], "items": [{"texte": "<span lang=\"en\">My cousin ___ eleven.<\/span>", "categorie": "is"}, {"texte": "<span lang=\"en\">I ___ in the kitchen.<\/span>", "categorie": "am"}, {"texte": "<span lang=\"en\">The shoes ___ new.<\/span>", "categorie": "are"}, {"texte": "<span lang=\"en\">You ___ in my team.<\/span>", "categorie": "are"}, {"texte": "<span lang=\"en\">It ___ sunny today.<\/span>", "categorie": "is"}, {"texte": "<span lang=\"en\">Ali and Omar ___ brothers.<\/span>", "categorie": "are"}], "erreurs": [{"item": "The shoes", "mis": "is", "retour": "The shoes = plusieurs chaussures (they) : are."}, {"item": "My cousin", "mis": "are", "retour": "My cousin = une seule personne (he ou she) : is."}], "indice": "Trouve le sujet. Remplace-le par I, he, she, it, we, you ou they.", "corrige": "am : I \u00b7 is : my cousin, it \u00b7 are : the shoes, you, Ali and Omar", "explication": "I am. Un seul (he, she, it) : is. Plusieurs (we, you, they) : are."}, {"type": "ordonnancement", "palier": 2, "ancre": "e-be-negq", "competence": "Poser une question avec to be", "resume": "Ranger une question avec is", "casCorrige": "<span lang=\"en\">Your dog is hungry.<\/span> \u2192 question : <span lang=\"en\"><b>Is<\/b> your dog hungry?<\/span> Is passe devant le sujet.", "enonce": "Range les morceaux pour poser la question : \u00ab Est-ce que ton fr\u00e8re est \u00e0 la piscine aujourd'hui ? \u00bb", "ordre": ["<span lang=\"en\">Is<\/span>", "<span lang=\"en\">your brother<\/span>", "<span lang=\"en\">at the pool<\/span>", "<span lang=\"en\">today<\/span>", "<span lang=\"en\">?<\/span>"], "consigneOrdre": "Utilise les fl\u00e8ches pour ranger les morceaux, du premier au dernier.", "erreurs": [{"ordre": ["<span lang=\"en\">your brother<\/span>", "<span lang=\"en\">Is<\/span>", "<span lang=\"en\">at the pool<\/span>", "<span lang=\"en\">today<\/span>", "<span lang=\"en\">?<\/span>"], "retour": "Dans une question, is passe devant le sujet."}], "indice": "Une question avec to be commence par is ou are. Puis vient le sujet.", "corrige": "<span lang=\"en\">Is your brother at the pool today?<\/span>", "explication": "Is + le sujet (your brother = he) + la suite."}, {"type": "reperage", "palier": 3, "ancre": "e-be-piege", "langueMots": "en", "competence": "Corriger to be dans un message", "resume": "Trois erreurs de to be", "casCorrige": "<span lang=\"en\">My friends <b>is<\/b> here.<\/span> \u2192 is est faux : my friends = they \u2192 <span lang=\"en\">My friends are here.<\/span>", "enonce": "Dans ce message, trois mots de <span lang=\"en\">to be<\/span> sont faux. Touche ces trois mots.", "mots": [{"texte": "Hi"}, {"texte": "Sam!"}, {"texte": "I"}, {"texte": "am"}, {"texte": "at"}, {"texte": "the"}, {"texte": "beach"}, {"texte": "with"}, {"texte": "my"}, {"texte": "family."}, {"texte": "My"}, {"texte": "parents"}, {"texte": "is", "cible": true}, {"texte": "very"}, {"texte": "happy."}, {"texte": "The"}, {"texte": "sea"}, {"texte": "isn't"}, {"texte": "cold."}, {"texte": "Are", "cible": true}, {"texte": "your"}, {"texte": "cousin"}, {"texte": "in"}, {"texte": "London?"}, {"texte": "My"}, {"texte": "sisters"}, {"texte": "are"}, {"texte": "hungry,"}, {"texte": "but"}, {"texte": "we"}, {"texte": "isn't", "cible": true}, {"texte": "tired."}], "erreurs": [{"mot": "am", "retour": "I am est juste : avec I, toujours am."}], "indice": "Pour chaque am, is ou are, cherche son sujet. Un seul ou plusieurs ?", "corrige": "is (My parents is \u2192 are) \u00b7 Are (Are your cousin \u2192 Is) \u00b7 isn't (we isn't \u2192 aren't)", "explication": "My parents are happy. Is your cousin in London? We aren't tired."}], "echauffement": [{"type": "classement", "palier": 0, "ancre": "e-psneg", "competence": "Choisir don't ou doesn't", "resume": "Retour : don't ou doesn't", "casCorrige": "<span lang=\"en\">Karim ___ watch football.<\/span> \u2192 Karim = he \u2192 <b lang=\"en\">doesn't<\/b> : <span lang=\"en\">Karim doesn't watch football.<\/span>", "enonce": "Choisis <span lang=\"en\">don't<\/span> ou <span lang=\"en\">doesn't<\/span>.", "categories": ["don't", "doesn't"], "items": [{"texte": "<span lang=\"en\">My sister ___ like milk.<\/span>", "categorie": "doesn't"}, {"texte": "<span lang=\"en\">You ___ walk to school.<\/span>", "categorie": "don't"}, {"texte": "<span lang=\"en\">Our cat ___ sleep on my bed.<\/span>", "categorie": "doesn't"}, {"texte": "<span lang=\"en\">My friends ___ play chess.<\/span>", "categorie": "don't"}, {"texte": "<span lang=\"en\">He ___ speak Spanish.<\/span>", "categorie": "doesn't"}], "erreurs": [{"item": "My friends", "mis": "doesn't", "retour": "My friends = they : don't."}], "indice": "Remplace le sujet par he, she, it ou they. He, she, it : doesn't.", "corrige": "doesn't : my sister, our cat, he \u00b7 don't : you, my friends", "explication": "he, she, it : doesn't. I, you, we, they : don't."}], "reportEntrant": [], "cartes": [{"id": "e-be-1", "origine": "Aujourd'hui", "recto": "R\u00e9cite <span lang=\"en\">to be<\/span> au pr\u00e9sent.", "verso": "<span lang=\"en\">I am, you are, he is, she is, it is, we are, you are, they are.<\/span>"}, {"id": "e-be-2", "origine": "Aujourd'hui", "recto": "\u00ab Mes grands-parents sont \u00e0 F\u00e8s \u00bb : <span lang=\"en\">is<\/span> ou <span lang=\"en\">are<\/span> ?", "verso": "<span lang=\"en\">My grandparents are in F\u00e8s.<\/span> Plusieurs : are."}, {"id": "e-be-3", "origine": "Aujourd'hui", "recto": "Dis : \u00ab Elle n'est pas fatigu\u00e9e. \u00bb", "verso": "<span lang=\"en\">She isn't tired.<\/span>"}, {"id": "e-be-4", "origine": "Aujourd'hui", "recto": "Pose la question : \u00ab Ton chat est-il dans le jardin ? \u00bb", "verso": "<span lang=\"en\">Is your cat in the garden?<\/span>"}, {"id": "e-be-5", "origine": "Aujourd'hui", "recto": "Demande : \u00ab Quel \u00e2ge a ton fr\u00e8re ? \u00bb", "verso": "<span lang=\"en\">How old is your brother?<\/span>"}, {"id": "e-psneg-1", "origine": "Rappel du jour 5", "recto": "Dis : \u00ab Ils ne jouent pas au foot. \u00bb", "verso": "<span lang=\"en\">They don't play football.<\/span>"}], "ecouter": [{"en": "I am at school.", "fr": "Je suis \u00e0 l'\u00e9cole."}, {"en": "My brother is twelve.", "fr": "Mon fr\u00e8re a douze ans."}, {"en": "We are hungry.", "fr": "Nous avons faim."}, {"en": "She isn't at home.", "fr": "Elle n'est pas \u00e0 la maison."}, {"en": "Are your friends here?", "fr": "Tes amis sont-ils l\u00e0 ?"}, {"en": "Where is my phone?", "fr": "O\u00f9 est mon t\u00e9l\u00e9phone ?"}], "defi": [{"type": "classement", "competence": "Choisir am, is ou are", "resume": "am, is ou are", "enonce": "Choisis <span lang=\"en\">am<\/span>, <span lang=\"en\">is<\/span> ou <span lang=\"en\">are<\/span>.", "categories": ["am", "is", "are"], "items": [{"texte": "<span lang=\"en\">My aunt ___ a teacher.<\/span>", "categorie": "is"}, {"texte": "<span lang=\"en\">We ___ at the stadium.<\/span>", "categorie": "are"}, {"texte": "<span lang=\"en\">I ___ at the door.<\/span>", "categorie": "am"}, {"texte": "<span lang=\"en\">The windows ___ open.<\/span>", "categorie": "are"}, {"texte": "<span lang=\"en\">Your bag ___ under the chair.<\/span>", "categorie": "is"}], "corrige": "am : I \u00b7 is : my aunt, your bag \u00b7 are : we, the windows", "explication": "I am. Un seul : is. Plusieurs : are."}, {"type": "reperage", "langueMots": "en", "competence": "Rep\u00e9rer les phrases fausses", "resume": "Deux phrases fausses \u00e0 trouver", "enonce": "Touche les <b>deux<\/b> phrases fausses.", "mots": [{"texte": "Is your uncle at the shop?"}, {"texte": "They isn't hungry.", "cible": true}, {"texte": "I'm not cold."}, {"texte": "Are you ready?"}, {"texte": "Am he at the park?", "cible": true}, {"texte": "We aren't at school."}], "corrige": "\u00ab They isn't hungry. \u00bb (\u2192 They aren't hungry.) et \u00ab Am he at the park? \u00bb (\u2192 Is he at the park?)", "explication": "They : aren't. He : is, aussi dans la question."}, {"type": "ordonnancement", "competence": "Construire une question avec where", "resume": "Ranger : Where is\u2026?", "enonce": "Range les morceaux : \u00ab D'o\u00f9 vient ton professeur ? \u00bb", "ordre": ["<span lang=\"en\">Where<\/span>", "<span lang=\"en\">is<\/span>", "<span lang=\"en\">your teacher<\/span>", "<span lang=\"en\">from<\/span>", "<span lang=\"en\">?<\/span>"], "consigneOrdre": "Utilise les fl\u00e8ches pour ranger les morceaux, du premier au dernier.", "corrige": "<span lang=\"en\">Where is your teacher from?<\/span>", "explication": "Le mot question d'abord (Where), puis is, puis le sujet, puis from."}], "amorce": ["<span lang=\"en\">I am<\/span> \u00b7 <span lang=\"en\">he, she, it is<\/span> \u00b7 <span lang=\"en\">we, you, they are<\/span>", "Un nom au pluriel prend <span lang=\"en\">are<\/span>", "La n\u00e9gation : <span lang=\"en\">I'm not, isn't, aren't<\/span>", "La question : <span lang=\"en\">is<\/span> ou <span lang=\"en\">are<\/span> passe devant le sujet"], "dureePrevue": 15};</script>
+<script>
+/* ============================================================
+   Moteur de s\u00e9ance EN ONGLETS \u2014 pilote V3, prototype du 22 octobre 2026
+   D\u00e9riv\u00e9 de moteur.js (2.8 + voix par langue + reprise de s\u00e9ance).
+
+   Parcours guid\u00e9 : les onglets s'ouvrent dans l'ordre, puis restent libres.
+     \ud83d\udcd6 Le\u00e7on  \u2192 \ud83d\udd0a \u00c9couter (anglais seulement) \u2192 \ud83c\udccf Cartes \u2192 \u270f\ufe0f Exos
+     \u2192 \ud83c\udfaf D\u00e9fi (le\u00e7on ferm\u00e9e, sans indice) \u2192 \ud83d\udd01 Erreurs
+   Pendant le d\u00e9fi, les autres onglets sont ferm\u00e9s.
+   Le bouton \u00ab retour \u00bb du t\u00e9l\u00e9phone revient \u00e0 l'onglet pr\u00e9c\u00e9dent.
+   La progression est m\u00e9moris\u00e9e (localStorage et sessionStorage) et la
+   s\u00e9ance reprend o\u00f9 elle s'\u00e9tait arr\u00eat\u00e9e.
+   26 octobre 2026 : validation de la s\u00e9ance. Elle est \u00ab valid\u00e9e \u00bb si l'enfant y
+   a pass\u00e9 au moins la moiti\u00e9 de la dur\u00e9e pr\u00e9vue (L.dureePrevue, 15 min par
+   d\u00e9faut) et si c'est son premier essai sur l'appareil (cl\u00e9 rev-fait:<id>).
+   Bandeau \u00e0 l'\u00e9cran de fin et ligne \u00ab Validation : \u2026 \u00bb dans le bilan.
+   27 octobre 2026 : amor\u00e7age. Apr\u00e8s la page blanche, l'enfant compare sa feuille
+   aux points cl\u00e9s de la le\u00e7on (L.amorce, 3 \u00e0 5 points) et coche ce qu'il avait
+   retrouv\u00e9 ; \u00ab J'ai lu la le\u00e7on \u00bb reste ferm\u00e9 tant qu'il ne l'a pas fait. Ligne
+   \u00ab Amor\u00e7age (page blanche) : \u2026 \u00bb dans le bilan.
+   Aucun appel IA \u00e0 l'ex\u00e9cution. Correction 100 % d\u00e9terministe.
+   ============================================================ */
+(function () {
+  "use strict";
+
+  var CLE_ENVOI = "259de897-beba-4c71-95c8-dcde527b79c1";
+  var L = window.LECON;
+  var OMAR = L.profil === "omar";
+  var CARTES = L.cartes || [];
+  var ECOUTE = L.ecouter || [];
+  var DEFI = L.defi || [];
+  var ECHAUF = L.echauffement || [];
+  var TOUS = ECHAUF.concat(L.exercices);
+  var AMORCE = L.amorce || [];
+
+  /* Validation de la s\u00e9ance (26 octobre 2026) : valid\u00e9e si la dur\u00e9e atteint la
+     moiti\u00e9 du temps pr\u00e9vu et si c'est le premier essai sur cet appareil. */
+  var DUREE_PREVUE = L.dureePrevue || 15;
+  var CLE_FAIT = "rev-fait:" + L.identifiant;
+
+  var etat = {
+    onglet: "lecon",
+    ouverts: ["lecon"],
+    avantFait: false,
+    debut: null,
+    cartes: { file: null, premier: {}, passages: {}, fini: false },
+    exoCommence: false, exoFini: false,
+    i: 0, iReprise: 0,
+    indices: 0, retoursLecon: 0,
+    resultats: [], echauffement: [], signalements: [],
+    resSauves: [], echSauves: [],
+    defi: { commence: false, fini: false, i: 0, resultats: [] },
+    amorce: { fait: false, coches: [], rien: false },
+    interruptions: 0,
+    fini: false, envoye: false
+  };
+
+  /* ---------- Normalisation ---------- */
+
+  function sansAccent(s) {
+    return s.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+  }
+
+  function normTexte(s) {
+    return sansAccent(String(s).toLowerCase())
+      .replace(/[\u2019\u02bc`]/g, "'")
+      .replace(/[\u2010-\u2015\u2212]/g, "-")
+      .replace(/[-_]/g, " ")
+      .replace(/[.,;:!?"()\[\]]/g, " ")
+      .replace(/\s+/g, " ")
+      .trim();
+  }
+
+  function lev(a, b) {
+    var m = a.length, n = b.length, i, j, prec = [], cour = [];
+    for (j = 0; j <= n; j++) prec[j] = j;
+    for (i = 1; i <= m; i++) {
+      cour[0] = i;
+      for (j = 1; j <= n; j++) {
+        cour[j] = Math.min(prec[j] + 1, cour[j - 1] + 1,
+          prec[j - 1] + (a.charAt(i - 1) === b.charAt(j - 1) ? 0 : 1));
+      }
+      prec = cour.slice();
+    }
+    return prec[n];
+  }
+
+  function texteEgal(saisie, attendu) {
+    var a = normTexte(saisie), b = normTexte(attendu);
+    if (a === b) return true;
+    if (!OMAR || L.orthographeEvaluee) return false;
+    if (b.length < 5) return false;
+    var seuil = b.length <= 8 ? 1 : 2;
+    return lev(a, b) <= seuil;
+  }
+
+  function texteAccepte(saisie, liste) {
+    for (var k = 0; k < liste.length; k++) if (texteEgal(saisie, liste[k])) return true;
+    return false;
+  }
+
+  function normNombre(s) {
+    var t = String(s).replace(/\s|\u00a0/g, "").replace(/,/g, ".").replace(/^\+/, "");
+    if (t === "" || !/^-?\d*\.?\d+$/.test(t)) return null;
+    return parseFloat(t);
+  }
+
+  function nombreEgal(saisie, attendu, tol) {
+    var v = normNombre(saisie);
+    if (v === null) return false;
+    return Math.abs(v - attendu) <= (tol || 0) + 1e-9;
+  }
+
+  /* ---------- Utilitaires DOM ---------- */
+
+  function el(tag, cls, txt) {
+    var e = document.createElement(tag);
+    if (cls) e.className = cls;
+    if (txt !== undefined) e.textContent = txt;
+    return e;
+  }
+
+  function html(tag, cls, h) {
+    var e = document.createElement(tag);
+    if (cls) e.className = cls;
+    if (h !== undefined) e.innerHTML = h;
+    return e;
+  }
+
+  function bouton(cls, txt, action) {
+    var b = el("button", cls, txt);
+    b.type = "button";
+    if (action) b.addEventListener("click", action);
+    return b;
+  }
+
+  function texteSeul(h) {
+    var d = document.createElement("div");
+    d.innerHTML = h;
+    return d.textContent.replace(/\s+/g, " ").trim();
+  }
+
+  function melange(tab, graine) {
+    var t = tab.slice(), g = graine || 7, i, j, tmp;
+    for (i = t.length - 1; i > 0; i--) {
+      g = (g * 1103515245 + 12345) % 2147483648;
+      j = g % (i + 1);
+      tmp = t[i]; t[i] = t[j]; t[j] = tmp;
+    }
+    return t;
+  }
+
+  function signaler(msg) {
+    var d = document.getElementById("diagnostic");
+    if (d) { d.className = "diag"; d.textContent = msg; }
+  }
+
+  /* ---------- Synth\u00e8se vocale par langue ---------- */
+
+  var voixDispo = ("speechSynthesis" in window);
+
+  function segmentsLangue(noeud) {
+    var segs = [];
+    function ajouter(t, langue) {
+      if (!t || !t.trim()) return;
+      var d = segs[segs.length - 1];
+      if (d && d.lang === langue) d.texte += " " + t;
+      else segs.push({ texte: t, lang: langue });
+    }
+    function visiter(n, langue) {
+      if (n.nodeType === 3) { ajouter(n.nodeValue, langue); return; }
+      if (n.nodeType !== 1) return;
+      var tag = String(n.tagName).toLowerCase();
+      if (tag === "button" || tag === "svg" || tag === "script" || tag === "style") return;
+      var l = n.getAttribute("lang");
+      for (var c = n.firstChild; c; c = c.nextSibling) visiter(c, l ? l : langue);
+    }
+    visiter(noeud, "fr");
+    return segs;
+  }
+
+  function parler(segs) {
+    if (!voixDispo) return;
+    try {
+      window.speechSynthesis.cancel();
+      segs.forEach(function (s) {
+        var u = new SpeechSynthesisUtterance(s.texte);
+        var en = s.lang.indexOf("en") === 0;
+        u.lang = en ? "en-GB" : "fr-FR";
+        u.rate = en ? 0.82 : 0.92;
+        window.speechSynthesis.speak(u);
+      });
+    } catch (e) {}
+  }
+
+  function boutonLire(source) {
+    var b = bouton("lire", "\ud83d\udd0a");
+    b.setAttribute("aria-label", "Lire \u00e0 voix haute");
+    if (!voixDispo) { b.hidden = true; return b; }
+    b.addEventListener("click", function () {
+      parler(typeof source === "string" ? [{ texte: source, lang: "fr" }] : segmentsLangue(source));
+    });
+    return b;
+  }
+
+  /* ---------- D\u00e9finitions au clic ---------- */
+
+  var bulle = el("div", "bulle");
+  document.body.appendChild(bulle);
+  document.addEventListener("click", function (ev) {
+    var c = ev.target.closest ? ev.target.closest(".def") : null;
+    if (c && c.dataset.def) {
+      bulle.innerHTML = "<b>" + c.textContent + "</b>" + c.dataset.def;
+      bulle.classList.add("ouvert");
+    } else if (!ev.target.closest || !ev.target.closest(".bulle")) {
+      bulle.classList.remove("ouvert");
+    }
+  });
+
+  /* ---------- Message bref ---------- */
+
+  var toast = el("div", "toast");
+  document.body.appendChild(toast);
+  var minuteurToast = null;
+
+  function montrerToast(msg) {
+    toast.textContent = msg;
+    toast.classList.add("ouvert");
+    clearTimeout(minuteurToast);
+    minuteurToast = setTimeout(function () { toast.classList.remove("ouvert"); }, 4500);
+  }
+
+  /* =========================================================
+     Onglets
+     ========================================================= */
+
+  var ONGLETS = [{ id: "lecon", ico: "\ud83d\udcd6", nom: "Le\u00e7on" }];
+  if (ECOUTE.length) ONGLETS.push({ id: "ecouter", ico: "\ud83d\udd0a", nom: "\u00c9couter" });
+  if (CARTES.length) ONGLETS.push({ id: "cartes", ico: "\ud83c\udccf", nom: "Cartes" });
+  ONGLETS.push({ id: "exercices", ico: "\u270f\ufe0f", nom: "Exos" });
+  if (DEFI.length) ONGLETS.push({ id: "defi", ico: "\ud83c\udfaf", nom: "D\u00e9fi" });
+  ONGLETS.push({ id: "erreurs", ico: "\ud83d\udd01", nom: "Erreurs" });
+
+  function rangDe(id) {
+    for (var k = 0; k < ONGLETS.length; k++) if (ONGLETS[k].id === id) return k;
+    return -1;
+  }
+  function suivantDe(id) { var k = rangDe(id); return ONGLETS[k + 1] ? ONGLETS[k + 1].id : null; }
+  function precedentDe(id) { var k = rangDe(id); return k > 0 ? ONGLETS[k - 1].id : null; }
+  function nomDe(id) { var k = rangDe(id); return k >= 0 ? ONGLETS[k].nom : ""; }
+  function estOuvert(id) { return etat.ouverts.indexOf(id) >= 0; }
+  function defiEnCours() { return etat.defi.commence && !etat.defi.fini; }
+
+  var nav = document.getElementById("onglets");
+  var boutonsOnglets = {};
+  ONGLETS.forEach(function (o) {
+    var b = bouton("onglet", undefined, function () { demanderOnglet(o.id); });
+    b.dataset.o = o.id;
+    b.appendChild(el("span", "ico", o.ico));
+    b.appendChild(el("span", "nom", o.nom));
+    nav.appendChild(b);
+    boutonsOnglets[o.id] = b;
+  });
+
+  function estFait(id) {
+    if (id === "lecon" || id === "ecouter") return estOuvert(suivantDe(id));
+    if (id === "cartes") return etat.cartes.fini;
+    if (id === "exercices") return etat.exoFini;
+    if (id === "defi") return etat.defi.fini;
+    return false;
+  }
+
+  function peindreOnglets() {
+    ONGLETS.forEach(function (o) {
+      var b = boutonsOnglets[o.id];
+      var ouvert = estOuvert(o.id);
+      var bloque = defiEnCours() && o.id !== "defi";
+      b.classList.toggle("verrou", !ouvert);
+      b.classList.toggle("bloque", ouvert && bloque);
+      b.classList.toggle("actif", etat.onglet === o.id);
+      b.classList.toggle("fait", estFait(o.id));
+      b.setAttribute("aria-disabled", (!ouvert || bloque) ? "true" : "false");
+      b.setAttribute("aria-current", etat.onglet === o.id ? "step" : "false");
+    });
+  }
+
+  function ouvrirOnglet(id) {
+    if (id && !estOuvert(id)) etat.ouverts.push(id);
+    peindreOnglets();
+  }
+
+  function hautDeVue() {
+    window.scrollTo(0, Math.max(0, nav.offsetTop - 2));
+  }
+
+  function pousser(id) {
+    try { history.pushState({ rev: "onglet", o: id }, ""); } catch (e) {}
+  }
+
+  function afficherOnglet(id, avecHistorique) {
+    etat.onglet = id;
+    toast.classList.remove("ouvert");
+    document.querySelectorAll(".vue").forEach(function (v) {
+      v.classList.toggle("ouverte", v.id === "vue-" + id);
+    });
+    if (id === "exercices") entrerExercices();
+    if (id === "lecon") majRetourExo();
+    peindreOnglets();
+    if (avecHistorique) pousser(id);
+    hautDeVue();
+    sauver();
+  }
+
+  var MSG_DEFI = "Pendant le d\u00e9fi, la le\u00e7on est ferm\u00e9e. Termine d'abord le d\u00e9fi.";
+
+  function demanderOnglet(id) {
+    if (defiEnCours() && id !== "defi") { montrerToast(MSG_DEFI); return; }
+    if (!estOuvert(id)) {
+      montrerToast("Cet onglet s'ouvre apr\u00e8s l'\u00e9tape \u00ab " + nomDe(precedentDe(id)) + " \u00bb.");
+      return;
+    }
+    if (id === etat.onglet) { hautDeVue(); return; }
+    if (id === "lecon" && etat.onglet === "exercices" && etat.exoCommence && !etat.exoFini) etat.retoursLecon++;
+    afficherOnglet(id, true);
+  }
+
+  /* Bouton \u00ab retour \u00bb du t\u00e9l\u00e9phone : onglet pr\u00e9c\u00e9dent, jamais la sortie. */
+  window.addEventListener("popstate", function (ev) {
+    var o = (ev.state && ev.state.rev === "onglet") ? ev.state.o : null;
+    if (defiEnCours()) {
+      if (o !== "defi") { pousser("defi"); montrerToast(MSG_DEFI); }
+      return;
+    }
+    if (o && estOuvert(o)) { afficherOnglet(o, false); return; }
+    if (etat.avantFait && !etat.fini) {
+      pousser(etat.onglet);
+      montrerToast("Ta s\u00e9ance continue. Pour quitter, ferme le fichier.");
+    }
+  });
+
+  /* =========================================================
+     \ud83d\udcd6 Le\u00e7on \u2014 la page blanche d'abord, puis la synth\u00e8se
+     ========================================================= */
+
+  var avant = document.getElementById("avant");
+  var avantOk = document.getElementById("avant-ok");
+  var corps = document.getElementById("lecon-corps");
+  var retourExo = document.getElementById("retour-exo");
+  var bLeconSuite = document.getElementById("lecon-suite");
+
+  function montrerCorps() {
+    corps.hidden = false;
+    avant.classList.add("fait");
+    avantOk.hidden = true;
+  }
+
+  avantOk.addEventListener("click", function () {
+    etat.avantFait = true;
+    if (!etat.debut) etat.debut = Date.now();
+    montrerCorps();
+    sauver();
+    corps.scrollIntoView({ block: "start" });
+  });
+
+  /* ---------- Amor\u00e7age : se comparer \u00e0 la le\u00e7on (27 octobre 2026) ---------- */
+
+  var boiteA = null;
+
+  function majSuiteLecon() {
+    var ferme = AMORCE.length > 0 && !etat.amorce.fait;
+    bLeconSuite.disabled = ferme;
+    bLeconSuite.textContent = ferme ? "Compare d'abord avec ta feuille"
+      : "J'ai lu la le\u00e7on \u2192 " + nomDe(suivantDe("lecon"));
+  }
+
+  function finirAmorce(coches, rien) {
+    etat.amorce = { fait: true, coches: coches, rien: rien };
+    peindreAmorce();
+    majSuiteLecon();
+    sauver();
+  }
+
+  function peindreAmorce() {
+    if (!boiteA) return;
+    boiteA.innerHTML = "";
+    if (etat.amorce.fait) {
+      var n = etat.amorce.coches.length;
+      boiteA.className = "amorce faite";
+      boiteA.appendChild(html("p", null, etat.amorce.rien
+        ? "<b>Page blanche :</b> rien \u00e9crit cette fois. La prochaine fois, \u00e9cris ce dont tu te souviens, m\u00eame un seul mot."
+        : "<b>Page blanche :</b> tu avais retrouv\u00e9 " + n + " point" + (n > 1 ? "s" : "") + " sur " + AMORCE.length + "."));
+      return;
+    }
+    boiteA.className = "amorce";
+    boiteA.appendChild(el("h2", null, "Compare avec ta feuille"));
+    boiteA.appendChild(el("p", null, "Coche ce que tu avais \u00e9crit sur ta page blanche."));
+    var liste = el("div", "opts");
+    var pris = {};
+    AMORCE.forEach(function (pt, k) {
+      var b = bouton("opt");
+      b.appendChild(el("span", "puce"));
+      b.appendChild(html("span", null, pt));
+      b.setAttribute("aria-pressed", "false");
+      b.addEventListener("click", function () {
+        pris[k] = !pris[k];
+        b.classList.toggle("choisi", pris[k]);
+        b.setAttribute("aria-pressed", pris[k] ? "true" : "false");
+      });
+      liste.appendChild(b);
+    });
+    boiteA.appendChild(liste);
+    var act = el("div", "actions");
+    act.appendChild(bouton("btn valider", "Valider", function () {
+      var c = [];
+      AMORCE.forEach(function (p, k) { if (pris[k]) c.push(k); });
+      finirAmorce(c, false);
+    }));
+    act.appendChild(bouton("btn sec", "Je n'avais rien \u00e9crit", function () { finirAmorce([], true); }));
+    boiteA.appendChild(act);
+  }
+
+  if (AMORCE.length) {
+    boiteA = el("div", "amorce");
+    boiteA.id = "amorce";
+    corps.insertBefore(boiteA, corps.firstChild);
+    peindreAmorce();
+  }
+  majSuiteLecon();
+
+  bLeconSuite.addEventListener("click", function () {
+    if (bLeconSuite.disabled) return;
+    var s = suivantDe("lecon");
+    ouvrirOnglet(s);
+    afficherOnglet(s, true);
+  });
+
+  function majRetourExo() {
+    var visible = etat.exoCommence && !etat.exoFini;
+    retourExo.hidden = !visible;
+    if (visible) {
+      var n = etat.i < ECHAUF.length ? "\u00e0 la reprise " + (etat.i + 1)
+        : "\u00e0 l'exercice " + (etat.i - ECHAUF.length + 1);
+      retourExo.querySelector("button").textContent = "\u21a9 Revenir " + n;
+    }
+  }
+  retourExo.querySelector("button").addEventListener("click", function () {
+    afficherOnglet("exercices", true);
+  });
+
+  function allerLecon(ancre) {
+    if (etat.exoCommence && !etat.exoFini) etat.retoursLecon++;
+    afficherOnglet("lecon", true);
+    var cible = ancre ? document.getElementById(ancre) : null;
+    if (cible) {
+      cible.scrollIntoView({ block: "start" });
+      cible.classList.remove("cible-rappel");
+      void cible.offsetWidth;
+      cible.classList.add("cible-rappel");
+    }
+  }
+
+  /* =========================================================
+     \ud83d\udd0a \u00c9couter \u2014 anglais seulement
+     ========================================================= */
+
+  var vueE = document.getElementById("vue-ecouter");
+  if (ECOUTE.length && vueE) {
+    vueE.appendChild(html("p", "consigne-vue",
+      "Touche \ud83d\udd0a pour \u00e9couter chaque phrase. R\u00e9p\u00e8te-la \u00e0 voix haute, deux fois."));
+    var noteVoix = el("p", "note-voix");
+    noteVoix.hidden = true;
+    vueE.appendChild(noteVoix);
+    var tout = bouton("btn sec", "\ud83d\udd0a Tout \u00e9couter", function () {
+      parler(ECOUTE.map(function (it) { return { texte: it.en, lang: "en" }; }));
+    });
+    vueE.appendChild(tout);
+    var liste = el("div", "ecoute");
+    ECOUTE.forEach(function (it) {
+      var ligne = el("div", "ecoute-ligne");
+      var b = bouton("lire-gros", "\ud83d\udd0a", function () { parler([{ texte: it.en, lang: "en" }]); });
+      b.setAttribute("aria-label", "\u00c9couter : " + it.en);
+      var t = el("div", "ecoute-txt");
+      var en = el("div", "ecoute-en", it.en);
+      en.setAttribute("lang", "en");
+      t.appendChild(en);
+      t.appendChild(el("div", "ecoute-fr", it.fr));
+      ligne.appendChild(b);
+      ligne.appendChild(t);
+      liste.appendChild(ligne);
+    });
+    vueE.appendChild(liste);
+    var actE = el("div", "actions");
+    actE.appendChild(bouton("btn valider", "Suivant \u2192 " + nomDe(suivantDe("ecouter")), function () {
+      var s = suivantDe("ecouter");
+      ouvrirOnglet(s);
+      afficherOnglet(s, true);
+    }));
+    vueE.appendChild(actE);
+
+    var verifierVoix = function () {
+      if (!voixDispo) {
+        noteVoix.textContent = "La lecture \u00e0 voix haute ne marche pas sur cet appareil.";
+        noteVoix.hidden = false;
+        return;
+      }
+      try {
+        var v = window.speechSynthesis.getVoices();
+        if (v && v.length) {
+          var anglaise = v.some(function (x) { return String(x.lang).toLowerCase().indexOf("en") === 0; });
+          noteVoix.textContent = "Pas de voix anglaise sur cet appareil : la lecture aura un accent fran\u00e7ais.";
+          noteVoix.hidden = anglaise;
+        }
+      } catch (e) {}
+    };
+    verifierVoix();
+    if (voixDispo && "onvoiceschanged" in window.speechSynthesis) {
+      window.speechSynthesis.addEventListener("voiceschanged", verifierVoix);
+    }
+  }
+
+  /* =========================================================
+     \ud83c\udccf Cartes \u2014 se souvenir avant de v\u00e9rifier
+     ========================================================= */
+
+  var vueC = document.getElementById("vue-cartes");
+  var cCompte, cJauge, cOrigine, cRecto, cConsigne, bRetourner, cVerso, cChoix, cBoite, cFin;
+
+  function construireCartes() {
+    if (!CARTES.length || !vueC) return;
+    var tete = el("div", "cartes-tete");
+    cCompte = el("span", null, "");
+    var j = el("span", "jauge");
+    cJauge = el("i");
+    j.appendChild(cJauge);
+    tete.appendChild(cCompte);
+    tete.appendChild(j);
+    vueC.appendChild(tete);
+
+    cBoite = el("div", "flash");
+    cOrigine = el("div", "flash-origine");
+    cRecto = el("div", "flash-recto");
+    cConsigne = el("p", "flash-consigne",
+      "Dis la r\u00e9ponse \u00e0 voix haute, sans regarder la le\u00e7on. Puis retourne la carte.");
+    bRetourner = bouton("btn valider", "Voir la r\u00e9ponse", function () {
+      cVerso.hidden = false;
+      cChoix.hidden = false;
+      bRetourner.hidden = true;
+    });
+    cVerso = el("div", "flash-verso");
+    cChoix = el("div", "actions flash-choix");
+    cChoix.appendChild(bouton("btn ok", "\u2713 Je savais", function () { repondreCarte(true); }));
+    cChoix.appendChild(bouton("btn sec", "\u21bb Pas encore", function () { repondreCarte(false); }));
+    [cOrigine, cRecto, cConsigne, bRetourner, cVerso, cChoix].forEach(function (x) { cBoite.appendChild(x); });
+    vueC.appendChild(cBoite);
+    cFin = el("div", "flash-fin");
+    cFin.hidden = true;
+    vueC.appendChild(cFin);
+  }
+
+  function peindreCarte() {
+    var f = etat.cartes.file;
+    if (!f.length) { finCartes(); return; }
+    var c = CARTES[f[0]];
+    var vues = Object.keys(etat.cartes.premier).length;
+    cCompte.textContent = "Il reste " + f.length + " carte" + (f.length > 1 ? "s" : "");
+    cJauge.style.width = Math.round(vues / CARTES.length * 100) + "%";
+    cOrigine.textContent = c.origine || "";
+    cOrigine.hidden = !c.origine;
+    cRecto.innerHTML = c.recto;
+    cRecto.appendChild(boutonLire(cRecto));
+    cVerso.innerHTML = c.verso;
+    cVerso.appendChild(boutonLire(cVerso));
+    cVerso.hidden = true;
+    cChoix.hidden = true;
+    bRetourner.hidden = false;
+    cBoite.hidden = false;
+    cFin.hidden = true;
+  }
+
+  function repondreCarte(su) {
+    var f = etat.cartes.file;
+    var k = f.shift();
+    var id = CARTES[k].id;
+    if (!(id in etat.cartes.premier)) etat.cartes.premier[id] = su;
+    if (!su) {
+      etat.cartes.passages[id] = (etat.cartes.passages[id] || 0) + 1;
+      if (etat.cartes.passages[id] <= 2) f.push(k);     /* elle revient, deux fois au plus */
+    }
+    sauver();
+    peindreCarte();
+    hautDeVue();
+  }
+
+  function cartesARevoir() {
+    return CARTES.filter(function (c) { return etat.cartes.premier[c.id] === false; });
+  }
+
+  function finCartes() {
+    etat.cartes.fini = true;
+    cBoite.hidden = true;
+    cCompte.textContent = "Toutes les cartes sont pass\u00e9es";
+    cJauge.style.width = "100%";
+    var ok = CARTES.filter(function (c) { return etat.cartes.premier[c.id] === true; }).length;
+    var rev = cartesARevoir();
+    cFin.innerHTML = "";
+    cFin.appendChild(html("p", "flash-score", "Du premier coup : <b>" + ok + " sur " + CARTES.length + "</b>."));
+    if (rev.length) {
+      cFin.appendChild(el("p", null, "Pas encore sues : tu les retrouveras dans l'onglet Erreurs, \u00e0 la fin."));
+      var ul = el("ul");
+      rev.forEach(function (c) { ul.appendChild(html("li", null, c.recto)); });
+      cFin.appendChild(ul);
+    } else {
+      cFin.appendChild(el("p", null, "Tout est su. Bravo !"));
+    }
+    var act = el("div", "actions");
+    act.appendChild(bouton("btn valider", "Passer aux exercices \u2192", function () {
+      afficherOnglet("exercices", true);
+    }));
+    cFin.appendChild(act);
+    cFin.hidden = false;
+    ouvrirOnglet(suivantDe("cartes"));
+    sauver();
+  }
+
+  /* =========================================================
+     \u270f\ufe0f Exercices \u2014 et questions du \ud83c\udfaf D\u00e9fi
+     ========================================================= */
+
+  var zone = document.getElementById("seance");
+  var vueX = document.getElementById("vue-exercices");
+  var vueD = document.getElementById("vue-defi");
+  var zoneD = el("div", "seance-defi");
+  zoneD.id = "seance-defi";
+  var ancreCourante = null;
+
+  function rendreExercice(ex, n, opts) {
+    opts = opts || {};
+    var DEF = !!opts.defi;
+    var wrap = el("div", "exo");
+    wrap.dataset.palier = DEF ? "defi" : String(ex.palier);
+    wrap.dataset.n = String(n);
+
+    var barre = el("div", "barre");
+    var total;
+    if (DEF) {
+      total = DEFI.length;
+      barre.appendChild(el("span", "badge", "D\u00e9fi"));
+      barre.appendChild(el("span", null, "Question " + n + " sur " + total));
+    } else {
+      var noms = ["\u00c9chauffement", "Bases", "Application", "Probl\u00e8mes"];
+      total = ex.palier === 0 ? ECHAUF.length : L.exercices.length;
+      barre.appendChild(el("span", "badge", noms[ex.palier]));
+      barre.appendChild(el("span", null, (ex.palier === 0 ? "Reprise " : "Exercice ") + n + " sur " + total));
+    }
+    var j = el("span", "jauge"); var ji = el("i");
+    ji.style.width = Math.round((n - 1) / total * 100) + "%";
+    j.appendChild(ji); barre.appendChild(j);
+    if (!DEF) {
+      barre.appendChild(bouton("lecon-btn", "\ud83d\udcd6 Revoir la le\u00e7on", function () { allerLecon(ex.ancre); }));
+    }
+    wrap.appendChild(barre);
+
+    var carte = el("div", "carte-exo");
+    if (ex.rappelLigne && !DEF) {
+      var rl = el("div", "cas");
+      rl.appendChild(el("span", "etiq", "\u00c0 se rappeler"));
+      rl.appendChild(html("div", null, ex.rappelLigne));
+      carte.appendChild(rl);
+    }
+    if (ex.casCorrige && !DEF) {
+      var cas = el("div", "cas");
+      cas.appendChild(el("span", "etiq", "Exemple corrig\u00e9"));
+      cas.appendChild(html("div", null, ex.casCorrige));
+      carte.appendChild(cas);
+    }
+    var enonce = html("div", "enonce", ex.enonce);
+    enonce.appendChild(boutonLire(enonce));
+    carte.appendChild(enonce);
+    if (ex.schema) carte.appendChild(html("div", "schema", ex.schema));
+    var saisie = el("div", "saisie");
+    carte.appendChild(saisie);
+
+    var actions = el("div", "actions");
+    var bValider = bouton("btn valider", "Valider");
+    var bIndice = bouton("btn sec", "Indice");
+    if (OMAR) { bIndice.disabled = true; bIndice.textContent = "Indice (apr\u00e8s un essai)"; }
+    actions.appendChild(bValider);
+    if (ex.indice && !DEF) actions.appendChild(bIndice);
+    carte.appendChild(actions);
+
+    var zIndice = html("div", "indice", "<b>Indice.</b> " + (ex.indice || ""));
+    carte.appendChild(zIndice);
+    var zRetour = el("div", "retour");
+    carte.appendChild(zRetour);
+
+    bIndice.addEventListener("click", function () {
+      if (zIndice.classList.contains("ouvert")) return;
+      zIndice.classList.add("ouvert");
+      etat.indices++;
+      bIndice.disabled = true;
+    });
+
+    var api = (TYPES[ex.type] || TYPES.reponse_numerique)(saisie, ex, n);
+    var essais = 0;
+
+    bValider.addEventListener("click", function () {
+      var lecture = api.lire();
+      if (lecture.vide) {
+        zRetour.className = "retour presque ouvert";
+        zRetour.innerHTML = "<p class='verdict'>Il manque une r\u00e9ponse.</p><p>Compl\u00e8te tout avant de valider.</p>";
+        return;
+      }
+
+      /* D\u00e9fi : une seule r\u00e9ponse, sans correction imm\u00e9diate \u2014 comme en classe. */
+      if (DEF) {
+        var resD = api.corriger(lecture);
+        etat.defi.resultats.push({ n: n, k: opts.k, juste: resD.juste, resume: ex.resume,
+                                   competence: ex.competence, donnee: lecture.brut });
+        etat.defi.i = n;
+        api.figer();
+        bValider.disabled = true;
+        zRetour.className = "retour presque ouvert";
+        zRetour.innerHTML = "<p class='verdict'>C'est not\u00e9.</p><p>Tu verras la correction \u00e0 la fin du d\u00e9fi.</p>";
+        var dernierD = (n === DEFI.length);
+        var actD = el("div", "actions");
+        actD.appendChild(bouton("btn valider", dernierD ? "Voir ma correction" : "Question suivante",
+          function () { avancerDefi(n); }));
+        zRetour.appendChild(actD);
+        sauver();
+        return;
+      }
+
+      essais++;
+      var res = api.corriger(lecture);
+      if (!res.juste && OMAR && essais === 1) {
+        zIndice.classList.add("ouvert");
+        etat.indices++;
+        bIndice.disabled = true;
+        bValider.textContent = "Valider ma nouvelle r\u00e9ponse";
+        zRetour.className = "retour presque ouvert";
+        zRetour.innerHTML = "<p class='verdict'>Pas encore. Relis l'indice, puis r\u00e9essaie.</p>";
+        var pL = el("p");
+        pL.appendChild(bouton("btn sec", "Revoir la le\u00e7on sur ce point", function () { allerLecon(ex.ancre); }));
+        zRetour.appendChild(pL);
+        enregistrer(ex, n, false, lecture.brut, opts.k);
+        return;
+      }
+      if (essais === 1) enregistrer(ex, n, res.juste, lecture.brut, opts.k);
+      terminer(res, lecture);
+    });
+
+    function terminer(res, lecture) {
+      api.figer();
+      bValider.disabled = true;
+      bIndice.disabled = true;
+      zRetour.className = "retour " + (res.juste ? "juste" : "faux") + " ouvert";
+      var h = "<p class='verdict'>" + (res.juste ? "Juste." : "Ce n'est pas \u00e7a.") + "</p>";
+      if (!res.juste) h += "<p>R\u00e9ponse attendue : <b>" + ex.corrige + "</b></p>";
+      if (!res.juste && res.cible) h += "<div class='cible'>" + res.cible + "</div>";
+      else h += "<p>" + ex.explication + "</p>";
+      zRetour.innerHTML = h;
+
+      var sig = bouton("signaler", "Cette correction me para\u00eet fausse", function () {
+        if (sig.classList.contains("fait")) return;
+        sig.classList.add("fait");
+        sig.textContent = "Signal\u00e9 \u2014 ce sera dans le bilan.";
+        etat.signalements.push({ n: n, donnee: lecture.brut });
+      });
+      zRetour.appendChild(sig);
+
+      var dernier = (etat.i === TOUS.length - 1);
+      var suite = el("div", "actions");
+      suite.appendChild(bouton("btn valider", dernier ? "Terminer les exercices" : "Exercice suivant", avancer));
+      zRetour.appendChild(suite);
+      zRetour.scrollIntoView({ block: "nearest" });
+
+      /* Exercice termin\u00e9 : la reprise se fera \u00e0 l'exercice suivant. */
+      etat.iReprise = etat.i + 1;
+      etat.resSauves = etat.resultats.slice();
+      etat.echSauves = etat.echauffement.slice();
+      sauver();
+    }
+
+    wrap.appendChild(carte);
+    return wrap;
+  }
+
+  function enregistrer(ex, n, juste, donnee, k) {
+    if (ex.palier === 0) {
+      etat.echauffement.push({ n: n, k: k, juste: juste, competence: ex.competence, resume: ex.resume });
+      return;
+    }
+    etat.resultats.push({ n: n, k: k, palier: ex.palier, juste: juste,
+                          competence: ex.competence, resume: ex.resume, donnee: donnee });
+  }
+
+  function entrerExercices() {
+    if (etat.exoFini) return;
+    if (!etat.exoCommence) {
+      etat.exoCommence = true;
+      if (!etat.debut) etat.debut = Date.now();
+    }
+    var exos = zone.querySelectorAll(".exo");
+    if (!zone.querySelector(".exo.actif") && exos[etat.i]) exos[etat.i].classList.add("actif");
+    ancreCourante = TOUS[etat.i] ? TOUS[etat.i].ancre : null;
+  }
+
+  function avancer() {
+    var exos = zone.querySelectorAll(".exo");
+    exos[etat.i].classList.remove("actif");
+    etat.i++;
+    if (etat.i >= exos.length) { finExercices(); return; }
+    exos[etat.i].classList.add("actif");
+    etat.iReprise = etat.i;
+    ancreCourante = TOUS[etat.i].ancre || null;
+    hautDeVue();
+    sauver();
+  }
+
+  var finExos = el("div", "fin-exos");
+  finExos.hidden = true;
+
+  function peindreFinExos() {
+    finExos.innerHTML = "";
+    finExos.appendChild(html("p", "fin-exos-titre", "<b>Exercices termin\u00e9s.</b>"));
+    if (DEFI.length) {
+      finExos.appendChild(el("p", null, "Derni\u00e8re \u00e9tape : le d\u00e9fi, sans la le\u00e7on, comme en classe."));
+      var a = el("div", "actions");
+      a.appendChild(bouton("btn valider", "Aller au d\u00e9fi \u2192", function () { afficherOnglet("defi", true); }));
+      finExos.appendChild(a);
+    }
+    finExos.hidden = false;
+  }
+
+  function finExercices() {
+    etat.exoFini = true;
+    etat.iReprise = TOUS.length;
+    etat.resSauves = etat.resultats.slice();
+    etat.echSauves = etat.echauffement.slice();
+    peindreFinExos();
+    if (DEFI.length) {
+      ouvrirOnglet("defi");
+      sauver();
+      hautDeVue();
+    } else {
+      finSeance();
+    }
+  }
+
+  /* ---------- \ud83c\udfaf Le d\u00e9fi ---------- */
+
+  var introD = el("div", "defi-intro");
+
+  function construireDefi() {
+    if (!DEFI.length || !vueD) return;
+    introD.appendChild(el("h2", null, "\ud83c\udfaf Le d\u00e9fi"));
+    introD.appendChild(el("p", null, DEFI.length + " questions, comme en classe : pas de le\u00e7on, pas d'indice. "
+      + "Tu verras la correction \u00e0 la fin."));
+    introD.appendChild(el("p", "petit", "Pendant le d\u00e9fi, les autres onglets sont ferm\u00e9s."));
+    var a = el("div", "actions");
+    a.appendChild(bouton("btn valider", "Commencer le d\u00e9fi", function () { commencerDefi(); }));
+    introD.appendChild(a);
+    vueD.appendChild(introD);
+    zoneD.hidden = true;
+    vueD.appendChild(zoneD);
+    DEFI.forEach(function (q, k) {
+      try { zoneD.appendChild(rendreExercice(q, k + 1, { defi: true, k: k })); }
+      catch (err) { signaler("La question " + (k + 1) + " du d\u00e9fi n'a pas pu \u00eatre construite : " + err.message); }
+    });
+  }
+
+  function commencerDefi() {
+    etat.defi.commence = true;
+    introD.hidden = true;
+    zoneD.hidden = false;
+    var qs = zoneD.querySelectorAll(".exo");
+    qs.forEach(function (x) { x.classList.remove("actif"); });
+    if (qs[etat.defi.i]) qs[etat.defi.i].classList.add("actif");
+    peindreOnglets();
+    sauver();
+    hautDeVue();
+  }
+
+  function avancerDefi(n) {
+    var qs = zoneD.querySelectorAll(".exo");
+    if (qs[n - 1]) qs[n - 1].classList.remove("actif");
+    if (etat.defi.i >= DEFI.length) { finSeance(); return; }
+    qs[etat.defi.i].classList.add("actif");
+    hautDeVue();
+  }
+
+  /* =========================================================
+     Fin de s\u00e9ance : bilan, envoi, \ud83d\udd01 Erreurs
+     ========================================================= */
+
+  function compteParPalier() {
+    var c = { 1: { ok: 0, tot: 0 }, 2: { ok: 0, tot: 0 }, 3: { ok: 0, tot: 0 } };
+    L.exercices.forEach(function (e) { c[e.palier].tot++; });
+    etat.resultats.forEach(function (r) { if (r.juste) c[r.palier].ok++; });
+    return c;
+  }
+
+  function atteint(c, p) { return c[p].tot > 0 && c[p].ok / c[p].tot >= 2 / 3 - 1e-9; }
+  function niveauAtteint(c) { var n = 0, p; for (p = 1; p <= 3; p++) if (atteint(c, p)) n = p; return n; }
+  function creuxSousNiveau(c, n) { var r = [], p; for (p = 1; p < n; p++) if (!atteint(c, p)) r.push(p); return r; }
+  var NOMS_PALIER = { 1: "de base", 2: "d'application", 3: "de probl\u00e8me" };
+  function marcheAuDessus(c, n) { var p = n + 1; if (n < 1 || p > 3) return null; return c[p].tot > 0 ? p : null; }
+
+  function messageFin(c, n) {
+    var m = L.messages[n], creux = creuxSousNiveau(c, n), marche = marcheAuDessus(c, n);
+    if (creux.length) {
+      var bouts = creux.map(function (p) {
+        return "les exercices " + NOMS_PALIER[p] + " (" + c[p].ok + " sur " + c[p].tot + ")";
+      });
+      var liste = bouts.length === 1 ? bouts[0] : bouts.slice(0, -1).join(", ") + " et " + bouts[bouts.length - 1];
+      m += " <b>Un point \u00e0 ne pas laisser passer :</b> " + liste + " n'ont pas suivi. C'est l\u00e0 qu'il faut revenir en premier.";
+    }
+    if (marche) {
+      m += " <b>La marche suivante :</b> les exercices " + NOMS_PALIER[marche]
+        + ", \u00e0 " + c[marche].ok + " sur " + c[marche].tot + ".";
+    }
+    return m;
+  }
+
+  function sujet(c) {
+    return "[REV] " + L.identifiant + " \u2014 " + c[1].ok + "/" + c[1].tot + " \u00b7 "
+      + c[2].ok + "/" + c[2].tot + " \u00b7 " + c[3].ok + "/" + c[3].tot;
+  }
+
+  function calculerReport(manquees) {
+    var parComp = {};
+    etat.echauffement.forEach(function (r) {
+      if (!(r.competence in parComp)) parComp[r.competence] = true;
+      if (!r.juste) parComp[r.competence] = false;
+    });
+    var report = (L.reportEntrant || []).filter(function (comp) { return parComp[comp] !== true; });
+    manquees.forEach(function (m) { if (report.indexOf(m) < 0) report.push(m); });
+    return report;
+  }
+
+  function ligneCartes() {
+    if (!CARTES.length) return null;
+    var ok = CARTES.filter(function (c) { return etat.cartes.premier[c.id] === true; }).length;
+    return "Cartes : " + ok + " sues du premier coup sur " + CARTES.length;
+  }
+
+  /* ---------- Validation : premier essai et dur\u00e9e suffisante ---------- */
+
+  function noterEssai() {
+    var n = 1;
+    try {
+      var d = JSON.parse(window.localStorage.getItem(CLE_FAIT) || "null");
+      if (d && d.n) n = d.n + 1;
+    } catch (e) {}
+    try { window.localStorage.setItem(CLE_FAIT, JSON.stringify({ n: n, le: new Date().toISOString() })); } catch (e) {}
+    return n;
+  }
+
+  function valider(dureeMs, duree) {
+    var seuil = DUREE_PREVUE / 2;
+    var essai = noterEssai();
+    var s = Math.ceil(seuil);
+    if (essai > 1) {
+      return { ok: false, motif: "reprise", essai: essai,
+               ligne: "Validation : non valid\u00e9e \u2014 reprise (essai " + essai + " sur cet appareil), hors score" };
+    }
+    if (dureeMs < seuil * 60000) {
+      return { ok: false, motif: "trop rapide", essai: 1,
+               ligne: "Validation : non valid\u00e9e \u2014 trop rapide (" + duree + " min, seuil " + s
+                 + " min pour environ " + DUREE_PREVUE + " pr\u00e9vues)" };
+    }
+    return { ok: true, motif: "", essai: 1,
+             ligne: "Validation : valid\u00e9e (" + duree + " min, seuil " + s + " min)" };
+  }
+
+  function bandeauValidation(v) {
+    var b = el("div", "validation " + (v.ok ? "ok" : "ko"));
+    b.id = "validation";
+    if (v.ok) {
+      b.innerHTML = "<b>\u2705 S\u00e9ance valid\u00e9e.</b> Tu as pris le temps de bien travailler.";
+    } else if (v.motif === "reprise") {
+      b.innerHTML = "<b>\ud83d\udd01 Tu avais d\u00e9j\u00e0 fait cette s\u00e9ance.</b> Cette fois, c'est de l'entra\u00eenement : "
+        + "elle ne compte pas comme une s\u00e9ance valid\u00e9e.";
+    } else {
+      b.innerHTML = "<b>\u23f1 Tu es all\u00e9 trop vite : s\u00e9ance non valid\u00e9e.</b> La prochaine fois, "
+        + "prends le temps de lire la le\u00e7on et de r\u00e9fl\u00e9chir \u00e0 chaque question.";
+    }
+    return b;
+  }
+
+  function construireBilan(c, duree, manquees, validation) {
+    var report = calculerReport(manquees);
+    var rev = cartesARevoir().map(function (x) { return texteSeul(x.recto); });
+    var defiRates = etat.defi.resultats.filter(function (r) { return !r.juste; });
+    var l = [];
+    l.push("S\u00e9ance : " + L.identifiant);
+    l.push("Le\u00e7on : " + L.titre);
+    if (AMORCE.length) {
+      var na = etat.amorce.coches.length;
+      l.push("Amor\u00e7age (page blanche) : " + (!etat.amorce.fait ? "non fait"
+        : (etat.amorce.rien ? "rien \u00e9crit (0/" + AMORCE.length + ")" : na + "/" + AMORCE.length + " retrouv\u00e9s")));
+      var manquesA = AMORCE.filter(function (p, k) { return etat.amorce.coches.indexOf(k) < 0; }).map(texteSeul);
+      if (etat.amorce.fait && manquesA.length) l.push("  non retrouv\u00e9s : " + manquesA.join(" ; "));
+    }
+    l.push("");
+    var lc = ligneCartes();
+    if (lc) l.push(lc + (rev.length ? " \u2014 \u00e0 revoir : " + rev.join(" ; ") : ""));
+    if (etat.echauffement.length) {
+      l.push("\u00c9chauffement (hors score) : " + etat.echauffement.filter(function (r) { return r.juste; }).length
+        + "/" + etat.echauffement.length);
+      etat.echauffement.forEach(function (r) {
+        l.push("  R" + r.n + ". " + r.resume + (r.juste ? "  [ok]" : "  [rat\u00e9]"));
+      });
+    }
+    l.push("Bases " + c[1].ok + "/" + c[1].tot + " \u00b7 Application " + c[2].ok + "/" + c[2].tot
+      + " \u00b7 Probl\u00e8mes " + c[3].ok + "/" + c[3].tot);
+    if (DEFI.length) {
+      l.push("D\u00e9fi (le\u00e7on ferm\u00e9e) : " + etat.defi.resultats.filter(function (r) { return r.juste; }).length
+        + "/" + DEFI.length);
+      etat.defi.resultats.forEach(function (r) {
+        l.push("  D" + r.n + ". " + r.resume + (r.juste ? "  [ok]" : "  [rat\u00e9]"));
+      });
+    }
+    l.push("Dur\u00e9e : " + duree + " min \u00b7 Indices ouverts : " + etat.indices
+      + " \u00b7 Retours \u00e0 la le\u00e7on : " + etat.retoursLecon
+      + (etat.interruptions ? " \u00b7 Interruptions : " + etat.interruptions : ""));
+    if (validation) l.push(validation.ligne);
+    l.push("");
+    l.push("Exercices pos\u00e9s");
+    etat.resultats.forEach(function (r) { l.push("  " + r.n + ". " + r.resume + (r.juste ? "  [ok]" : "  [rat\u00e9]")); });
+    l.push("");
+    l.push("Comp\u00e9tences manqu\u00e9es");
+    if (!manquees.length) l.push("  aucune");
+    else manquees.forEach(function (m) { l.push("  - " + m); });
+    l.push("");
+    l.push("Signalements de l'enfant");
+    if (!etat.signalements.length) l.push("  aucun");
+    else etat.signalements.forEach(function (s) {
+      l.push("  - exercice " + s.n + " : r\u00e9ponse donn\u00e9e \u00ab " + s.donnee + " \u00bb");
+    });
+    l.push("");
+    if (!report.length && !etat.signalements.length && !rev.length && !defiRates.length) {
+      l.push("Rien \u00e0 reporter.");
+    } else {
+      l.push("\u00c0 coller \u00e0 la prochaine demande :");
+      l.push("  Bases " + c[1].ok + "/" + c[1].tot + " \u00b7 Application " + c[2].ok + "/" + c[2].tot
+        + " \u00b7 Probl\u00e8mes " + c[3].ok + "/" + c[3].tot);
+      l.push("  Comp\u00e9tences manqu\u00e9es cette s\u00e9ance : " + (manquees.length ? manquees.join(" ; ") : "aucune"));
+      l.push("  Manques non repris : " + (report.length ? report.join(" ; ") : "aucun"));
+      if (CARTES.length) l.push("  Cartes \u00e0 revoir : " + (rev.length ? rev.join(" ; ") : "aucune"));
+      if (DEFI.length) l.push("  D\u00e9fi rat\u00e9 : " + (defiRates.length
+        ? defiRates.map(function (r) { return r.competence; }).join(" ; ") : "rien"));
+      l.push("  Exercices d\u00e9j\u00e0 pos\u00e9s : " + etat.resultats.map(function (r) { return r.resume; }).join(" ; "));
+    }
+    l.push("");
+    l.push("pilote V3 \u00b7 moteur en onglets (22 octobre) + validation de s\u00e9ance (26 octobre) + amor\u00e7age (27 octobre)");
+    return l.join("\n");
+  }
+
+  function corpsEnvoi(c, txt) {
+    var f = new FormData();
+    f.append("access_key", CLE_ENVOI);
+    f.append("subject", sujet(c));
+    f.append("from_name", "Fichier de r\u00e9vision");
+    f.append("message", txt);
+    return f;
+  }
+
+  function envoyer(c, txt, z) {
+    if (etat.envoye) return;
+    etat.envoye = true;
+    z.textContent = "Envoi du bilan\u2026";
+    fetch("https://api.web3forms.com/submit", { method: "POST", body: corpsEnvoi(c, txt) })
+      .then(function (r) { return r.json(); })
+      .then(function (d) {
+        if (d && d.success) { z.className = "envoi ok"; z.textContent = "Bilan envoy\u00e9."; }
+        else { z.className = "envoi ko"; z.textContent = "Envoi refus\u00e9. Utilise le bouton Copier ci-dessous."; }
+      })
+      .catch(function () {
+        fetch("https://api.web3forms.com/submit", { method: "POST", body: corpsEnvoi(c, txt), mode: "no-cors" })
+          .then(function () { z.className = "envoi ok"; z.textContent = "Bilan envoy\u00e9 (sans accus\u00e9 de r\u00e9ception)."; })
+          .catch(function () {
+            z.className = "envoi ko";
+            z.textContent = "Envoi impossible \u2014 pas de r\u00e9seau. Utilise le bouton Copier ci-dessous.";
+          });
+      });
+  }
+
+  function construireFin(hote) {
+    var c = compteParPalier();
+    var total = etat.resultats.filter(function (r) { return r.juste; }).length;
+    var dureeMs = Date.now() - etat.debut;
+    var duree = Math.max(1, Math.round(dureeMs / 60000));
+    var manquees = [];
+    etat.resultats.forEach(function (r) {
+      if (!r.juste && manquees.indexOf(r.competence) < 0) manquees.push(r.competence);
+    });
+    var validation = valider(dureeMs, duree);
+    var txt = construireBilan(c, duree, manquees, validation);
+
+    var f = el("div", "fin");
+    f.id = "fin";
+    f.appendChild(el("div", "sep", "Bilan de la s\u00e9ance"));
+    f.appendChild(bandeauValidation(validation));
+    f.appendChild(el("div", "score-grand", total + " / " + L.exercices.length));
+    f.appendChild(el("div", "score-sous", "Exercices"));
+    var p = el("div", "paliers");
+    [["p1", "Bases", 1], ["p2", "Application", 2], ["p3", "Probl\u00e8mes", 3]].forEach(function (x) {
+      var d = el("div", "pal " + x[0]);
+      d.appendChild(el("span", null, x[1]));
+      d.appendChild(el("span", null, c[x[2]].ok + " / " + c[x[2]].tot));
+      p.appendChild(d);
+    });
+    if (CARTES.length) {
+      var dc = el("div", "pal pm");
+      dc.appendChild(el("span", null, "Cartes du premier coup"));
+      dc.appendChild(el("span", null, CARTES.filter(function (x) { return etat.cartes.premier[x.id] === true; }).length
+        + " / " + CARTES.length));
+      p.appendChild(dc);
+    }
+    if (DEFI.length) {
+      var dd = el("div", "pal p3");
+      dd.appendChild(el("span", null, "D\u00e9fi, le\u00e7on ferm\u00e9e"));
+      dd.appendChild(el("span", null, etat.defi.resultats.filter(function (r) { return r.juste; }).length
+        + " / " + DEFI.length));
+      p.appendChild(dd);
+    }
+    f.appendChild(p);
+    f.appendChild(html("div", "message", messageFin(c, niveauAtteint(c))));
+
+    if (DEFI.length) {
+      var corr = el("div", "corr-defi");
+      corr.appendChild(el("h3", null, "Correction du d\u00e9fi"));
+      etat.defi.resultats.forEach(function (r) {
+        var q = DEFI[r.k];
+        var b = el("div", "corr-item " + (r.juste ? "juste" : "faux"));
+        b.appendChild(html("p", "corr-q", (r.juste ? "\u2713 " : "\u2717 ") + q.enonce));
+        if (!r.juste) {
+          b.appendChild(html("p", null, "Ta r\u00e9ponse : " + (r.donnee || "\u2014")));
+          b.appendChild(html("p", null, "R\u00e9ponse attendue : <b>" + q.corrige + "</b>"));
+        }
+        b.appendChild(html("p", "corr-expl", q.explication));
+        corr.appendChild(b);
+      });
+      f.appendChild(corr);
+    }
+
+    var src = document.getElementById("apres-src");
+    if (src) f.appendChild(html("div", "papier", src.innerHTML));
+
+    var envoi = el("div", "envoi");
+    f.appendChild(envoi);
+    var det = el("details");
+    det.appendChild(html("summary", null, "Voir le bilan envoy\u00e9"));
+    var pre = el("pre", "bilan-txt");
+    pre.id = "bilan-txt";
+    pre.textContent = txt;
+    det.appendChild(pre);
+    f.appendChild(det);
+    var act = el("div", "actions");
+    var bCopier = bouton("btn sec", "Copier le bilan", function () {
+      var repli = function () {
+        var ta = document.createElement("textarea");
+        ta.value = txt; document.body.appendChild(ta); ta.select();
+        try { document.execCommand("copy"); } catch (e) {}
+        document.body.removeChild(ta);
+      };
+      if (navigator.clipboard) navigator.clipboard.writeText(txt).catch(repli); else repli();
+      bCopier.textContent = "Copi\u00e9";
+    });
+    act.appendChild(bCopier);
+    var aMail = el("a", "btn sec", "Ouvrir dans l'application mail");
+    aMail.href = "mailto:?subject=" + encodeURIComponent(sujet(c)) + "&body=" + encodeURIComponent(txt);
+    act.appendChild(aMail);
+    f.appendChild(act);
+    var aErr = el("div", "actions");
+    aErr.appendChild(bouton("btn valider", "Voir mes erreurs \u2192", function () { afficherOnglet("erreurs", true); }));
+    f.appendChild(aErr);
+    hote.appendChild(f);
+    envoyer(c, txt, envoi);
+  }
+
+  function construireErreurs() {
+    var v = document.getElementById("vue-erreurs");
+    v.innerHTML = "";
+    v.appendChild(el("h2", "titre-vue", "\ud83d\udd01 Mes erreurs \u00e0 relire"));
+    v.appendChild(el("p", "consigne-vue", "Pour chaque erreur : lis la question, cache la r\u00e9ponse avec ta main, dis-la \u00e0 voix haute, puis v\u00e9rifie."));
+    var n = 0;
+
+    var rev = cartesARevoir();
+    if (rev.length) {
+      v.appendChild(el("h3", null, "Cartes \u00e0 revoir"));
+      rev.forEach(function (c) {
+        var b = el("div", "err-bloc");
+        b.appendChild(html("p", "err-q", c.recto));
+        b.appendChild(html("p", "err-r", c.verso));
+        v.appendChild(b);
+        n++;
+      });
+    }
+
+    var exR = etat.echauffement.concat(etat.resultats).filter(function (r) { return !r.juste; });
+    if (exR.length) {
+      v.appendChild(el("h3", null, "Exercices"));
+      exR.forEach(function (r) {
+        var ex = TOUS[r.k];
+        var b = el("div", "err-bloc");
+        b.appendChild(html("p", "err-q", ex.enonce));
+        b.appendChild(html("p", "err-r", "R\u00e9ponse attendue : <b>" + ex.corrige + "</b>"));
+        b.appendChild(html("p", "err-e", ex.explication));
+        v.appendChild(b);
+        n++;
+      });
+    }
+
+    var dR = etat.defi.resultats.filter(function (r) { return !r.juste; });
+    if (dR.length) {
+      v.appendChild(el("h3", null, "D\u00e9fi"));
+      dR.forEach(function (r) {
+        var q = DEFI[r.k];
+        var b = el("div", "err-bloc");
+        b.appendChild(html("p", "err-q", q.enonce));
+        b.appendChild(html("p", "err-r", "R\u00e9ponse attendue : <b>" + q.corrige + "</b>"));
+        b.appendChild(html("p", "err-e", q.explication));
+        v.appendChild(b);
+        n++;
+      });
+    }
+
+    if (!n) v.appendChild(html("p", "err-aucune", "<b>Aucune erreur aujourd'hui.</b> Bravo !"));
+  }
+
+  function finSeance() {
+    etat.defi.fini = true;
+    etat.fini = true;
+    effacerSauvegarde();
+    var hote = DEFI.length ? vueD : vueX;
+    if (DEFI.length) { introD.hidden = true; zoneD.hidden = true; }
+    construireFin(hote);
+    construireErreurs();
+    ouvrirOnglet("erreurs");
+    peindreOnglets();
+    hautDeVue();
+  }
+
+  /* =========================================================
+     Les types d'exercices (inchang\u00e9s)
+     ========================================================= */
+
+  var TYPES = {};
+
+  function chercheErreur(liste, test) {
+    if (!liste) return null;
+    for (var k = 0; k < liste.length; k++) if (test(liste[k])) return liste[k].retour;
+    return null;
+  }
+
+  function moteurNumerique(hote, ex) {
+    var d = el("div", "champ-num");
+    var inp = el("input");
+    inp.type = "text";
+    inp.setAttribute("inputmode", "decimal");
+    inp.setAttribute("autocomplete", "off");
+    inp.setAttribute("aria-label", "Ta r\u00e9ponse");
+    if (ex.signe) {
+      d.appendChild(bouton("moins", "\u2212", function () {
+        inp.value = inp.value.charAt(0) === "-" ? inp.value.slice(1) : "-" + inp.value;
+        inp.focus();
+      }));
+    }
+    d.appendChild(inp);
+    if (ex.unite) d.appendChild(el("span", "unite", ex.unite));
+    hote.appendChild(d);
+    return {
+      lire: function () { return { vide: inp.value.trim() === "", brut: inp.value.trim() }; },
+      corriger: function (l) {
+        var juste = nombreEgal(l.brut, ex.reponse, ex.tolerance);
+        var v = normNombre(l.brut);
+        return { juste: juste, cible: juste ? null : chercheErreur(ex.erreurs, function (e) {
+          return v !== null && Math.abs(v - e.valeur) < 1e-9;
+        }) };
+      },
+      figer: function () { inp.disabled = true; }
+    };
+  }
+  TYPES.reponse_numerique = moteurNumerique;
+  TYPES.correction_erreur = moteurNumerique;
+
+  TYPES.qcm = function (hote, ex) {
+    var box = el("div", "opts"), choisi = -1, boutons = [];
+    ex.options.forEach(function (o, k) {
+      var b = bouton("opt");
+      b.appendChild(el("span", "puce"));
+      b.appendChild(html("span", null, o.texte));
+      b.addEventListener("click", function () {
+        boutons.forEach(function (x) { x.classList.remove("choisi"); });
+        b.classList.add("choisi"); choisi = k;
+      });
+      boutons.push(b); box.appendChild(b);
+    });
+    hote.appendChild(box);
+    return {
+      lire: function () {
+        return { vide: choisi < 0, brut: choisi < 0 ? "" : ex.options[choisi].texte.replace(/<[^>]+>/g, "") };
+      },
+      corriger: function () {
+        var o = ex.options[choisi];
+        return { juste: !!o.bon, cible: o.bon ? null : (o.retour || null) };
+      },
+      figer: function () { boutons.forEach(function (b) { b.disabled = true; }); }
+    };
+  };
+
+  TYPES.texte_a_trous = function (hote, ex) {
+    var p = el("p"), champs = [];
+    ex.segments.forEach(function (s) {
+      if (typeof s === "string") { p.appendChild(html("span", null, s)); return; }
+      var i = el("input");
+      i.type = "text";
+      i.setAttribute("autocomplete", "off");
+      i.setAttribute("aria-label", "Mot \u00e0 compl\u00e9ter");
+      i.style.width = (s.large || 150) + "px";
+      champs.push({ inp: i, def: s });
+      p.appendChild(i);
+    });
+    hote.appendChild(p);
+    return {
+      lire: function () {
+        var vals = champs.map(function (c) { return c.inp.value.trim(); });
+        return { vide: vals.some(function (v) { return v === ""; }), brut: vals.join(" / ") };
+      },
+      corriger: function () {
+        var juste = true, cible = null;
+        champs.forEach(function (c) {
+          if (!texteAccepte(c.inp.value, c.def.acceptees)) {
+            juste = false;
+            if (!cible) cible = chercheErreur(c.def.erreurs, function (e) {
+              return normTexte(e.saisie) === normTexte(c.inp.value);
+            });
+          }
+        });
+        return { juste: juste, cible: cible };
+      },
+      figer: function () { champs.forEach(function (c) { c.inp.disabled = true; }); }
+    };
+  };
+
+  TYPES.appariement = function (hote, ex) {
+    var box = el("div", "paires"), selects = [];
+    var droites = melange(ex.paires.map(function (p) { return p.droite; }).filter(
+      function (v, i, a) { return a.indexOf(v) === i; }), 31);
+    ex.paires.forEach(function (p) {
+      var ligne = el("div", "paire");
+      ligne.appendChild(html("div", "gauche", p.gauche));
+      var s = el("select");
+      s.setAttribute("aria-label", "Choix pour " + p.gauche.replace(/<[^>]+>/g, ""));
+      s.appendChild(el("option", null, "\u2014 choisir \u2014"));
+      droites.forEach(function (d) { var o = el("option", null, d); o.value = d; s.appendChild(o); });
+      selects.push({ s: s, attendu: p.droite });
+      ligne.appendChild(s); box.appendChild(ligne);
+    });
+    hote.appendChild(box);
+    return {
+      lire: function () {
+        var v = selects.map(function (x) { return x.s.value; });
+        return { vide: v.some(function (x) { return !x; }), brut: v.join(" / ") };
+      },
+      corriger: function () {
+        var faux = selects.filter(function (x) { return x.s.value !== x.attendu; });
+        return { juste: faux.length === 0, cible: faux.length ? (ex.retourConfusion || null) : null };
+      },
+      figer: function () { selects.forEach(function (x) { x.s.disabled = true; }); }
+    };
+  };
+
+  TYPES.classement = function (hote, ex) {
+    var box = el("div", "paires"), selects = [];
+    melange(ex.items, 53).forEach(function (it) {
+      var ligne = el("div", "paire");
+      ligne.appendChild(html("div", "gauche", it.texte));
+      var s = el("select");
+      s.setAttribute("aria-label", "Cat\u00e9gorie de " + it.texte.replace(/<[^>]+>/g, ""));
+      s.appendChild(el("option", null, "\u2014 choisir \u2014"));
+      ex.categories.forEach(function (c) { var o = el("option", null, c); o.value = c; s.appendChild(o); });
+      selects.push({ s: s, attendu: it.categorie, texte: it.texte });
+      ligne.appendChild(s); box.appendChild(ligne);
+    });
+    hote.appendChild(box);
+    return {
+      lire: function () {
+        var v = selects.map(function (x) { return x.s.value; });
+        return { vide: v.some(function (x) { return !x; }), brut: v.join(" / ") };
+      },
+      corriger: function () {
+        var faux = selects.filter(function (x) { return x.s.value !== x.attendu; });
+        var cible = null;
+        if (faux.length && ex.erreurs) {
+          cible = chercheErreur(ex.erreurs, function (e) {
+            return faux.some(function (f) {
+              return normTexte(f.texte).indexOf(normTexte(e.item)) >= 0 && f.s.value === e.mis;
+            });
+          });
+        }
+        return { juste: faux.length === 0, cible: cible };
+      },
+      figer: function () { selects.forEach(function (x) { x.s.disabled = true; }); }
+    };
+  };
+
+  TYPES.reperage = function (hote, ex) {
+    var box = el("div", "mots"), boutons = [];
+    ex.mots.forEach(function (m) {
+      var b = bouton("mot", m.texte);
+      if (ex.langueMots) b.setAttribute("lang", ex.langueMots);
+      b.addEventListener("click", function () { b.classList.toggle("choisi"); });
+      boutons.push({ b: b, def: m }); box.appendChild(b);
+    });
+    hote.appendChild(box);
+    hote.appendChild(el("p", "unite", "Touche les mots demand\u00e9s. Touche \u00e0 nouveau pour d\u00e9s\u00e9lectionner."));
+    return {
+      lire: function () {
+        var pris = boutons.filter(function (x) { return x.b.classList.contains("choisi"); });
+        return { vide: pris.length === 0, brut: pris.map(function (x) { return x.def.texte; }).join(", ") };
+      },
+      corriger: function () {
+        var juste = boutons.every(function (x) { return x.b.classList.contains("choisi") === !!x.def.cible; });
+        var cible = null;
+        if (!juste && ex.erreurs) {
+          cible = chercheErreur(ex.erreurs, function (e) {
+            var t = boutons.filter(function (x) { return normTexte(x.def.texte) === normTexte(e.mot); })[0];
+            return t && t.b.classList.contains("choisi") && !t.def.cible;
+          });
+        }
+        return { juste: juste, cible: cible };
+      },
+      figer: function () {
+        boutons.forEach(function (x) { x.b.disabled = true; if (x.def.cible) x.b.style.borderColor = "#15803d"; });
+      }
+    };
+  };
+
+  TYPES.ordonnancement = function (hote, ex) {
+    var box = el("div", "rangs");
+    var courant = melange(ex.ordre, 17);
+    if (courant.join("|") === ex.ordre.join("|")) courant = melange(ex.ordre, 91);
+    function peindre() {
+      box.innerHTML = "";
+      courant.forEach(function (v, k) {
+        var r = el("div", "rang");
+        r.appendChild(el("span", "num", String(k + 1)));
+        r.appendChild(html("span", "val", v));
+        var up = bouton("fleche", "\u2191", function () {
+          var t = courant[k - 1]; courant[k - 1] = courant[k]; courant[k] = t; peindre();
+        });
+        var dn = bouton("fleche", "\u2193", function () {
+          var t = courant[k + 1]; courant[k + 1] = courant[k]; courant[k] = t; peindre();
+        });
+        up.disabled = (k === 0); dn.disabled = (k === courant.length - 1);
+        up.setAttribute("aria-label", "Monter"); dn.setAttribute("aria-label", "Descendre");
+        r.appendChild(up); r.appendChild(dn);
+        box.appendChild(r);
+      });
+    }
+    peindre();
+    hote.appendChild(box);
+    hote.appendChild(el("p", "unite", ex.consigneOrdre || "Utilise les fl\u00e8ches pour ranger."));
+    return {
+      lire: function () { return { vide: false, brut: courant.join(" ; ").replace(/<[^>]+>/g, "") }; },
+      corriger: function () {
+        var juste = courant.join("|") === ex.ordre.join("|");
+        return { juste: juste, cible: juste ? null : chercheErreur(ex.erreurs, function (e) {
+          return e.ordre.join("|") === courant.join("|");
+        }) };
+      },
+      figer: function () { box.querySelectorAll("button").forEach(function (b) { b.disabled = true; }); }
+    };
+  };
+
+  /* =========================================================
+     Sauvegarde et reprise
+     ========================================================= */
+
+  var CLE = "rev-onglets:" + L.identifiant;
+
+  function sauver() {
+    if (etat.fini || !etat.avantFait) return;
+    var s;
+    try {
+      s = JSON.stringify({
+        v: 2, onglet: etat.onglet, ouverts: etat.ouverts, avantFait: etat.avantFait,
+        cartes: etat.cartes,
+        exoCommence: etat.exoCommence, exoFini: etat.exoFini, i: etat.iReprise,
+        resultats: etat.resSauves, echauffement: etat.echSauves,
+        indices: etat.indices, retoursLecon: etat.retoursLecon,
+        signalements: etat.signalements, interruptions: etat.interruptions,
+        defi: etat.defi, amorce: etat.amorce,
+        ecoule: etat.debut ? Date.now() - etat.debut : 0
+      });
+    } catch (e) { return; }
+    try { window.localStorage.setItem(CLE, s); } catch (e) {}
+    try { window.sessionStorage.setItem(CLE, s); } catch (e) {}
+  }
+
+  function lire() {
+    var brut = null;
+    try { brut = window.localStorage.getItem(CLE); } catch (e) {}
+    if (!brut) { try { brut = window.sessionStorage.getItem(CLE); } catch (e) {} }
+    if (!brut) return null;
+    try {
+      var d = JSON.parse(brut);
+      if (d && d.v === 2 && d.avantFait && d.ouverts instanceof Array && d.resultats instanceof Array) return d;
+    } catch (e) {}
+    return null;
+  }
+
+  function effacerSauvegarde() {
+    try { window.localStorage.removeItem(CLE); } catch (e) {}
+    try { window.sessionStorage.removeItem(CLE); } catch (e) {}
+  }
+
+  function reprendre(s) {
+    etat.ouverts = s.ouverts;
+    etat.avantFait = true;
+    montrerCorps();
+    if (s.cartes && s.cartes.file) etat.cartes = s.cartes;
+    etat.exoCommence = !!s.exoCommence;
+    etat.exoFini = !!s.exoFini;
+    etat.i = Math.min(s.i || 0, TOUS.length);
+    etat.iReprise = etat.i;
+    etat.resultats = s.resultats.slice();
+    etat.echauffement = (s.echauffement || []).slice();
+    etat.resSauves = etat.resultats.slice();
+    etat.echSauves = etat.echauffement.slice();
+    etat.indices = s.indices || 0;
+    etat.retoursLecon = s.retoursLecon || 0;
+    etat.signalements = s.signalements || [];
+    etat.interruptions = (s.interruptions || 0) + 1;
+    etat.debut = Date.now() - (s.ecoule || 0);
+    if (s.defi) etat.defi = s.defi;
+    if (s.amorce) etat.amorce = s.amorce;
+    peindreAmorce();
+    majSuiteLecon();
+
+    if (CARTES.length) {
+      if (etat.cartes.fini) finCartes(); else peindreCarte();
+    }
+    if (etat.exoFini || etat.i >= TOUS.length) {
+      etat.exoFini = true;
+      peindreFinExos();
+    } else if (etat.exoCommence) {
+      var exos = zone.querySelectorAll(".exo");
+      exos.forEach(function (x) { x.classList.remove("actif"); });
+      if (exos[etat.i]) exos[etat.i].classList.add("actif");
+    }
+    if (etat.defi.commence && !etat.defi.fini) {
+      introD.hidden = true;
+      zoneD.hidden = false;
+      var qs = zoneD.querySelectorAll(".exo");
+      qs.forEach(function (x) { x.classList.remove("actif"); });
+      if (qs[etat.defi.i]) qs[etat.defi.i].classList.add("actif");
+    }
+    var o = s.onglet && estOuvert(s.onglet) ? s.onglet : "lecon";
+    if (defiEnCours()) o = "defi";
+    afficherOnglet(o, true);
+  }
+
+  /* =========================================================
+     D\u00e9marrage
+     ========================================================= */
+
+  var batis = 0;
+  TOUS.forEach(function (ex, k) {
+    try {
+      zone.appendChild(rendreExercice(ex, k < ECHAUF.length ? k + 1 : k - ECHAUF.length + 1, { k: k }));
+      batis++;
+    } catch (err) {
+      signaler("L'exercice " + (k + 1) + " n'a pas pu \u00eatre construit : " + err.message);
+    }
+  });
+  vueX.appendChild(finExos);
+  if (batis !== TOUS.length) signaler(batis + " exercice(s) construits sur " + TOUS.length + " attendus.");
+
+  try { construireCartes(); } catch (err) { signaler("Cartes : " + err.message); }
+  try { construireDefi(); } catch (err) { signaler("D\u00e9fi : " + err.message); }
+  if (CARTES.length) { etat.cartes.file = CARTES.map(function (c, k) { return k; }); peindreCarte(); }
+
+  document.querySelectorAll(".angle-btn").forEach(function (b) {
+    b.addEventListener("click", function () {
+      var t = b.nextElementSibling;
+      t.classList.toggle("ouvert");
+      b.textContent = t.classList.contains("ouvert") ? "Masquer" : "Une autre fa\u00e7on de le voir";
+    });
+  });
+  document.querySelectorAll("[data-lire]").forEach(function (n) { n.appendChild(boutonLire(n)); });
+
+  try { history.replaceState({ rev: "onglet", o: "lecon" }, ""); } catch (e) {}
+  afficherOnglet("lecon", false);
+  window.scrollTo(0, 0);
+
+  var sauvegarde = lire();
+  if (sauvegarde) {
+    var zr = el("div", "reprise-zone");
+    zr.id = "reprise-zone";
+    zr.appendChild(html("p", null, "<b>Tu avais commenc\u00e9 cette s\u00e9ance.</b> Tu reprends l\u00e0 o\u00f9 tu t'\u00e9tais arr\u00eat\u00e9."));
+    var actR = el("div", "actions");
+    actR.appendChild(bouton("btn valider", "Reprendre", function () {
+      zr.parentNode.removeChild(zr);
+      reprendre(sauvegarde);
+    }));
+    actR.appendChild(bouton("btn sec", "Recommencer depuis le d\u00e9but", function () {
+      effacerSauvegarde();
+      zr.parentNode.removeChild(zr);
+    }));
+    zr.appendChild(actR);
+    var bandeau = document.querySelector(".bandeau");
+    bandeau.parentNode.insertBefore(zr, bandeau.nextSibling);
+    try { if ("scrollRestoration" in history) history.scrollRestoration = "manual"; } catch (e) {}
+    window.scrollTo(0, 0);
+    setTimeout(function () { window.scrollTo(0, 0); }, 0);
+  }
+})();
+
+</script>
+</body>
+</html>
