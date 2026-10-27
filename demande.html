@@ -36,7 +36,6 @@ button:disabled { opacity: .5; }
 <script>
 (function () {
   "use strict";
-  var CLE_ENVOI = "259de897-beba-4c71-95c8-dcde527b79c1";
   var q = new URLSearchParams(location.hash.slice(1));
   var D = { e: q.get("e") || "", id: q.get("id") || "", t: q.get("t") || "", c: q.get("c") || "", m: q.get("m") || "" };
   if (!D.e || !D.id) return;
@@ -46,15 +45,15 @@ button:disabled { opacity: .5; }
   function maintenant() { var t = new Date(); return z(t.getDate()) + "/" + z(t.getMonth() + 1) + " à " + z(t.getHours()) + ":" + z(t.getMinutes()); }
 
   // Le message à coller dans Claude : complet, pour qu'une nouvelle conversation du projet le comprenne seule.
-  function message(precision, quand, mailParti) {
+  function message(precision, quand) {
     return [
-      "Génère la séance demandée pour " + D.e + ", seule, sans attendre un lot (procédure « Demande traitée seule » de LISEZMOI.md).",
+      "Génère la séance demandée pour " + D.e + " (procédure « Nouvelle séance demandée » de LISEZMOI.md).",
       "Séance d'origine : " + D.id,
       "Matière : " + (D.m || "?"),
       "Chapitre : " + (D.c || "?"),
       "Sur : " + (D.t || "?"),
       "Précision : " + (precision ? precision.replace(/\s*\n+\s*/g, " / ") : "aucune"),
-      "Demande du " + quand + (mailParti ? " (mail [DEMANDE] envoyé)." : " (mail [DEMANDE] non parti).")
+      "Demande du " + quand + "."
     ].join("\n");
   }
 
@@ -72,7 +71,7 @@ button:disabled { opacity: .5; }
   var CLE = "rev-demande:" + D.id, deja = null;
   try { deja = localStorage.getItem(CLE); } catch (e) {}
   var etat = el("p", "etat"); etat.hidden = !deja; box.appendChild(etat);
-  if (deja) etat.textContent = "Déjà demandée le " + deja + ". Tu peux la redemander si tu veux préciser.";
+  if (deja) etat.textContent = "Message déjà préparé le " + deja + ". Tu peux le refaire, par exemple pour changer la précision.";
 
   // Bloc « message pour Claude », affiché après « Préparer ».
   var zone = el("div", "carte message"); zone.hidden = true;
@@ -83,7 +82,7 @@ button:disabled { opacity: .5; }
   var prompt = el("textarea", "prompt"); prompt.readOnly = true; prompt.setAttribute("aria-label", "Message pour Claude");
   zone.appendChild(prompt);
   var copier = el("button", null, "Copier le message"); copier.type = "button"; zone.appendChild(copier);
-  zone.appendChild(el("p", "aide", "Si tu préfères attendre : ne fais rien, elle sera faite au prochain « génère pour " + D.e + " »."));
+  zone.appendChild(el("p", "aide", "Rien n'est fait sans ce message. Pour avoir la séance dans le prochain lot plutôt que tout de suite, colle-le avec « génère pour " + D.e + " »."));
   box.appendChild(zone);
 
   function copierTexte(t) {
@@ -103,33 +102,15 @@ button:disabled { opacity: .5; }
   });
 
   b.addEventListener("click", function () {
-    var precision = txt.value.trim(), quand = maintenant();
-    var l = ["Demande : nouvelle séance", "Enfant : " + D.e, "Séance : " + D.id, "Matière : " + D.m, "Chapitre : " + D.c,
-             "Sur : " + D.t, "Précision : " + (precision || "aucune"), "",
-             "pilote V3 · demande depuis le tableau de bord (27 octobre)"];
-    var f = new FormData();
-    f.append("access_key", CLE_ENVOI);
-    f.append("subject", "[DEMANDE] " + D.id + " — nouvelle séance");
-    f.append("from_name", "Tableau de bord");
-    f.append("message", l.join("\n"));
-    b.disabled = true; b.textContent = "Préparation…";
-    function montrer(mailParti) {
-      prompt.value = message(precision, quand, mailParti);
-      zone.hidden = false;
-      copier.textContent = "Copier le message"; copier.className = "";
-      b.disabled = false; b.textContent = "Refaire le message";
-      etat.hidden = false; etat.className = mailParti ? "etat ok" : "etat";
-      etat.textContent = mailParti ? "Demande notée le " + quand + "." : "Mail de demande non parti (connexion ?). Le message pour Claude suffit.";
-      zone.scrollIntoView({ behavior: "smooth", block: "start" });
-    }
-    fetch("https://api.web3forms.com/submit", { method: "POST", body: f })
-      .then(function (r) { return r.json(); })
-      .then(function (d) {
-        if (!d || !d.success) throw new Error("refusé");
-        try { localStorage.setItem(CLE, quand); } catch (e) {}
-        montrer(true);
-      })
-      .catch(function () { montrer(false); });
+    var quand = maintenant();
+    prompt.value = message(txt.value.trim(), quand);
+    zone.hidden = false;
+    copier.textContent = "Copier le message"; copier.className = "";
+    b.textContent = "Refaire le message";
+    try { localStorage.setItem(CLE, quand); } catch (e) {}
+    etat.hidden = false; etat.className = "etat ok";
+    etat.textContent = "Message préparé le " + quand + ". Copie-le, puis envoie-le à Claude.";
+    zone.scrollIntoView({ behavior: "smooth", block: "start" });
   });
 })();
 </script>
