@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Test d'ouverture</title>
+<style>
+  body { font-family: system-ui, sans-serif; margin: 0; padding: 20px; background: #fafaf9; color: #1c1917; line-height: 1.45; }
+  .page { max-width: 30rem; margin: 0 auto; }
+  h1 { font-size: 1.3rem; margin: 0 0 8px; }
+  .etat { padding: 14px; border-radius: 10px; margin: 16px 0; font-weight: 600; background: #e7e5e4; }
+  .etat.ok { background: #dcfce7; color: #14532d; }
+  .etat.ko { background: #fee2e2; color: #7f1d1d; }
+  button, a.btn { display: block; width: 100%; box-sizing: border-box; padding: 14px; margin: 10px 0; border-radius: 10px; border: 1px solid #a8a29e; background: #fff; font-size: 1rem; text-align: center; text-decoration: none; color: inherit; }
+  small { color: #57534e; }
+</style>
+</head>
+<body>
+<div class="page">
+  <h1>Test d'ouverture</h1>
+  <p>Cette page v&#233;rifie que le bilan d'une s&#233;ance peut partir depuis ce t&#233;l&#233;phone. Tu n'as rien &#224; faire : attends quelques secondes.</p>
+  <div class="etat" id="etat">Test en cours&#8230;</div>
+  <p><small>Si le cadre ci-dessus devient vert, le test a r&#233;ussi. Dans tous les cas, dis &#224; papa comment tu as ouvert ce lien.</small></p>
+  <button type="button" id="copier">Copier le r&#233;sultat</button>
+  <a class="btn" id="wa" href="#" target="_blank" rel="noopener">Envoyer le r&#233;sultat par WhatsApp</a>
+  <pre id="diag" style="white-space:pre-wrap;font-size:12px;color:#57534e"></pre>
+</div>
+<script>
+(function () {
+  "use strict";
+  var CLE_ENVOI = "259de897-beba-4c71-95c8-dcde527b79c1";
+  var etat = document.getElementById("etat");
+  var lignes = [];
+  function t(fn) { try { return fn(); } catch (e) { return "erreur: " + e.message; } }
+
+  lignes.push("Test d'ouverture du " + new Date().toISOString());
+  lignes.push("Adresse de la page : " + t(function () { return location.protocol + "//" + (location.host || "(fichier local)"); }));
+  lignes.push("Navigateur : " + navigator.userAgent);
+  lignes.push("Vue int\u00e9gr\u00e9e (WebView) probable : " + (/; wv\)|\bwv\b|FBAN|FBAV|Instagram|WhatsApp|GSA\//i.test(navigator.userAgent) ? "oui" : "non d\u00e9tect\u00e9e"));
+  lignes.push("Mode d'affichage autonome : " + t(function () { return window.matchMedia("(display-mode: standalone)").matches; }));
+  lignes.push("M\u00e9moire locale (localStorage) : " + t(function () { localStorage.setItem("rev-test", "1"); var v = localStorage.getItem("rev-test"); localStorage.removeItem("rev-test"); return v === "1" ? "disponible" : "indisponible"; }));
+  lignes.push("Synth\u00e8se vocale : " + ("speechSynthesis" in window ? "disponible" : "indisponible"));
+  lignes.push("Connexion d\u00e9clar\u00e9e : " + t(function () { return navigator.onLine; }));
+  lignes.push("\u00c9cran : " + window.innerWidth + "x" + window.innerHeight);
+
+  var texte = lignes.join("\n");
+  document.getElementById("diag").textContent = texte;
+
+  document.getElementById("copier").addEventListener("click", function () {
+    var f = function () { var ta = document.createElement("textarea"); ta.value = texte; document.body.appendChild(ta); ta.select(); try { document.execCommand("copy"); } catch (e) {} document.body.removeChild(ta); };
+    if (navigator.clipboard) navigator.clipboard.writeText(texte).catch(f); else f();
+    document.getElementById("copier").textContent = "Copi\u00e9";
+  });
+  document.getElementById("wa").href = "https://wa.me/?text=" + encodeURIComponent(texte);
+
+  function corps() {
+    var f = new FormData();
+    f.append("access_key", CLE_ENVOI);
+    f.append("subject", "[TEST] ouverture d'un lien");
+    f.append("from_name", "Test de lien");
+    f.append("message", texte);
+    return f;
+  }
+  etat.textContent = "Envoi du test\u2026";
+  fetch("https://api.web3forms.com/submit", { method: "POST", body: corps() })
+    .then(function (r) { return r.json(); })
+    .then(function (d) {
+      if (d && d.success) { etat.className = "etat ok"; etat.textContent = "Test r\u00e9ussi : le bilan est parti."; }
+      else { etat.className = "etat ko"; etat.textContent = "Envoi refus\u00e9 par le service."; }
+    })
+    .catch(function (e) {
+      etat.className = "etat ko";
+      etat.textContent = "Envoi impossible depuis cette ouverture (" + (e && e.message ? e.message : "erreur r\u00e9seau") + ").";
+    });
+})();
+</script>
+</body>
+</html>
