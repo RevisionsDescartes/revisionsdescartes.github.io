@@ -1,0 +1,1659 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Jour 3 — Additionner, soustraire · décomposer en facteurs premiers</title>
+<style>
+/* ============================================================
+   Feuille de style commune — spec V2.3 §6.7 (couleurs d'accent)
+   Variante "omar" : §3.1 (corps large, interlignage, espacement)
+   Pilote V3 : ajout du bloc « papier » (consignes sur feuille)
+   ============================================================ */
+
+:root {
+  --notion:      #4338ca;   /* indigo — couleur principale */
+  --notion-bg:   #eef2ff;
+  --voc:         #0f766e;   /* bleu-vert */
+  --voc-bg:      #f0fdfa;
+  --methode:     #b45309;   /* ambre */
+  --methode-bg:  #fffbeb;
+  --piege:       #b91c1c;   /* rouge */
+  --piege-bg:    #fef2f2;
+  --exemple:     #15803d;   /* vert */
+  --exemple-bg:  #f0fdf4;
+
+  --p1: #15803d;            /* palier basique      — vert   */
+  --p1-bg: #f0fdf4;
+  --p2: #b45309;            /* palier intermédiaire — ambre  */
+  --p2-bg: #fffbeb;
+  --p3: #6d28d9;            /* palier avancé        — violet */
+  --p3-bg: #f5f3ff;
+
+  --encre:   #1c1917;
+  --encre-2: #57534e;
+  --trait:   #e7e5e4;
+  --fond:    #fafaf9;
+  --carte:   #ffffff;
+
+  --matiere: var(--notion);
+  --corps: 16.5px;
+  --interligne: 1.65;
+  --lettres: 0;
+  --rayon: 12px;
+}
+
+body[data-profil="omar"] {
+  --corps: 19.5px;
+  --interligne: 1.85;
+  --lettres: 0.018em;
+  --rayon: 16px;
+}
+
+body[data-matiere="maths"]                { --matiere: #1d4ed8; }
+body[data-matiere="francais"]             { --matiere: #a21caf; }
+body[data-matiere="histoire-geo"]         { --matiere: #b45309; }
+body[data-matiere="sciences-technologie"] { --matiere: #047857; }
+body[data-matiere="svt"]                  { --matiere: #15803d; }
+body[data-matiere="physique-chimie"]      { --matiere: #0e7490; }
+body[data-matiere="technologie"]          { --matiere: #4b5563; }
+body[data-matiere="anglais"]              { --matiere: #b91c1c; }
+body[data-matiere="arabe"]                { --matiere: #6d28d9; }
+
+[lang="ar"] {
+  direction: rtl;
+  text-align: right;
+  unicode-bidi: isolate;
+  font-size: 1.15em;
+  line-height: 2;
+}
+[lang="ar"] .btn-voix { display: none; }
+
+* { box-sizing: border-box; }
+
+html { -webkit-text-size-adjust: 100%; }
+
+body {
+  margin: 0;
+  background: var(--fond);
+  color: var(--encre);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  font-size: var(--corps);
+  line-height: var(--interligne);
+  letter-spacing: var(--lettres);
+  text-align: left;
+}
+
+body[data-profil="omar"] p,
+body[data-profil="omar"] li,
+body[data-profil="omar"] .enonce { text-align: left; text-wrap: pretty; }
+
+.page { max-width: 780px; margin: 0 auto; padding: 0 16px 80px; }
+
+/* ---------- Bandeau ---------- */
+.bandeau {
+  background: var(--matiere);
+  color: #fff;
+  padding: 18px 16px 16px;
+  margin: 0 -16px 22px;
+  border-radius: 0 0 var(--rayon) var(--rayon);
+}
+.bandeau .eleve {
+  font-size: 0.78em; text-transform: uppercase; letter-spacing: 0.09em;
+  opacity: 0.85; margin: 0 0 4px;
+}
+.bandeau h1 { margin: 0; font-size: 1.42em; line-height: 1.25; font-weight: 700; }
+.bandeau .sous { margin: 6px 0 0; font-size: 0.86em; opacity: 0.9; }
+
+/* ---------- Blocs de leçon ---------- */
+.bloc {
+  background: var(--carte);
+  border: 1px solid var(--trait);
+  border-left: 5px solid var(--accent, var(--notion));
+  border-radius: var(--rayon);
+  padding: 16px 18px;
+  margin: 0 0 16px;
+}
+.bloc > h3 {
+  margin: 0 0 10px;
+  font-size: 1.02em;
+  color: var(--accent, var(--notion));
+  letter-spacing: 0.01em;
+}
+.bloc.notion  { --accent: var(--notion); }
+.bloc.voc     { --accent: var(--voc); }
+.bloc.methode { --accent: var(--methode); }
+.bloc.piege   { --accent: var(--piege); background: var(--piege-bg); }
+.bloc.resume  { --accent: var(--notion); background: var(--notion-bg); }
+
+.exemples {
+  background: var(--exemple-bg);
+  border: 1px dashed #86efac;
+  border-radius: 10px;
+  padding: 10px 14px;
+  margin: 12px 0 0;
+}
+.exemples .etiq {
+  font-size: 0.75em; text-transform: uppercase; letter-spacing: 0.08em;
+  color: var(--exemple); font-weight: 700; display: block; margin-bottom: 4px;
+}
+.exemples ul { margin: 0; padding-left: 18px; }
+.exemples li { margin: 3px 0; }
+
+.calc { font-family: ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace; font-size: 0.97em; }
+
+.etapes { margin: 8px 0 0; padding-left: 20px; }
+.etapes li { margin: 4px 0; }
+
+/* ---------- Second angle (§6.7) ---------- */
+.angle-btn {
+  margin-top: 12px; background: transparent; color: var(--notion);
+  border: 1px solid var(--notion); border-radius: 999px;
+  padding: 7px 14px; font-size: 0.86em; font-family: inherit; cursor: pointer;
+  min-height: 40px;
+}
+.angle-btn:hover { background: var(--notion-bg); }
+.angle-txt {
+  display: none; margin-top: 10px; padding: 11px 14px;
+  background: var(--notion-bg); border-radius: 10px; font-style: italic;
+}
+.angle-txt.ouvert { display: block; }
+
+/* ---------- Vocabulaire cliquable (§3.1) ---------- */
+.def {
+  border-bottom: 2px dotted var(--voc); cursor: pointer;
+  color: var(--voc); font-weight: 600;
+}
+.bulle {
+  position: fixed; left: 12px; right: 12px; bottom: 84px; z-index: 90;
+  background: #0f766e; color: #fff; padding: 14px 16px; border-radius: 12px;
+  box-shadow: 0 8px 28px rgba(0,0,0,.28); display: none; font-size: 0.95em;
+}
+.bulle.ouvert { display: block; }
+.bulle b { display: block; margin-bottom: 3px; }
+
+/* ---------- Bouton lecture à voix haute (§3.1) ---------- */
+.lire {
+  background: #fff; border: 1px solid var(--trait); border-radius: 999px;
+  min-width: 42px; min-height: 42px; font-size: 1.05em; cursor: pointer;
+  vertical-align: middle; margin-left: 6px; line-height: 1;
+}
+.lire:hover { background: var(--notion-bg); }
+.lire[hidden] { display: none; }
+
+/* ---------- Séance ---------- */
+.sep {
+  margin: 34px 0 18px; text-align: center; color: var(--encre-2);
+  font-size: 0.78em; text-transform: uppercase; letter-spacing: 0.13em;
+}
+.sep::before, .sep::after {
+  content: ""; display: block; height: 1px; background: var(--trait); margin: 10px 0;
+}
+
+.demarrer {
+  display: block; width: 100%; padding: 16px; font-size: 1.05em; font-family: inherit;
+  background: var(--matiere); color: #fff; border: 0; border-radius: var(--rayon);
+  cursor: pointer; font-weight: 600; min-height: 54px;
+}
+
+.exo { display: none; }
+.exo.actif { display: block; }
+
+.barre {
+  display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
+  margin: 0 0 12px; font-size: 0.85em; color: var(--encre-2);
+}
+.badge {
+  border-radius: 999px; padding: 4px 11px; font-weight: 700; font-size: 0.92em;
+  background: var(--pbg); color: var(--pc);
+}
+.exo[data-palier="0"] { --pc: #4338ca; --pbg: #eef2ff; }
+.exo[data-palier="1"] { --pc: var(--p1); --pbg: var(--p1-bg); }
+.exo[data-palier="2"] { --pc: var(--p2); --pbg: var(--p2-bg); }
+.exo[data-palier="3"] { --pc: var(--p3); --pbg: var(--p3-bg); }
+.jauge { flex: 1; height: 6px; background: var(--trait); border-radius: 99px; overflow: hidden; min-width: 70px; }
+.jauge i { display: block; height: 100%; background: var(--matiere); }
+
+.carte-exo {
+  background: var(--carte); border: 1px solid var(--trait);
+  border-radius: var(--rayon); padding: 18px; margin-bottom: 14px;
+}
+
+.cas {
+  background: var(--exemple-bg); border: 1px solid #bbf7d0;
+  border-radius: 12px; padding: 13px 15px; margin: 0 0 16px;
+}
+.cas .etiq {
+  font-size: 0.75em; text-transform: uppercase; letter-spacing: 0.08em;
+  color: var(--exemple); font-weight: 700; display: block; margin-bottom: 5px;
+}
+
+.enonce { font-size: 1.06em; margin: 0 0 14px; }
+.enonce strong { font-weight: 700; }
+
+.schema { margin: 14px 0; overflow-x: auto; }
+.schema svg { width: 100%; max-width: 420px; height: auto; display: block; }
+.cas svg { width: 100%; height: auto; display: block; }
+#lecon svg { width: 100%; height: auto; display: block; }
+
+/* ---------- Champs de réponse ---------- */
+.champ-num { display: flex; align-items: center; gap: 8px; margin: 10px 0; flex-wrap: wrap; }
+input[type="text"] {
+  font: inherit; padding: 13px 14px; border: 2px solid var(--trait);
+  border-radius: 10px; width: 170px; background: #fff; min-height: 50px;
+}
+input[type="text"]:focus { outline: 3px solid var(--matiere); outline-offset: 1px; border-color: var(--matiere); }
+.moins {
+  font: inherit; font-weight: 700; font-size: 1.3em; min-width: 54px; min-height: 50px;
+  border: 2px solid var(--trait); border-radius: 10px; background: #fff; cursor: pointer;
+}
+.unite { color: var(--encre-2); }
+
+.opts { display: grid; gap: 9px; margin: 10px 0; }
+.opt {
+  display: flex; align-items: flex-start; gap: 10px; padding: 13px 14px;
+  border: 2px solid var(--trait); border-radius: 12px; background: #fff;
+  cursor: pointer; text-align: left; font: inherit; min-height: 52px;
+}
+.opt:hover { border-color: var(--matiere); }
+.opt.choisi { border-color: var(--matiere); background: var(--notion-bg); }
+.opt .puce {
+  flex: 0 0 auto; width: 24px; height: 24px; border-radius: 50%;
+  border: 2px solid var(--trait); margin-top: 1px;
+}
+.opt.choisi .puce { border-color: var(--matiere); background: var(--matiere); }
+.opt > span:last-child { flex: 1 1 auto; min-width: 0; }
+.opt svg { width: 100%; max-width: 320px; height: auto; display: block; }
+
+.mots { display: flex; flex-wrap: wrap; gap: 8px; margin: 12px 0; }
+.mot {
+  padding: 11px 14px; border: 2px solid var(--trait); border-radius: 10px;
+  background: #fff; cursor: pointer; font: inherit; min-height: 46px;
+}
+.mot.choisi { border-color: var(--matiere); background: var(--notion-bg); font-weight: 600; }
+
+.paires { display: grid; gap: 10px; margin: 12px 0; }
+.paire { display: grid; grid-template-columns: 1fr auto; gap: 10px; align-items: center; }
+.paire .gauche {
+  padding: 11px 13px; background: var(--notion-bg); border-radius: 10px; font-weight: 600;
+}
+.paire .gauche svg { width: 100%; max-width: 320px; height: auto; display: block; background: #fff; border-radius: 8px; }
+select {
+  font: inherit; padding: 12px 10px; border: 2px solid var(--trait);
+  border-radius: 10px; background: #fff; min-height: 50px; max-width: 100%;
+}
+select:focus { outline: 3px solid var(--matiere); outline-offset: 1px; }
+
+.rangs { display: grid; gap: 9px; margin: 12px 0; }
+.rang { display: grid; grid-template-columns: auto 1fr auto auto; gap: 8px; align-items: center; }
+.rang .num { color: var(--encre-2); font-size: 0.85em; width: 22px; }
+.rang .val { padding: 11px 13px; background: #fff; border: 2px solid var(--trait); border-radius: 10px; }
+.fleche {
+  font: inherit; min-width: 46px; min-height: 46px; border: 2px solid var(--trait);
+  border-radius: 10px; background: #fff; cursor: pointer;
+}
+.fleche:disabled { opacity: .35; cursor: default; }
+
+.etape-bloc {
+  border: 1px solid var(--trait); border-radius: 12px; padding: 13px 15px; margin: 0 0 11px;
+}
+.etape-bloc.verrou { opacity: .45; pointer-events: none; }
+.etape-bloc .consigne { font-weight: 600; margin: 0 0 8px; }
+
+/* ---------- Actions et retours ---------- */
+.actions { display: flex; gap: 9px; flex-wrap: wrap; margin-top: 14px; }
+.btn {
+  font: inherit; padding: 13px 18px; border-radius: 10px; border: 0;
+  cursor: pointer; font-weight: 600; min-height: 50px;
+}
+.btn.valider { background: var(--matiere); color: #fff; flex: 1; min-width: 140px; }
+.btn.valider:disabled { background: #d6d3d1; cursor: default; }
+.btn.sec { background: #fff; border: 2px solid var(--trait); color: var(--encre-2); }
+.btn.sec:disabled { opacity: .4; cursor: default; }
+
+.indice {
+  display: none; margin-top: 12px; padding: 12px 14px;
+  background: var(--methode-bg); border-left: 4px solid var(--methode); border-radius: 8px;
+}
+.indice.ouvert { display: block; }
+
+.retour { display: none; margin-top: 14px; padding: 14px 16px; border-radius: 12px; }
+.retour.ouvert { display: block; }
+.retour.juste { background: var(--exemple-bg); border: 1px solid #86efac; }
+.retour.faux  { background: var(--piege-bg);  border: 1px solid #fecaca; }
+.retour.presque { background: var(--methode-bg); border: 1px solid #fcd34d; }
+.retour .verdict { font-weight: 700; margin: 0 0 7px; }
+.retour.juste .verdict { color: var(--exemple); }
+.retour.faux .verdict  { color: var(--piege); }
+.retour.presque .verdict { color: var(--methode); }
+.retour .cible {
+  margin: 9px 0 0; padding: 10px 12px; background: rgba(255,255,255,.75);
+  border-radius: 8px; border-left: 3px solid currentColor;
+}
+.signaler {
+  margin-top: 12px; background: none; border: 0; color: var(--encre-2);
+  font: inherit; font-size: 0.84em; text-decoration: underline; cursor: pointer;
+  padding: 8px 0; min-height: 40px;
+}
+.signaler.fait { color: var(--piege); text-decoration: none; font-weight: 600; }
+
+/* ---------- Bilan ---------- */
+#bilan { display: none; }
+#bilan.ouvert { display: block; }
+.score-grand {
+  text-align: center; font-size: 3.4em; font-weight: 800;
+  color: var(--matiere); line-height: 1; margin: 6px 0 2px;
+}
+.score-sous { text-align: center; color: var(--encre-2); font-size: 0.9em; margin-bottom: 18px; }
+.paliers { display: grid; gap: 9px; margin: 16px 0; }
+.pal { display: flex; justify-content: space-between; align-items: center;
+       padding: 12px 15px; border-radius: 11px; font-weight: 600; }
+.pal.p1 { background: var(--p1-bg); color: var(--p1); }
+.pal.p2 { background: var(--p2-bg); color: var(--p2); }
+.pal.p3 { background: var(--p3-bg); color: var(--p3); }
+.message {
+  padding: 16px 18px; border-radius: 12px; background: var(--notion-bg);
+  border-left: 5px solid var(--notion); margin: 16px 0; font-size: 1.04em;
+}
+.envoi {
+  margin-top: 18px; padding: 13px 15px; border-radius: 11px;
+  background: #f5f5f4; color: var(--encre-2); font-size: 0.9em;
+}
+.envoi.ok { background: var(--exemple-bg); color: var(--exemple); }
+.envoi.ko { background: var(--piege-bg); color: var(--piege); }
+pre.bilan-txt {
+  white-space: pre-wrap; word-break: break-word; background: #fff;
+  border: 1px solid var(--trait); border-radius: 11px; padding: 14px;
+  font-size: 0.84em; line-height: 1.55; margin: 12px 0;
+}
+
+/* ---------- Pilote V3 : consignes sur feuille ---------- */
+.papier {
+  background: var(--methode-bg);
+  border: 2px solid #fcd34d;
+  border-left: 6px solid var(--methode);
+  border-radius: var(--rayon);
+  padding: 16px 18px;
+  margin: 0 0 18px;
+}
+.papier > h2 {
+  margin: 0 0 8px; font-size: 1.04em; color: var(--methode);
+}
+.papier ol, .papier ul { margin: 6px 0 0; padding-left: 22px; }
+.papier li { margin: 5px 0; }
+.papier .duree { font-size: 0.82em; color: var(--encre-2); font-weight: 600; }
+
+/* ---------- Pilote V3, lot 2 : blocs par matière ---------- */
+.matiere-etiq {
+  border-radius: 999px; padding: 4px 11px; font-weight: 700; font-size: 0.92em;
+  background: #f5f5f4; color: var(--encre); border: 1px solid var(--trait);
+}
+.pal.pm { background: #f5f5f4; color: var(--encre); }
+
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; } }
+@media (max-width: 420px) {
+  .paire { grid-template-columns: 1fr; }
+  .rang { grid-template-columns: auto 1fr auto auto; }
+}
+
+
+/* ---------- Rappel de leçon consultable pendant la séance ---------- */
+.panneau-tete { display: none; }
+
+.panneau.flottant {
+  position: fixed; inset: 0; z-index: 80; background: var(--fond);
+  overflow-y: auto; -webkit-overflow-scrolling: touch;
+  padding: 0 16px 48px; display: none;
+}
+.panneau.flottant.ouvert { display: block; }
+.panneau.flottant .panneau-tete {
+  display: flex; justify-content: space-between; align-items: center; gap: 12px;
+  position: sticky; top: 0; z-index: 3;
+  background: var(--matiere); color: #fff;
+  margin: 0 -16px 14px; padding: 12px 16px;
+}
+.panneau.flottant .panneau-tete b { font-size: 0.98em; }
+.panneau-tete .fermer {
+  font: inherit; font-weight: 600; background: rgba(255,255,255,.18); color: #fff;
+  border: 1px solid rgba(255,255,255,.45); border-radius: 999px;
+  padding: 9px 16px; min-height: 44px; cursor: pointer;
+}
+.panneau-tete .fermer:hover { background: rgba(255,255,255,.3); }
+
+.sommaire { display: none; }
+.panneau.flottant .sommaire {
+  display: flex; flex-wrap: wrap; gap: 7px; margin: 0 0 16px;
+}
+.panneau.flottant .sommaire a {
+  font-size: 0.83em; text-decoration: none; color: var(--encre-2);
+  border: 1px solid var(--trait); background: #fff;
+  border-radius: 999px; padding: 8px 12px; min-height: 38px; line-height: 22px;
+}
+.panneau.flottant .sommaire a:hover { border-color: var(--matiere); color: var(--matiere); }
+
+.rappel-btn {
+  position: fixed; right: 14px; bottom: 14px; z-index: 70;
+  font: inherit; font-weight: 600; font-size: 0.92em;
+  background: var(--matiere); color: #fff; border: 0;
+  border-radius: 999px; padding: 13px 20px; min-height: 50px;
+  box-shadow: 0 6px 20px rgba(0,0,0,.22); cursor: pointer; display: none;
+}
+.rappel-btn.visible { display: block; }
+.rappel-btn:focus-visible { outline: 3px solid #fff; outline-offset: 2px; }
+
+.cible-rappel { animation: souligne 1.6s ease-out 1; }
+@keyframes souligne {
+  0%, 40% { background: #fef08a; }
+  100% { background: transparent; }
+}
+
+
+/* Bannière affichée seulement quand JavaScript est désactivé */
+.sans-js {
+  background: #fef2f2; border: 2px solid #fecaca; border-left: 6px solid #b91c1c;
+  color: #7f1d1d; border-radius: 12px; padding: 16px 18px; margin: 16px 0 0;
+  line-height: 1.6;
+}
+
+
+#diagnostic { display: none; }
+#diagnostic.diag {
+  display: block; background: #fef2f2; border: 2px solid #b91c1c; color: #7f1d1d;
+  border-radius: 12px; padding: 14px 16px; margin: 16px 0; font-size: 0.9em;
+  word-break: break-word;
+}
+
+</style>
+</head>
+<body data-profil="ali" data-matiere="revision" data-format="pilote">
+<div class="page">
+
+  <noscript>
+    <div class="sans-js">
+      <b>Cette page a besoin de JavaScript pour fonctionner.</b>
+      La leçon s'affiche, mais les exercices ne pourront pas démarrer.<br>
+      Ouvre le fichier avec <b>Chrome</b> : appuie longuement sur le fichier,
+      puis choisis « Ouvrir avec » → Chrome.
+    </div>
+  </noscript>
+
+  <header class="bandeau">
+    <p class="eleve">Ali · 4e</p>
+    <h1>Jour 3 — Additionner, soustraire · décomposer en facteurs premiers</h1>
+    <p class="sous">Chapitres 3 et 6 · environ 15 à 20 minutes · feuille, écran, puis feuille</p>
+  </header>
+
+  <div class="papier" id="avant">
+<h2>Avant de lire la leçon — sur ta feuille</h2>
+<p class="duree">2 minutes · sans regarder ton cahier</p>
+<ol><li>En haut de ta feuille, écris « Jour 3 ».</li>
+<li>Hier : écris les nombres premiers inférieurs à 30, puis la règle pour comparer deux nombres négatifs.</li>
+<li>Aujourd'hui : comment additionne-t-on deux fractions de dénominateurs différents ? Décompose 12 en produit de facteurs premiers.</li></ol>
+<p>Ensuite seulement, lis la leçon.</p>
+  </div>
+
+  <div class="panneau" id="panneau">
+    <div class="panneau-tete">
+      <b>Le rappel de leçon</b>
+      <button class="fermer" id="fermer-lecon" type="button">Revenir à l'exercice</button>
+    </div>
+    <nav class="sommaire" id="sommaire"></nav>
+    <main id="lecon">
+<style>.fr{display:inline-flex;flex-direction:column;align-items:stretch;vertical-align:middle;margin:0 .12em;font-size:.94em;line-height:1.2;text-align:center}.fr>span{display:block;padding:0 .22em;white-space:nowrap}.fr>span+span{border-top:1.6px solid currentColor}.dp{border-collapse:collapse;margin:6px 0 4px}.dp td{padding:2px 12px;text-align:right}.dp td+td{border-left:2px solid currentColor;text-align:left}sup{line-height:0}.liste-p{letter-spacing:.02em}.nb{white-space:nowrap}</style>
+<div class="bloc notion" id="r-addition">
+<h3>Additionner, soustraire : même dénominateur</h3>
+<p><b>Propriété.</b> La somme (ou la différence) de deux quotients de même dénominateur, est le nombre obtenu en :</p><ul><li>additionnant (ou soustrayant) les numérateurs ;</li><li>en conservant le dénominateur commun.</li></ul><p><span class="fr"><span>a</span><span>c</span></span> + <span class="fr"><span>b</span><span>c</span></span> = <span class="fr"><span>a + b</span><span>c</span></span> et <span class="fr"><span>a</span><span>c</span></span> − <span class="fr"><span>b</span><span>c</span></span> = <span class="fr"><span>a − b</span><span>c</span></span> (a, b, c nombres relatifs, c ≠ 0)</p><p>Exemples du cours : <span class="fr"><span>11</span><span>3</span></span> + <span class="fr"><span>5</span><span>3</span></span> = <span class="fr"><span>11 + 5</span><span>3</span></span> = <span class="fr"><span>16</span><span>3</span></span> ; <span class="fr"><span>11</span><span>3</span></span> − <span class="fr"><span>7</span><span>3</span></span> = <span class="fr"><span>11 − 7</span><span>3</span></span> = <span class="fr"><span>4</span><span>3</span></span> ; <span class="fr"><span>−5</span><span>7</span></span> − <span class="fr"><span>3</span><span>7</span></span> = <span class="fr"><span>−5 − 3</span><span>7</span></span> = <span class="nb">−<span class="fr"><span>8</span><span>7</span></span></span>.</p><button class="angle-btn" type="button">Une autre façon de le voir</button><div class="angle-txt">Des septièmes plus des septièmes, ça fait des septièmes, comme 2 pommes + 3 pommes = 5 pommes. Le dénominateur dit la taille des parts : il ne change pas.</div><div class="exemples"><span class="etiq">Exemples</span><ul><li><span class="ex"><span class="fr"><span>2</span><span>5</span></span> + <span class="fr"><span>1</span><span>5</span></span> = <span class="fr"><span>3</span><span>5</span></span>.</span></li><li><span class="ex"><span class="fr"><span>1</span><span>9</span></span> − <span class="fr"><span>4</span><span>9</span></span> = <span class="fr"><span>−3</span><span>9</span></span> = <span class="nb">−<span class="fr"><span>1</span><span>3</span></span></span>.</span></li></ul></div>
+</div>
+<div class="bloc notion" id="r-addition2">
+<h3>Additionner, soustraire : dénominateurs différents</h3>
+<p><b>Règle.</b> Pour additionner (ou soustraire) deux quotients de dénominateurs différents, on les écrit avec le même dénominateur (on dit qu'on les réduit au même dénominateur), puis on applique la propriété précédente.</p><p>Exemples du cours :</p><p>A = <span class="nb">−<span class="fr"><span>3</span><span>4</span></span></span> + <span class="fr"><span>1</span><span>8</span></span> = <span class="nb">−<span class="fr"><span>3 × 2</span><span>4 × 2</span></span></span> + <span class="fr"><span>1</span><span>8</span></span> = <span class="nb">−<span class="fr"><span>6</span><span>8</span></span></span> + <span class="fr"><span>1</span><span>8</span></span> = <span class="nb">−<span class="fr"><span>5</span><span>8</span></span></span></p><p>B = <span class="fr"><span>−1</span><span>4</span></span> − <span class="fr"><span>2</span><span>5</span></span> = <span class="fr"><span>−1 × 5</span><span>4 × 5</span></span> − <span class="fr"><span>2 × 4</span><span>5 × 4</span></span> = <span class="fr"><span>−5</span><span>20</span></span> − <span class="fr"><span>8</span><span>20</span></span> = <span class="nb">−<span class="fr"><span>13</span><span>20</span></span></span></p><p>C = 3 + <span class="fr"><span>2</span><span>5</span></span> = <span class="fr"><span>3 × 5</span><span>1 × 5</span></span> + <span class="fr"><span>2</span><span>5</span></span> = <span class="fr"><span>15</span><span>5</span></span> + <span class="fr"><span>2</span><span>5</span></span> = <span class="fr"><span>17</span><span>5</span></span></p><p><b>Trouver un dénominateur commun</b> (exercice résolu) :</p><ul><li>On écrit les premiers multiples (autres que 0). De 4 : 4, 8, 12, 16… ; de 6 : 6, 12, 18… 12 est un multiple commun à 4 et 6.</li><li>Si les deux dénominateurs n'ont pas d'autre diviseur commun que 1, comme 5 et 7, on prend leur produit : 5 × 7 = 35.</li><li>Un entier s'écrit sur 1 : 3 = <span class="fr"><span>3</span><span>1</span></span>, et tout dénominateur est un multiple de 1.</li></ul><button class="angle-btn" type="button">Une autre façon de le voir</button><div class="angle-txt">On n'additionne que des parts de même taille. Réduire au même dénominateur, c'est recouper les parts pour qu'elles aient toutes la même taille.</div><div class="exemples"><span class="etiq">Exemples</span><ul><li><span class="ex"><span class="fr"><span>1</span><span>2</span></span> + <span class="fr"><span>1</span><span>3</span></span> = <span class="fr"><span>3</span><span>6</span></span> + <span class="fr"><span>2</span><span>6</span></span> = <span class="fr"><span>5</span><span>6</span></span>.</span></li><li><span class="ex">2 − <span class="fr"><span>3</span><span>4</span></span> = <span class="fr"><span>8</span><span>4</span></span> − <span class="fr"><span>3</span><span>4</span></span> = <span class="fr"><span>5</span><span>4</span></span>.</span></li></ul></div>
+</div>
+<div class="bloc piege" id="r-piege-add">
+<h3>Pièges</h3>
+<ul><li>On n'additionne jamais les dénominateurs : <span class="fr"><span>1</span><span>2</span></span> + <span class="fr"><span>1</span><span>3</span></span> n'est pas égal à <span class="fr"><span>2</span><span>5</span></span>.</li><li>Le résultat peut être négatif : <span class="fr"><span>1</span><span>4</span></span> − <span class="fr"><span>1</span><span>2</span></span> = <span class="fr"><span>1</span><span>4</span></span> − <span class="fr"><span>2</span><span>4</span></span> = <span class="nb">−<span class="fr"><span>1</span><span>4</span></span></span>.</li><li>Un signe moins devant une fraction va avec son numérateur : <span class="nb">−<span class="fr"><span>5</span><span>7</span></span></span> − <span class="fr"><span>3</span><span>7</span></span> = <span class="fr"><span>−5 − 3</span><span>7</span></span> = <span class="nb">−<span class="fr"><span>8</span><span>7</span></span></span>.</li></ul>
+</div>
+<div class="bloc notion" id="p-decomposition">
+<h3>Décomposer en produit de facteurs premiers</h3>
+<p><b>Propriété (admise).</b> Un nombre entier supérieur ou égal à 2 se décompose en produit de facteurs premiers. Cette décomposition est unique, à l'ordre près.</p><p><b>Exemple 1 : décomposition de 84.</b> La décomposition est unique : elle ne dépend pas du procédé utilisé pour l'obtenir.</p><p>1<sup>re</sup> méthode : on cherche les diviseurs premiers de 84 dans l'ordre croissant.</p><ul><li>84 est divisible par 2 : 84 = 2 × 42</li><li>42 est divisible par 2 : 84 = 2 × 2 × 21</li><li>21 est divisible par 3 : 84 = 2 × 2 × 3 × 7</li></ul><p>Or, 7 est un nombre premier, donc la décomposition de 84 en produit de facteurs premiers est terminée : <b>84 = 2<sup>2</sup> × 3 × 7</b>.</p><p>Disposition pratique :</p><table class="dp"><tr><td>84</td><td>2</td></tr><tr><td>42</td><td>2</td></tr><tr><td>21</td><td>3</td></tr><tr><td>7</td><td>7</td></tr><tr><td>1</td><td></td></tr></table><p>2<sup>e</sup> méthode : on écrit d'abord un produit quelconque égal à 84 : 84 = 4 × 21, donc 84 = 2 × 2 × 3 × 7. Les nombres 2, 3 et 7 sont premiers.</p><p><b>Exemple 2 : décomposition de 1 600.</b> 1 600 = 16 × 100 = 4 × 4 × 4 × 25, donc 1 600 = 2 × 2 × 2 × 2 × 2 × 2 × 5 × 5 = <b>2<sup>6</sup> × 5<sup>2</sup></b>.</p><button class="angle-btn" type="button">Une autre façon de le voir</button><div class="angle-txt">Décomposer, c'est démonter un nombre jusqu'aux pièces qu'on ne peut plus casser : les nombres premiers.</div><div class="exemples"><span class="etiq">Exemples</span><ul><li><span class="ex">30 = 2 × 3 × 5.</span></li><li><span class="ex">50 = 2 × 5<sup>2</sup>.</span></li></ul></div>
+</div>
+<div class="bloc piege" id="p-piege2">
+<h3>Pièges</h3>
+<ul><li>4 × 21 n'est pas une décomposition en facteurs premiers : 4 n'est pas premier (4 = 2 × 2).</li><li>1 n'est jamais un facteur : dans la disposition pratique, on s'arrête quand on arrive à 1.</li><li>On écrit souvent les facteurs dans l'ordre croissant, avec des puissances : 2 × 2 × 3 × 7 = 2<sup>2</sup> × 3 × 7.</li></ul>
+</div>
+<div class="bloc resume" id="par-coeur">
+<h3>À savoir par cœur</h3>
+<p>Récite ces phrases sans regarder. Ce soir, on te les demandera.</p><ol><li>La somme (ou la différence) de deux quotients de même dénominateur, est le nombre obtenu en additionnant (ou soustrayant) les numérateurs et en conservant le dénominateur commun.</li><li>Pour additionner (ou soustraire) deux quotients de dénominateurs différents, on les écrit avec le même dénominateur, puis on applique la propriété précédente.</li><li>Un nombre entier supérieur ou égal à 2 se décompose en produit de facteurs premiers. Cette décomposition est unique, à l'ordre près.</li><li>Disposition pratique : on divise par le plus petit nombre premier possible, ligne après ligne, jusqu'à obtenir 1.</li></ol>
+</div>
+<div class="sep" style="margin-top:26px">Les jours d'avant</div>
+<div class="bloc resume" id="r-comparer">
+<h3>Comparer des rationnels (jour 2)</h3>
+<ul><li>Un nombre négatif est plus petit qu'un nombre positif.</li><li>De deux nombres négatifs, le plus petit est celui qui a la plus grande distance à zéro.</li><li>Dénominateurs différents : on écrit d'abord les deux nombres avec le même dénominateur.</li></ul>
+</div>
+<div class="bloc resume" id="p-premier">
+<h3>Nombres premiers (jour 2)</h3>
+<ul><li>Un nombre premier est un nombre entier qui n'a que deux diviseurs : 1 et lui-même.</li><li>Liste : 2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59, 61, 67, 71, 73, 79, 83, 89, 97.</li><li>1 et 0 ne sont pas premiers.</li></ul>
+</div>
+
+    </main>
+  </div>
+
+  <div id="demarrage">
+    <div class="sep">La séance</div>
+    <button class="demarrer" id="demarrer" type="button">Commencer — 2 reprises, puis 6 exercices</button>
+  </div>
+
+  <section id="seance" style="display:none"></section>
+  <button class="rappel-btn" id="rappel-btn" type="button">Revoir la leçon</button>
+
+  <div id="diagnostic"></div>
+
+  <section id="bilan">
+    <div class="sep">Bilan de la séance</div>
+    <div class="score-grand" id="score-grand"></div>
+    <div class="score-sous" id="score-sous"></div>
+    <div class="paliers" id="paliers"></div>
+    <div class="message" id="message"></div>
+    <div class="papier" id="apres">
+<h2>Maintenant, sur ta feuille — comme en classe</h2>
+<p class="duree">5 minutes · rédige comme sur une copie</p>
+<ol><li>Calcule E = <span class="fr"><span>3</span><span>4</span></span> − <span class="fr"><span>5</span><span>6</span></span> + <span class="fr"><span>1</span><span>3</span></span>. Écris les étapes : multiples, même dénominateur, calcul, résultat simplifié.</li>
+<li>Décompose 180 en produit de facteurs premiers avec la disposition pratique.</li>
+<li>Ce soir, montre ta feuille.</li></ol>
+    </div>
+    <div class="envoi" id="envoi"></div>
+    <details>
+      <summary style="cursor:pointer;padding:10px 0;color:#57534e">Voir le bilan envoyé</summary>
+      <pre class="bilan-txt" id="bilan-txt"></pre>
+    </details>
+    <div class="actions">
+      <button class="btn sec" id="copier" type="button">Copier le bilan</button>
+      <a class="btn sec" id="mailto" href="#" style="text-decoration:none;line-height:24px">Ouvrir dans l'application mail</a>
+    </div>
+  </section>
+
+</div>
+<script>
+window.addEventListener("error", function (e) {
+  var d = document.getElementById("diagnostic");
+  if (!d) return;
+  d.className = "diag";
+  d.textContent = "Erreur technique : " + (e.message || "inconnue") +
+                  "  [ligne " + (e.lineno || "?") + "]";
+});
+</script>
+<script>window.LECON = {"profil": "ali", "identifiant": "ali-4e-pilote-j3", "titre": "Jour 3 — Additionner, soustraire · décomposer en facteurs premiers", "orthographeEvaluee": false, "messages": ["Les bases ne sont pas encore en place. Ce n'est pas grave. Demain, ces notions reviennent au début de la séance.", "Les bases sont en place. Demain, ces notions reviennent au début de la séance.", "Bien joué : tu sais appliquer la leçon. Demain, ces notions reviennent au début de la séance.", "Excellent : même les questions les plus difficiles sont réussies. Demain, ces notions reviennent au début de la séance."], "exercices": [{"type": "calcul_par_etapes", "palier": 1, "matiere": "Maths", "ancre": "r-addition", "competence": "Additionner des fractions de même dénominateur", "resume": "Même dénominateur : additionner, soustraire", "enonce": "Calcule. Le dénominateur est déjà donné.", "etapes": [{"consigne": "<span class=\"fr\"><span>7<\/span><span>9<\/span><\/span> − <span class=\"fr\"><span>13<\/span><span>9<\/span><\/span> = <span class=\"fr\"><span>…<\/span><span>9<\/span><\/span>", "reponse": -6, "signe": true, "erreurs": [{"valeur": 6, "retour": "7 − 13 = −6 : le résultat est négatif."}, {"valeur": 20, "retour": "On soustrait : 7 − 13. On n'additionne pas."}]}, {"consigne": "<span class=\"nb\">−<span class=\"fr\"><span>5<\/span><span>11<\/span><\/span><\/span> + <span class=\"fr\"><span>2<\/span><span>11<\/span><\/span> = <span class=\"fr\"><span>…<\/span><span>11<\/span><\/span>", "reponse": -3, "signe": true, "erreurs": [{"valeur": -7, "retour": "−5 + 2 = −3, pas −7."}, {"valeur": 3, "retour": "−5 + 2 = −3 : le résultat est négatif."}]}, {"consigne": "<span class=\"nb\">−<span class=\"fr\"><span>3<\/span><span>8<\/span><\/span><\/span> − <span class=\"fr\"><span>7<\/span><span>8<\/span><\/span> = <span class=\"fr\"><span>…<\/span><span>8<\/span><\/span>", "reponse": -10, "signe": true, "erreurs": [{"valeur": -4, "retour": "−3 − 7 = −10 : on enlève encore 7."}, {"valeur": 4, "retour": "−3 − 7 = −10."}]}, {"consigne": "<span class=\"fr\"><span>−4<\/span><span>15<\/span><\/span> + <span class=\"fr\"><span>11<\/span><span>15<\/span><\/span> = <span class=\"fr\"><span>…<\/span><span>15<\/span><\/span>", "reponse": 7, "signe": true, "erreurs": [{"valeur": -15, "retour": "−4 + 11 = 7."}]}], "indice": "On calcule seulement avec les numérateurs, en faisant attention aux signes.", "corrige": "−6 · −3 · −10 · 7", "explication": "<span class=\"fr\"><span>7 − 13<\/span><span>9<\/span><\/span> = <span class=\"fr\"><span>−6<\/span><span>9<\/span><\/span> ; <span class=\"fr\"><span>−5 + 2<\/span><span>11<\/span><\/span> = <span class=\"fr\"><span>−3<\/span><span>11<\/span><\/span> ; <span class=\"fr\"><span>−3 − 7<\/span><span>8<\/span><\/span> = <span class=\"fr\"><span>−10<\/span><span>8<\/span><\/span> ; <span class=\"fr\"><span>−4 + 11<\/span><span>15<\/span><\/span> = <span class=\"fr\"><span>7<\/span><span>15<\/span><\/span>."}, {"type": "calcul_par_etapes", "palier": 1, "matiere": "Maths", "ancre": "p-decomposition", "competence": "Décomposer en produit de facteurs premiers", "resume": "Compléter des décompositions en facteurs premiers", "enonce": "Complète les exposants.", "etapes": [{"consigne": "60 = 2<sup>…<\/sup> × 3 × 5", "reponse": 2, "erreurs": [{"valeur": 1, "retour": "60 = 2 × 30 = 2 × 2 × 15 : le 2 apparaît deux fois."}]}, {"consigne": "72 = 2<sup>…<\/sup> × 3<sup>2<\/sup>", "reponse": 3, "erreurs": [{"valeur": 2, "retour": "72 = 8 × 9 et 8 = 2 × 2 × 2 : trois fois 2."}]}, {"consigne": "200 = 2<sup>3<\/sup> × 5<sup>…<\/sup>", "reponse": 2, "erreurs": [{"valeur": 1, "retour": "200 = 8 × 25 et 25 = 5 × 5."}]}], "indice": "Divise par 2 autant de fois que possible et compte. Puis fais pareil avec 3, avec 5.", "corrige": "2 · 3 · 2", "explication": "60 = 2<sup>2<\/sup> × 3 × 5 ; 72 = 2<sup>3<\/sup> × 3<sup>2<\/sup> ; 200 = 2<sup>3<\/sup> × 5<sup>2<\/sup>."}, {"type": "calcul_par_etapes", "palier": 2, "matiere": "Maths", "ancre": "r-addition2", "competence": "Additionner des fractions de dénominateurs différents", "resume": "Réduire au même dénominateur, puis calculer", "enonce": "Calcule B = <span class=\"nb\">−<span class=\"fr\"><span>3<\/span><span>4<\/span><\/span><\/span> − <span class=\"fr\"><span>5<\/span><span>6<\/span><\/span>.", "etapes": [{"consigne": "Le plus petit multiple commun de 4 et de 6 (autre que 0) : …", "reponse": 12, "signe": true, "erreurs": [{"valeur": 24, "retour": "24 marche aussi, mais 12 est plus petit : 4 × 3 = 12 et 6 × 2 = 12."}]}, {"consigne": "<span class=\"nb\">−<span class=\"fr\"><span>3<\/span><span>4<\/span><\/span><\/span> = <span class=\"fr\"><span>…<\/span><span>12<\/span><\/span>", "reponse": -9, "signe": true, "erreurs": [{"valeur": 9, "retour": "Le signe moins reste : −3/4 = −9/12."}]}, {"consigne": "<span class=\"fr\"><span>5<\/span><span>6<\/span><\/span> = <span class=\"fr\"><span>…<\/span><span>12<\/span><\/span>", "reponse": 10, "signe": true}, {"consigne": "B = <span class=\"fr\"><span>…<\/span><span>12<\/span><\/span>", "reponse": -19, "signe": true, "erreurs": [{"valeur": 1, "retour": "−9 − 10 = −19 : on soustrait 10, on n'ajoute pas."}, {"valeur": -1, "retour": "−9 − 10 = −19, pas −1."}, {"valeur": 19, "retour": "−9 − 10 = −19 : le résultat est négatif."}]}], "indice": "Multiples de 4 : 4, 8, 12… Multiples de 6 : 6, 12… Puis applique la règle du même dénominateur.", "corrige": "12 · −9 · 10 · −19 : B = <span class=\"nb\">−<span class=\"fr\"><span>19<\/span><span>12<\/span><\/span><\/span>", "explication": "B = <span class=\"fr\"><span>−9<\/span><span>12<\/span><\/span> − <span class=\"fr\"><span>10<\/span><span>12<\/span><\/span> = <span class=\"fr\"><span>−9 − 10<\/span><span>12<\/span><\/span> = <span class=\"nb\">−<span class=\"fr\"><span>19<\/span><span>12<\/span><\/span><\/span>."}, {"type": "calcul_par_etapes", "palier": 2, "matiere": "Maths", "ancre": "p-decomposition", "competence": "Décomposer avec la disposition pratique", "resume": "Disposition pratique : décomposer 126", "enonce": "Décompose 126 avec la disposition pratique, comme 84 dans la leçon.<table class=\"dp\"><tr><td>126<\/td><td>2<\/td><\/tr><tr><td>…<\/td><td>…<\/td><\/tr><tr><td>…<\/td><td>…<\/td><\/tr><tr><td>…<\/td><td>…<\/td><\/tr><tr><td>1<\/td><td><\/td><\/tr><\/table>", "etapes": [{"consigne": "126 est divisible par 2 : 126 = 2 × …", "reponse": 63}, {"consigne": "Le plus petit nombre premier qui divise 63 : …", "reponse": 3, "erreurs": [{"valeur": 7, "retour": "7 divise 63, mais 3 est plus petit : 6 + 3 = 9, divisible par 3."}, {"valeur": 9, "retour": "9 n'est pas premier (9 = 3 × 3)."}]}, {"consigne": "63 = 3 × …", "reponse": 21}, {"consigne": "21 = 3 × …", "reponse": 7}, {"consigne": "Donc 126 = 2 × 3<sup>…<\/sup> × 7", "reponse": 2, "erreurs": [{"valeur": 1, "retour": "3 apparaît deux fois : 63 = 3 × 21 et 21 = 3 × 7."}]}], "indice": "À chaque ligne, divise par le plus petit nombre premier possible.", "corrige": "63 · 3 · 21 · 7 · 2 : 126 = 2 × 3<sup>2<\/sup> × 7", "explication": "126 : 2 = 63 ; 63 : 3 = 21 ; 21 : 3 = 7 ; 7 : 7 = 1. Donc 126 = 2 × 3 × 3 × 7 = 2 × 3<sup>2<\/sup> × 7."}, {"type": "calcul_par_etapes", "palier": 3, "matiere": "Maths", "ancre": "r-addition2", "competence": "Choisir un dénominateur commun", "resume": "Un dénominateur commun plus petit", "enonce": "Inès calcule M = <span class=\"fr\"><span>7<\/span><span>10<\/span><\/span> − <span class=\"fr\"><span>4<\/span><span>15<\/span><\/span> en prenant 150 comme dénominateur commun (10 × 15).", "etapes": [{"consigne": "Quel dénominateur commun plus petit pouvait-elle prendre ? …", "reponse": 30, "signe": true, "erreurs": [{"valeur": 150, "retour": "150 marche, mais on cherche plus petit. Multiples de 15 : 15, 30… et 30 est aussi un multiple de 10."}, {"valeur": 5, "retour": "5 n'est pas un multiple de 10 ni de 15."}, {"valeur": 25, "retour": "25 n'est pas un multiple de 10."}]}, {"consigne": "Avec ce dénominateur : M = <span class=\"fr\"><span>…<\/span><span>30<\/span><\/span>", "reponse": 13, "signe": true, "erreurs": [{"valeur": 3, "retour": "7/10 = 21/30 et 4/15 = 8/30 : 21 − 8 = 13."}]}], "indice": "Écris les multiples de 15 : 15, 30, 45… Le premier qui est aussi un multiple de 10 ?", "corrige": "30 · 13 : M = <span class=\"fr\"><span>13<\/span><span>30<\/span><\/span>", "explication": "<span class=\"fr\"><span>7<\/span><span>10<\/span><\/span> = <span class=\"fr\"><span>21<\/span><span>30<\/span><\/span> et <span class=\"fr\"><span>4<\/span><span>15<\/span><\/span> = <span class=\"fr\"><span>8<\/span><span>30<\/span><\/span>, donc M = <span class=\"fr\"><span>13<\/span><span>30<\/span><\/span>. Avec 150 : <span class=\"fr\"><span>105<\/span><span>150<\/span><\/span> − <span class=\"fr\"><span>40<\/span><span>150<\/span><\/span> = <span class=\"fr\"><span>65<\/span><span>150<\/span><\/span> = <span class=\"fr\"><span>13<\/span><span>30<\/span><\/span> : même résultat, plus de calculs."}, {"type": "calcul_par_etapes", "palier": 3, "matiere": "Maths", "ancre": "p-decomposition", "competence": "Déduire la décomposition d'un produit", "resume": "Décomposer un produit sans le calculer", "enonce": "On sait que 45 = 3<sup>2<\/sup> × 5 et 12 = 2<sup>2<\/sup> × 3. Sans calculer 45 × 12, complète : 45 × 12 = 2<sup>…<\/sup> × 3<sup>…<\/sup> × 5.", "etapes": [{"consigne": "Exposant de 2 : …", "reponse": 2}, {"consigne": "Exposant de 3 : …", "reponse": 3, "erreurs": [{"valeur": 2, "retour": "Il y a 3 × 3 dans 45, et encore un 3 dans 12 : 3 × 3 × 3 = 3<sup>3<\/sup>."}]}, {"consigne": "Et 45 × 12 × 2 = 2<sup>…<\/sup> × 3<sup>3<\/sup> × 5", "reponse": 3, "erreurs": [{"valeur": 2, "retour": "On ajoute un facteur 2 : 2 × 2 × 2 = 2<sup>3<\/sup>."}]}], "indice": "Écris tous les facteurs à la suite, puis compte combien il y a de 2 et de 3.", "corrige": "2 · 3 · 3 : 45 × 12 = 2<sup>2<\/sup> × 3<sup>3<\/sup> × 5", "explication": "45 × 12 = (3 × 3 × 5) × (2 × 2 × 3) = 2 × 2 × 3 × 3 × 3 × 5 = 2<sup>2<\/sup> × 3<sup>3<\/sup> × 5. Avec un 2 de plus : 2<sup>3<\/sup>."}], "echauffement": [{"type": "reperage", "palier": 0, "matiere": "Maths", "ancre": "r-comparer", "competence": "Comparer deux rationnels", "resume": "Retour : plus petits que −1/2", "enonce": "Touche tous les nombres plus petits que <span class=\"nb\">−<span class=\"fr\"><span>1<\/span><span>2<\/span><\/span><\/span>.", "mots": [{"texte": "−1/3"}, {"texte": "−3/4", "cible": true}, {"texte": "−5/8", "cible": true}, {"texte": "1/4"}, {"texte": "0"}, {"texte": "−2/3", "cible": true}, {"texte": "−2/5"}, {"texte": "−7/12", "cible": true}], "erreurs": [{"mot": "−1/3", "retour": "−1/3 est plus près de zéro que −1/2 : −1/3 &gt; −1/2."}, {"mot": "−2/5", "retour": "−2/5 = −0,4 : plus près de zéro que −0,5."}], "indice": "−1/2 = −0,5. Un négatif plus loin de zéro que −0,5 est plus petit.", "corrige": "−3/4 · −5/8 · −2/3 · −7/12", "explication": "−3/4 = −0,75 ; −5/8 = −0,625 ; −2/3 = −0,666… ; −7/12 = −0,583… : ils sont plus loin de zéro que −0,5. −1/3 et −2/5 sont plus près de zéro ; 1/4 et 0 ne sont pas négatifs."}, {"type": "calcul_par_etapes", "palier": 0, "matiere": "Maths", "ancre": "p-premier", "competence": "Reconnaître un nombre premier", "resume": "Retour : premiers autour de 50", "enonce": "Trouve les nombres premiers les plus proches de 50.", "etapes": [{"consigne": "Le plus grand nombre premier inférieur à 50 : …", "reponse": 47, "erreurs": [{"valeur": 49, "retour": "49 = 7 × 7 : il n'est pas premier."}]}, {"consigne": "Le plus petit nombre premier supérieur à 50 : …", "reponse": 53, "erreurs": [{"valeur": 51, "retour": "51 = 3 × 17 : il n'est pas premier."}]}], "indice": "Teste 49, puis 48… ; 51, puis 52… Pour chacun, cherche un diviseur.", "corrige": "47 · 53", "explication": "49 = 7 × 7 et 48 est pair : 47 est premier. 51 = 3 × 17 et 52 est pair : 53 est premier."}], "reportEntrant": []};</script>
+<script>
+/* ============================================================
+   Moteur de séance — pilote V3, dérivé du moteur 2.8
+   Lot 1 : la lecture à voix haute suit la langue des passages
+   (lang="en" lu avec une voix anglaise).
+   Lot 2 : exercices groupés par matière (champ `matiere`), étiquette
+   de matière à l'écran, score par matière à la fin et dans le bilan.
+   Aucun appel IA à l'exécution (D6). Correction 100 % déterministe.
+   ============================================================ */
+(function () {
+  "use strict";
+
+  var CLE_ENVOI = "259de897-beba-4c71-95c8-dcde527b79c1";
+  var L = window.LECON;
+  var OMAR = L.profil === "omar";
+
+  var etat = {
+    i: 0,
+    debut: null,
+    indices: 0,
+    retoursLecon: 0,
+    resultats: [],          // cœur — c'est lui, le score
+    echauffement: [],       // hors score (§6.9)
+    signalements: [],       // { n, donnee }
+    envoye: false
+  };
+
+  /* ---------- Normalisation (§6.7) ---------------------------------
+     Tolère la FORME de la saisie, jamais le FOND : aucun mot porteur
+     de sens n'est retiré.                                            */
+
+  function sansAccent(s) {
+    return s.normalize("NFD").replace(/[̀-ͯ]/g, "");
+  }
+
+  function normTexte(s) {
+    return sansAccent(String(s).toLowerCase())
+      .replace(/[’ʼ`]/g, "'")
+      .replace(/[‐-―−]/g, "-")
+      .replace(/[-_]/g, " ")
+      .replace(/[.,;:!?"()\[\]]/g, " ")
+      .replace(/\s+/g, " ")
+      .trim();
+  }
+
+  /* Distance de Levenshtein — sert uniquement au profil aménagé.
+     §3.1 : l'orthographe n'est jamais évaluée hors chapitre d'orthographe. */
+  function lev(a, b) {
+    var m = a.length, n = b.length, i, j, prec = [], cour = [];
+    for (j = 0; j <= n; j++) prec[j] = j;
+    for (i = 1; i <= m; i++) {
+      cour[0] = i;
+      for (j = 1; j <= n; j++) {
+        cour[j] = Math.min(
+          prec[j] + 1,
+          cour[j - 1] + 1,
+          prec[j - 1] + (a.charAt(i - 1) === b.charAt(j - 1) ? 0 : 1)
+        );
+      }
+      prec = cour.slice();
+    }
+    return prec[n];
+  }
+
+  function texteEgal(saisie, attendu) {
+    var a = normTexte(saisie), b = normTexte(attendu);
+    if (a === b) return true;
+    if (!OMAR || L.orthographeEvaluee) return false;
+    if (b.length < 5) return false;
+    var seuil = b.length <= 8 ? 1 : 2;
+    return lev(a, b) <= seuil;
+  }
+
+  function texteAccepte(saisie, liste) {
+    for (var k = 0; k < liste.length; k++) if (texteEgal(saisie, liste[k])) return true;
+    return false;
+  }
+
+  function normNombre(s) {
+    var t = String(s).replace(/\s| /g, "").replace(/,/g, ".").replace(/^\+/, "");
+    if (t === "" || !/^-?\d*\.?\d+$/.test(t)) return null;
+    return parseFloat(t);
+  }
+
+  function nombreEgal(saisie, attendu, tol) {
+    var v = normNombre(saisie);
+    if (v === null) return false;
+    return Math.abs(v - attendu) <= (tol || 0) + 1e-9;
+  }
+
+  /* ---------- Petits utilitaires DOM ---------- */
+
+  function el(tag, cls, txt) {
+    var e = document.createElement(tag);
+    if (cls) e.className = cls;
+    if (txt !== undefined) e.textContent = txt;
+    return e;
+  }
+
+  function html(tag, cls, h) {
+    var e = document.createElement(tag);
+    if (cls) e.className = cls;
+    if (h !== undefined) e.innerHTML = h;
+    return e;
+  }
+
+  /* Mélange déterministe : même fichier, même ordre, à chaque ouverture. */
+  function melange(tab, graine) {
+    var t = tab.slice(), g = graine || 7, i, j, tmp;
+    for (i = t.length - 1; i > 0; i--) {
+      g = (g * 1103515245 + 12345) % 2147483648;
+      j = g % (i + 1);
+      tmp = t[i]; t[i] = t[j]; t[j] = tmp;
+    }
+    return t;
+  }
+
+  /* ---------- Synthèse vocale (§3.1) ----------
+     Pilote V3 : le texte est découpé par langue. Un passage marqué
+     lang="en" est lu par une voix anglaise, le reste en français.
+     Les boutons, les figures SVG et les définitions cachées ne sont
+     pas lus. Le découpage se fait au clic, sur le contenu affiché. */
+
+  var voixDispo = ("speechSynthesis" in window);
+
+  function segmentsLangue(noeud) {
+    var segs = [];
+    function ajouter(t, langue) {
+      if (!t || !t.trim()) return;
+      var d = segs[segs.length - 1];
+      if (d && d.lang === langue) d.texte += " " + t;
+      else segs.push({ texte: t, lang: langue });
+    }
+    function visiter(n, langue) {
+      if (n.nodeType === 3) { ajouter(n.nodeValue, langue); return; }
+      if (n.nodeType !== 1) return;
+      var tag = String(n.tagName).toLowerCase();
+      if (tag === "button" || tag === "svg" || tag === "script" || tag === "style") return;
+      var l = n.getAttribute("lang");
+      var suite = l ? l : langue;
+      for (var c = n.firstChild; c; c = c.nextSibling) visiter(c, suite);
+    }
+    visiter(noeud, "fr");
+    return segs;
+  }
+
+  function parler(segs) {
+    window.speechSynthesis.cancel();
+    segs.forEach(function (s) {
+      var u = new SpeechSynthesisUtterance(s.texte);
+      var en = s.lang.indexOf("en") === 0;
+      u.lang = en ? "en-GB" : "fr-FR";
+      u.rate = en ? 0.82 : 0.92;
+      window.speechSynthesis.speak(u);
+    });
+  }
+
+  function boutonLire(source) {
+    var b = el("button", "lire", "🔊");
+    b.type = "button";
+    b.setAttribute("aria-label", "Lire à voix haute");
+    if (!voixDispo) { b.hidden = true; return b; }
+    b.addEventListener("click", function () {
+      try {
+        var segs = (typeof source === "string")
+          ? [{ texte: source, lang: "fr" }]
+          : segmentsLangue(source);
+        parler(segs);
+      } catch (e) { b.hidden = true; }
+    });
+    return b;
+  }
+
+  /* ---------- Définitions au clic (§3.1) ---------- */
+
+  var bulle = el("div", "bulle");
+  document.body.appendChild(bulle);
+  document.addEventListener("click", function (ev) {
+    var c = ev.target.closest ? ev.target.closest(".def") : null;
+    if (c && c.dataset.def) {
+      bulle.innerHTML = "<b>" + c.textContent + "</b>" + c.dataset.def;
+      bulle.classList.add("ouvert");
+    } else if (!ev.target.closest || !ev.target.closest(".bulle")) {
+      bulle.classList.remove("ouvert");
+    }
+  });
+
+  /* =========================================================
+     Rappel de leçon consultable pendant la séance
+     Le panneau s'ouvre PAR-DESSUS l'exercice : rien ne bouge derrière,
+     on referme et on retrouve sa place (§3.1, un exercice par écran).
+     Chaque ouverture est comptée et remonte au bilan (§6.7, élément 3).
+     ========================================================= */
+
+  var panneau = document.getElementById("panneau");
+  var boutonRappel = document.getElementById("rappel-btn");
+  var ancreCourante = null;
+
+  function construireSommaire() {
+    var nav = document.getElementById("sommaire");
+    var n = 0;
+    document.querySelectorAll("#lecon .bloc").forEach(function (b) {
+      var t = b.querySelector("h3");
+      if (!t) return;
+      if (!b.id) { n++; b.id = "bloc" + n; }
+      var a = document.createElement("a");
+      a.href = "#" + b.id;
+      a.textContent = t.textContent.replace(/\s*🔊\s*$/, "");
+      a.addEventListener("click", function (ev) {
+        ev.preventDefault();
+        b.scrollIntoView({ block: "start" });
+      });
+      nav.appendChild(a);
+    });
+  }
+
+  function ouvrirLecon() {
+    etat.retoursLecon++;
+    panneau.classList.add("ouvert");
+    document.body.style.overflow = "hidden";
+    var cible = null;
+    /* Omar : on ouvre directement sur la notion liée à l'exercice —
+       le défilement est un coût d'attention (§3.1). Ali navigue lui-même. */
+    if (OMAR && ancreCourante) cible = document.getElementById(ancreCourante);
+    if (cible) {
+      cible.scrollIntoView({ block: "start" });
+      cible.classList.remove("cible-rappel");
+      void cible.offsetWidth;
+      cible.classList.add("cible-rappel");
+    } else {
+      panneau.scrollTop = 0;
+    }
+    document.getElementById("fermer-lecon").focus();
+  }
+
+  function fermerLecon() {
+    panneau.classList.remove("ouvert");
+    document.body.style.overflow = "";
+    boutonRappel.focus();
+  }
+
+  boutonRappel.addEventListener("click", ouvrirLecon);
+  document.getElementById("fermer-lecon").addEventListener("click", fermerLecon);
+  document.addEventListener("keydown", function (e) {
+    if (e.key === "Escape" && panneau.classList.contains("ouvert")) fermerLecon();
+  });
+
+  /* =========================================================
+     Rendu d'un exercice — un par écran (§3.1)
+     ========================================================= */
+
+  var zone = document.getElementById("seance");
+
+  function rendreExercice(ex, n) {
+    var wrap = el("div", "exo");
+    wrap.dataset.palier = String(ex.palier);
+    wrap.dataset.n = String(n);
+
+    /* barre de progression */
+    var barre = el("div", "barre");
+    var noms = ["Échauffement", "Bases", "Application", "Problèmes"];
+    var total = ex.palier === 0 ? (L.echauffement || []).length : L.exercices.length;
+    barre.appendChild(el("span", "badge", noms[ex.palier]));
+    barre.appendChild(el("span", null,
+      (ex.palier === 0 ? "Reprise " : "Exercice ") + n + " sur " + total));
+    if (ex.matiere) barre.insertBefore(el("span", "matiere-etiq", ex.matiere), barre.firstChild);
+    var j = el("span", "jauge"); var ji = el("i");
+    ji.style.width = Math.round((n - 1) / total * 100) + "%";
+    j.appendChild(ji); barre.appendChild(j);
+    wrap.appendChild(barre);
+
+    var carte = el("div", "carte-exo");
+
+    /* §6.9 : chaque exercice d'échauffement peut porter son rappel d'une ligne. */
+    if (ex.rappelLigne) {
+      var rl = el("div", "cas");
+      rl.appendChild(el("span", "etiq", "À se rappeler"));
+      rl.appendChild(html("div", null, ex.rappelLigne));
+      carte.appendChild(rl);
+    }
+
+    /* cas corrigé — systématique pour Omar (§3) */
+    if (ex.casCorrige) {
+      var cas = el("div", "cas");
+      cas.appendChild(el("span", "etiq", "Exemple corrigé"));
+      cas.appendChild(html("div", null, ex.casCorrige));
+      carte.appendChild(cas);
+    }
+
+    var enonce = html("div", "enonce", ex.enonce);
+    enonce.appendChild(boutonLire(enonce));
+    carte.appendChild(enonce);
+
+    if (ex.schema) carte.appendChild(html("div", "schema", ex.schema));
+
+    var saisie = el("div", "saisie");
+    carte.appendChild(saisie);
+
+    var actions = el("div", "actions");
+    var bValider = el("button", "btn valider", "Valider");
+    bValider.type = "button";
+    var bIndice = el("button", "btn sec", "Indice");
+    bIndice.type = "button";
+    if (OMAR) { bIndice.disabled = true; bIndice.textContent = "Indice (après un essai)"; }
+    actions.appendChild(bValider);
+    if (ex.indice) actions.appendChild(bIndice);
+    carte.appendChild(actions);
+
+    var zIndice = html("div", "indice", "<b>Indice.</b> " + (ex.indice || ""));
+    carte.appendChild(zIndice);
+
+    var zRetour = el("div", "retour");
+    carte.appendChild(zRetour);
+
+    bIndice.addEventListener("click", function () {
+      if (zIndice.classList.contains("ouvert")) return;
+      zIndice.classList.add("ouvert");
+      etat.indices++;
+      bIndice.disabled = true;
+    });
+
+    var moteurType = TYPES[ex.type] || TYPES.reponse_numerique;
+    var api = moteurType(saisie, ex, n);
+
+    var essais = 0;
+
+    bValider.addEventListener("click", function () {
+      var lecture = api.lire();
+      if (lecture.vide) {
+        zRetour.className = "retour presque ouvert";
+        zRetour.innerHTML = "<p class='verdict'>Il manque une réponse.</p><p>Complète tout avant de valider.</p>";
+        return;
+      }
+      essais++;
+      var res = api.corriger(lecture);
+
+      /* Omar : un second essai après l'indice (§3.1, §6.8) */
+      if (!res.juste && OMAR && essais === 1) {
+        zIndice.classList.add("ouvert");
+        etat.indices++;
+        bIndice.disabled = true;
+        bValider.textContent = "Valider ma nouvelle réponse";
+        zRetour.className = "retour presque ouvert";
+        zRetour.innerHTML =
+          "<p class='verdict'>Pas encore. Relis l'indice, puis réessaie.</p>" +
+          "<p><button type='button' class='btn sec' id='vers-lecon-" + n + "'>" +
+          "Revoir la leçon sur ce point</button></p>";
+        var versLecon = document.getElementById("vers-lecon-" + n);
+        if (versLecon) versLecon.addEventListener("click", ouvrirLecon);
+        enregistrer(ex, n, false, lecture.brut);   // le score retient le premier essai
+        return;
+      }
+
+      if (essais === 1) enregistrer(ex, n, res.juste, lecture.brut);
+      terminer(res, lecture);
+    });
+
+    function terminer(res, lecture) {
+      api.figer();
+      bValider.disabled = true;
+      bIndice.disabled = true;
+
+      zRetour.className = "retour " + (res.juste ? "juste" : "faux") + " ouvert";
+      var h = "<p class='verdict'>" + (res.juste ? "Juste." : "Ce n'est pas ça.") + "</p>";
+      if (!res.juste) h += "<p>Réponse attendue : <b>" + ex.corrige + "</b></p>";
+      /* §6.8 : le retour ciblé remplace l'explication générique, jamais avant */
+      if (!res.juste && res.cible) {
+        h += "<div class='cible'>" + res.cible + "</div>";
+      } else {
+        h += "<p>" + ex.explication + "</p>";
+      }
+      zRetour.innerHTML = h;
+
+      var sig = el("button", "signaler", "Cette correction me paraît fausse");
+      sig.type = "button";
+      sig.addEventListener("click", function () {
+        if (sig.classList.contains("fait")) return;
+        sig.classList.add("fait");
+        sig.textContent = "Signalé — ce sera dans le bilan.";
+        etat.signalements.push({ n: n, donnee: lecture.brut });
+      });
+      zRetour.appendChild(sig);
+
+      var suite = el("div", "actions");
+      var dernier = (etat.i === TOUS.length - 1);
+      var bSuite = el("button", "btn valider", dernier ? "Voir mon bilan" : "Exercice suivant");
+      bSuite.type = "button";
+      bSuite.addEventListener("click", avancer);
+      suite.appendChild(bSuite);
+      zRetour.appendChild(suite);
+      zRetour.scrollIntoView({ block: "nearest" });
+    }
+
+    wrap.appendChild(carte);
+    return wrap;
+  }
+
+  function enregistrer(ex, n, juste, donnee) {
+    if (ex.palier === 0) {
+      etat.echauffement.push({ n: n, juste: juste, competence: ex.competence, resume: ex.resume,
+                               matiere: ex.matiere || null });
+      return;
+    }
+    etat.resultats.push({
+      n: n, palier: ex.palier, juste: juste,
+      competence: ex.competence, resume: ex.resume, donnee: donnee,
+      matiere: ex.matiere || null
+    });
+  }
+
+  function avancer() {
+    var exos = zone.querySelectorAll(".exo");
+    exos[etat.i].classList.remove("actif");
+    etat.i++;
+    if (etat.i >= exos.length) { afficherBilan(); return; }
+    exos[etat.i].classList.add("actif");
+    ancreCourante = TOUS[etat.i].ancre || null;
+    window.scrollTo(0, zone.offsetTop - 10);
+  }
+
+  /* =========================================================
+     Les types de la famille A (§6.2)
+     ========================================================= */
+
+  var TYPES = {};
+
+  function chercheErreur(liste, test) {
+    if (!liste) return null;
+    for (var k = 0; k < liste.length; k++) if (test(liste[k])) return liste[k].retour;
+    return null;
+  }
+
+  /* --- réponse numérique / correction d'erreur --- */
+  function moteurNumerique(hote, ex) {
+    var d = el("div", "champ-num");
+    var inp = el("input");
+    inp.type = "text";
+    inp.setAttribute("inputmode", "decimal");   // §2, arbitrage O7
+    inp.setAttribute("autocomplete", "off");
+    inp.setAttribute("aria-label", "Ta réponse");
+    if (ex.signe) {
+      var b = el("button", "moins", "−");
+      b.type = "button";
+      b.title = "Ajouter le signe moins";
+      b.addEventListener("click", function () {
+        inp.value = inp.value.charAt(0) === "-" ? inp.value.slice(1) : "-" + inp.value;
+        inp.focus();
+      });
+      d.appendChild(b);
+    }
+    d.appendChild(inp);
+    if (ex.unite) d.appendChild(el("span", "unite", ex.unite));
+    hote.appendChild(d);
+    return {
+      lire: function () { return { vide: inp.value.trim() === "", brut: inp.value.trim() }; },
+      corriger: function (l) {
+        var juste = nombreEgal(l.brut, ex.reponse, ex.tolerance);
+        var v = normNombre(l.brut);
+        return {
+          juste: juste,
+          cible: juste ? null : chercheErreur(ex.erreurs, function (e) {
+            return v !== null && Math.abs(v - e.valeur) < 1e-9;
+          })
+        };
+      },
+      figer: function () { inp.disabled = true; }
+    };
+  }
+  TYPES.reponse_numerique = moteurNumerique;
+  TYPES.correction_erreur = moteurNumerique;
+
+  /* --- QCM --- */
+  TYPES.qcm = function (hote, ex) {
+    var box = el("div", "opts"), choisi = -1, boutons = [];
+    ex.options.forEach(function (o, k) {
+      var b = el("button", "opt");
+      b.type = "button";
+      b.appendChild(el("span", "puce"));
+      b.appendChild(html("span", null, o.texte));
+      b.addEventListener("click", function () {
+        boutons.forEach(function (x) { x.classList.remove("choisi"); });
+        b.classList.add("choisi"); choisi = k;
+      });
+      boutons.push(b); box.appendChild(b);
+    });
+    hote.appendChild(box);
+    return {
+      lire: function () {
+        return { vide: choisi < 0, brut: choisi < 0 ? "" : ex.options[choisi].texte.replace(/<[^>]+>/g, "") };
+      },
+      corriger: function () {
+        var o = ex.options[choisi];
+        return { juste: !!o.bon, cible: o.bon ? null : (o.retour || null) };
+      },
+      figer: function () { boutons.forEach(function (b) { b.disabled = true; }); }
+    };
+  };
+
+  /* --- texte à trous --- */
+  TYPES.texte_a_trous = function (hote, ex) {
+    var p = el("p"), champs = [];
+    ex.segments.forEach(function (s) {
+      if (typeof s === "string") { p.appendChild(html("span", null, s)); return; }
+      var i = el("input");
+      i.type = "text";
+      i.setAttribute("autocomplete", "off");
+      i.setAttribute("aria-label", "Mot à compléter");
+      i.style.width = (s.large || 150) + "px";
+      champs.push({ inp: i, def: s });
+      p.appendChild(i);
+    });
+    hote.appendChild(p);
+    return {
+      lire: function () {
+        var vals = champs.map(function (c) { return c.inp.value.trim(); });
+        return { vide: vals.some(function (v) { return v === ""; }), brut: vals.join(" / ") };
+      },
+      corriger: function () {
+        var juste = true, cible = null;
+        champs.forEach(function (c) {
+          var ok = texteAccepte(c.inp.value, c.def.acceptees);
+          if (!ok) {
+            juste = false;
+            if (!cible) cible = chercheErreur(c.def.erreurs, function (e) {
+              return normTexte(e.saisie) === normTexte(c.inp.value);
+            });
+          }
+        });
+        return { juste: juste, cible: cible };
+      },
+      figer: function () { champs.forEach(function (c) { c.inp.disabled = true; }); }
+    };
+  };
+
+  /* --- appariement --- */
+  TYPES.appariement = function (hote, ex) {
+    var box = el("div", "paires"), selects = [];
+    var droites = melange(ex.paires.map(function (p) { return p.droite; }).filter(
+      function (v, i, a) { return a.indexOf(v) === i; }), 31);
+    ex.paires.forEach(function (p) {
+      var ligne = el("div", "paire");
+      ligne.appendChild(html("div", "gauche", p.gauche));
+      var s = el("select");
+      s.setAttribute("aria-label", "Classe de " + p.gauche.replace(/<[^>]+>/g, ""));
+      s.appendChild(el("option", null, "— choisir —"));
+      droites.forEach(function (d) {
+        var o = el("option", null, d); o.value = d; s.appendChild(o);
+      });
+      selects.push({ s: s, attendu: p.droite });
+      ligne.appendChild(s); box.appendChild(ligne);
+    });
+    hote.appendChild(box);
+    return {
+      lire: function () {
+        var v = selects.map(function (x) { return x.s.value; });
+        return { vide: v.some(function (x) { return !x; }), brut: v.join(" / ") };
+      },
+      corriger: function () {
+        var faux = selects.filter(function (x) { return x.s.value !== x.attendu; });
+        return {
+          juste: faux.length === 0,
+          cible: faux.length ? (ex.retourConfusion || null) : null
+        };
+      },
+      figer: function () { selects.forEach(function (x) { x.s.disabled = true; }); }
+    };
+  };
+
+  /* --- classement --- */
+  TYPES.classement = function (hote, ex) {
+    var box = el("div", "paires"), selects = [];
+    melange(ex.items, 53).forEach(function (it) {
+      var ligne = el("div", "paire");
+      ligne.appendChild(html("div", "gauche", it.texte));
+      var s = el("select");
+      s.setAttribute("aria-label", "Catégorie de " + it.texte.replace(/<[^>]+>/g, ""));
+      s.appendChild(el("option", null, "— choisir —"));
+      ex.categories.forEach(function (c) {
+        var o = el("option", null, c); o.value = c; s.appendChild(o);
+      });
+      selects.push({ s: s, attendu: it.categorie, texte: it.texte });
+      ligne.appendChild(s); box.appendChild(ligne);
+    });
+    hote.appendChild(box);
+    return {
+      lire: function () {
+        var v = selects.map(function (x) { return x.s.value; });
+        return { vide: v.some(function (x) { return !x; }), brut: v.join(" / ") };
+      },
+      corriger: function () {
+        var faux = selects.filter(function (x) { return x.s.value !== x.attendu; });
+        var cible = null;
+        if (faux.length && ex.erreurs) {
+          cible = chercheErreur(ex.erreurs, function (e) {
+            return faux.some(function (f) {
+              return normTexte(f.texte).indexOf(normTexte(e.item)) >= 0 && f.s.value === e.mis;
+            });
+          });
+        }
+        return { juste: faux.length === 0, cible: cible };
+      },
+      figer: function () { selects.forEach(function (x) { x.s.disabled = true; }); }
+    };
+  };
+
+  /* --- repérage --- */
+  TYPES.reperage = function (hote, ex) {
+    var box = el("div", "mots"), boutons = [];
+    ex.mots.forEach(function (m) {
+      var b = el("button", "mot", m.texte);
+      b.type = "button";
+      if (ex.langueMots) b.setAttribute("lang", ex.langueMots);
+      b.addEventListener("click", function () { b.classList.toggle("choisi"); });
+      boutons.push({ b: b, def: m }); box.appendChild(b);
+    });
+    hote.appendChild(box);
+    hote.appendChild(el("p", "unite", "Touche les mots demandés. Touche à nouveau pour désélectionner."));
+    return {
+      lire: function () {
+        var pris = boutons.filter(function (x) { return x.b.classList.contains("choisi"); });
+        return { vide: pris.length === 0, brut: pris.map(function (x) { return x.def.texte; }).join(", ") };
+      },
+      corriger: function () {
+        var juste = boutons.every(function (x) {
+          return x.b.classList.contains("choisi") === !!x.def.cible;
+        });
+        var cible = null;
+        if (!juste && ex.erreurs) {
+          cible = chercheErreur(ex.erreurs, function (e) {
+            var t = boutons.filter(function (x) { return normTexte(x.def.texte) === normTexte(e.mot); })[0];
+            return t && t.b.classList.contains("choisi") && !t.def.cible;
+          });
+        }
+        return { juste: juste, cible: cible };
+      },
+      figer: function () {
+        boutons.forEach(function (x) {
+          x.b.disabled = true;
+          if (x.def.cible) x.b.style.borderColor = "#15803d";
+        });
+      }
+    };
+  };
+
+  /* --- ordonnancement --- */
+  TYPES.ordonnancement = function (hote, ex) {
+    var box = el("div", "rangs");
+    var courant = melange(ex.ordre, 17);
+    if (courant.join("|") === ex.ordre.join("|")) courant = melange(ex.ordre, 91);
+
+    function peindre() {
+      box.innerHTML = "";
+      courant.forEach(function (v, k) {
+        var r = el("div", "rang");
+        r.appendChild(el("span", "num", String(k + 1)));
+        r.appendChild(html("span", "val", v));
+        var up = el("button", "fleche", "↑"); up.type = "button"; up.disabled = (k === 0);
+        var dn = el("button", "fleche", "↓"); dn.type = "button"; dn.disabled = (k === courant.length - 1);
+        up.setAttribute("aria-label", "Monter"); dn.setAttribute("aria-label", "Descendre");
+        up.addEventListener("click", function () {
+          var t = courant[k - 1]; courant[k - 1] = courant[k]; courant[k] = t; peindre();
+        });
+        dn.addEventListener("click", function () {
+          var t = courant[k + 1]; courant[k + 1] = courant[k]; courant[k] = t; peindre();
+        });
+        r.appendChild(up); r.appendChild(dn);
+        box.appendChild(r);
+      });
+    }
+    peindre();
+    hote.appendChild(box);
+    hote.appendChild(el("p", "unite", ex.consigneOrdre || "Utilise les flèches pour ranger."));
+    return {
+      lire: function () { return { vide: false, brut: courant.join(" ; ").replace(/<[^>]+>/g, "") }; },
+      corriger: function () {
+        var juste = courant.join("|") === ex.ordre.join("|");
+        return {
+          juste: juste,
+          cible: juste ? null : chercheErreur(ex.erreurs, function (e) {
+            return e.ordre.join("|") === courant.join("|");
+          })
+        };
+      },
+      figer: function () {
+        box.querySelectorAll("button").forEach(function (b) { b.disabled = true; });
+      }
+    };
+  };
+
+  /* --- calcul par étapes (§6.7 : correction étape par étape) --- */
+  TYPES.calcul_par_etapes = function (hote, ex) {
+    var blocs = [];
+    ex.etapes.forEach(function (et, k) {
+      var b = el("div", "etape-bloc" + (k === 0 ? "" : " verrou"));
+      b.appendChild(html("p", "consigne", (k + 1) + ". " + et.consigne));
+      var d = el("div", "champ-num");
+      var inp = el("input");
+      inp.type = "text";
+      inp.setAttribute("autocomplete", "off");
+      inp.setAttribute("aria-label", "Étape " + (k + 1));
+      if (et.acceptees) { inp.style.width = "220px"; }
+      else { inp.setAttribute("inputmode", "decimal"); }
+      if (et.signe) {
+        var mb = el("button", "moins", "−"); mb.type = "button";
+        mb.addEventListener("click", function () {
+          inp.value = inp.value.charAt(0) === "-" ? inp.value.slice(1) : "-" + inp.value;
+          inp.focus();
+        });
+        d.appendChild(mb);
+      }
+      d.appendChild(inp);
+      if (et.unite) d.appendChild(el("span", "unite", et.unite));
+      b.appendChild(d);
+      var r = el("div", "retour");
+      b.appendChild(r);
+      blocs.push({ b: b, inp: inp, r: r, def: et, fait: false });
+      hote.appendChild(b);
+    });
+
+    return {
+      lire: function () {
+        var vals = blocs.map(function (x) { return x.inp.value.trim(); });
+        var premierVide = -1;
+        for (var k = 0; k < blocs.length; k++) { if (vals[k] === "") { premierVide = k; break; } }
+        return { vide: premierVide >= 0, brut: vals.join(" / ") };
+      },
+      corriger: function () {
+        var juste = true, cible = null;
+        blocs.forEach(function (x) {
+          var ok;
+          if (x.def.acceptees) ok = texteAccepte(x.inp.value, x.def.acceptees);
+          else ok = nombreEgal(x.inp.value, x.def.reponse, x.def.tolerance);
+          x.r.className = "retour " + (ok ? "juste" : "faux") + " ouvert";
+          var h = "<p class='verdict'>" + (ok ? "Étape juste." : "Étape fausse.") + "</p>";
+          if (!ok) {
+            h += "<p>Attendu : <b>" + (x.def.corrige !== undefined ? x.def.corrige : x.def.reponse) + "</b></p>";
+            var c = x.def.acceptees
+              ? chercheErreur(x.def.erreurs, function (e) { return normTexte(e.saisie) === normTexte(x.inp.value); })
+              : chercheErreur(x.def.erreurs, function (e) {
+                  var v = normNombre(x.inp.value);
+                  return v !== null && Math.abs(v - e.valeur) < 1e-9;
+                });
+            if (c) { h += "<div class='cible'>" + c + "</div>"; if (!cible) cible = c; }
+            juste = false;
+          }
+          x.r.innerHTML = h;
+          x.b.classList.remove("verrou");
+        });
+        return { juste: juste, cible: null, cibleEtape: cible };
+      },
+      figer: function () {
+        blocs.forEach(function (x) { x.inp.disabled = true; x.b.classList.remove("verrou"); });
+      }
+    };
+  };
+
+  document.addEventListener("input", function (ev) {
+    var b = ev.target.closest ? ev.target.closest(".etape-bloc") : null;
+    if (!b) return;
+    var suiv = b.nextElementSibling;
+    if (suiv && suiv.classList.contains("etape-bloc") && ev.target.value.trim() !== "") {
+      suiv.classList.remove("verrou");
+    }
+  });
+
+  /* =========================================================
+     Bilan (§6.7 — sept éléments) et envoi (§12.1)
+     ========================================================= */
+
+  function compteParPalier() {
+    var c = { 1: { ok: 0, tot: 0 }, 2: { ok: 0, tot: 0 }, 3: { ok: 0, tot: 0 } };
+    L.exercices.forEach(function (e) { c[e.palier].tot++; });
+    etat.resultats.forEach(function (r) { if (r.juste) c[r.palier].ok++; });
+    return c;
+  }
+
+  /* Pilote V3, lot 2 : score par matière, dans l'ordre d'apparition. */
+  function compteParMatiere() {
+    var r = { ordre: [], par: {} };
+    L.exercices.forEach(function (e) {
+      if (!e.matiere) return;
+      if (!r.par[e.matiere]) { r.par[e.matiere] = { ok: 0, tot: 0 }; r.ordre.push(e.matiere); }
+      r.par[e.matiere].tot++;
+    });
+    etat.resultats.forEach(function (x) {
+      if (x.matiere && r.par[x.matiere] && x.juste) r.par[x.matiere].ok++;
+    });
+    return r;
+  }
+
+  function prefixe(m) { return m ? "[" + m + "] " : ""; }
+
+  function atteint(c, p) {
+    return c[p].tot > 0 && c[p].ok / c[p].tot >= 2 / 3 - 1e-9;
+  }
+
+  function niveauAtteint(c) {
+    var n = 0, p;
+    for (p = 1; p <= 3; p++) if (atteint(c, p)) n = p;
+    return n;
+  }
+
+  function creuxSousNiveau(c, n) {
+    var creux = [], p;
+    for (p = 1; p < n; p++) if (!atteint(c, p)) creux.push(p);
+    return creux;
+  }
+
+  var NOMS_PALIER = { 1: "de base", 2: "d'application", 3: "de problème" };
+
+  function marcheAuDessus(c, n) {
+    var p = n + 1;
+    if (n < 1 || p > 3) return null;
+    return c[p].tot > 0 ? p : null;
+  }
+
+  function messageFin(c, n) {
+    var m = L.messages[n], creux = creuxSousNiveau(c, n), marche = marcheAuDessus(c, n);
+
+    if (creux.length) {
+      var bouts = creux.map(function (p) {
+        return "les exercices " + NOMS_PALIER[p] + " (" + c[p].ok + " sur " + c[p].tot + ")";
+      });
+      var liste = bouts.length === 1 ? bouts[0]
+        : bouts.slice(0, -1).join(", ") + " et " + bouts[bouts.length - 1];
+      m += " <b>Un point à ne pas laisser passer :</b> " + liste
+        + " n'ont pas suivi. C'est là qu'il faut revenir en premier.";
+    }
+
+    if (marche) {
+      m += " <b>La marche suivante :</b> les exercices " + NOMS_PALIER[marche]
+        + ", à " + c[marche].ok + " sur " + c[marche].tot + ".";
+    }
+    return m;
+  }
+
+  function afficherBilan() {
+    var c = compteParPalier();
+    var total = etat.resultats.filter(function (r) { return r.juste; }).length;
+    var duree = Math.max(1, Math.round((Date.now() - etat.debut) / 60000));
+    var niv = niveauAtteint(c);
+
+    var b = document.getElementById("bilan");
+    b.classList.add("ouvert");
+    document.getElementById("score-grand").textContent = total + " / " + L.exercices.length;
+    document.getElementById("score-sous").textContent = L.titre;
+
+    var p = document.getElementById("paliers");
+    p.innerHTML = "";
+    [["p1", "Bases", 1], ["p2", "Application", 2], ["p3", "Problèmes", 3]].forEach(function (x) {
+      var d = el("div", "pal " + x[0]);
+      d.appendChild(el("span", null, x[1]));
+      d.appendChild(el("span", null, c[x[2]].ok + " / " + c[x[2]].tot));
+      p.appendChild(d);
+    });
+    var pm = compteParMatiere();
+    pm.ordre.forEach(function (m) {
+      var d = el("div", "pal pm");
+      d.appendChild(el("span", null, m));
+      d.appendChild(el("span", null, pm.par[m].ok + " / " + pm.par[m].tot));
+      p.appendChild(d);
+    });
+
+    document.getElementById("message").innerHTML = messageFin(c, niv);
+
+    var manquees = [];
+    etat.resultats.forEach(function (r) {
+      if (!r.juste && manquees.indexOf(r.competence) < 0) manquees.push(r.competence);
+    });
+
+    var txt = construireBilan(c, duree, manquees);
+    document.getElementById("bilan-txt").textContent = txt;
+    zone.style.display = "none";
+    boutonRappel.classList.remove("visible");
+    window.scrollTo(0, 0);
+    envoyer(c, txt);
+
+    document.getElementById("copier").addEventListener("click", function () {
+      var f = function () {
+        var ta = document.createElement("textarea");
+        ta.value = txt; document.body.appendChild(ta); ta.select();
+        try { document.execCommand("copy"); } catch (e) {}
+        document.body.removeChild(ta);
+      };
+      if (navigator.clipboard) navigator.clipboard.writeText(txt).catch(f); else f();
+      document.getElementById("copier").textContent = "Copié";
+    });
+
+    document.getElementById("mailto").href =
+      "mailto:?subject=" + encodeURIComponent(sujet(c)) + "&body=" + encodeURIComponent(txt);
+  }
+
+  function sujet(c) {
+    return "[REV] " + L.identifiant + " — " +
+      c[1].ok + "/" + c[1].tot + " · " +
+      c[2].ok + "/" + c[2].tot + " · " +
+      c[3].ok + "/" + c[3].tot;
+  }
+
+  function calculerReport(manquees) {
+    var parComp = {};
+    etat.echauffement.forEach(function (r) {
+      if (!(r.competence in parComp)) parComp[r.competence] = true;
+      if (!r.juste) parComp[r.competence] = false;
+    });
+    var report = (L.reportEntrant || []).filter(function (comp) {
+      return parComp[comp] !== true;
+    });
+    manquees.forEach(function (m) { if (report.indexOf(m) < 0) report.push(m); });
+    return report;
+  }
+
+  function ligneEchauffement() {
+    if (!etat.echauffement.length) return null;
+    var ok = etat.echauffement.filter(function (r) { return r.juste; }).length;
+    var comps = [];
+    etat.echauffement.forEach(function (r) {
+      if (comps.indexOf(r.competence) < 0) comps.push(r.competence);
+    });
+    return "Échauffement (hors score) : " + ok + "/" + etat.echauffement.length +
+           " — " + comps.join(" ; ");
+  }
+
+  function lignesEchauffementDetail() {
+    return etat.echauffement.map(function (r) {
+      return "  R" + r.n + ". " + prefixe(r.matiere) + r.resume + (r.juste ? "  [ok]" : "  [raté]");
+    });
+  }
+
+  function construireBilan(c, duree, manquees) {
+    var report = calculerReport(manquees);
+    var l = [];
+    l.push("Séance : " + L.identifiant);                                    /* 1 */
+    l.push("Leçon : " + L.titre);
+    l.push("");
+    var le = ligneEchauffement();
+    if (le) { l.push(le); lignesEchauffementDetail().forEach(function (x) { l.push(x); }); }
+    l.push("Bases " + c[1].ok + "/" + c[1].tot +                            /* 2 */
+           " · Application " + c[2].ok + "/" + c[2].tot +
+           " · Problèmes " + c[3].ok + "/" + c[3].tot);
+    var pm = compteParMatiere();
+    if (pm.ordre.length) {
+      l.push("Par matière : " + pm.ordre.map(function (m) {
+        return m + " " + pm.par[m].ok + "/" + pm.par[m].tot;
+      }).join(" · "));
+    }
+    l.push("Durée : " + duree + " min · Indices ouverts : " + etat.indices +
+           " · Retours à la leçon : " + etat.retoursLecon);                    /* 3 */
+    l.push("");
+    l.push("Exercices posés");                                              /* 4 */
+    etat.resultats.forEach(function (r) {
+      l.push("  " + r.n + ". " + prefixe(r.matiere) + r.resume + (r.juste ? "  [ok]" : "  [raté]"));
+    });
+    l.push("");
+    l.push("Compétences manquées");                                         /* 5 */
+    if (manquees.length === 0) l.push("  aucune");
+    else manquees.forEach(function (m) { l.push("  - " + m); });
+    l.push("");
+    l.push("Signalements de l'enfant");                                     /* 6 */
+    if (etat.signalements.length === 0) l.push("  aucun");
+    else etat.signalements.forEach(function (s) {
+      l.push("  - exercice " + s.n + " : réponse donnée « " + s.donnee + " »");
+    });
+    l.push("");
+    if (report.length === 0 && etat.signalements.length === 0) {           /* 7 */
+      l.push("Rien à reporter.");
+    } else {
+      l.push("À coller à la prochaine demande :");
+      l.push("  Bases " + c[1].ok + "/" + c[1].tot +
+             " · Application " + c[2].ok + "/" + c[2].tot +
+             " · Problèmes " + c[3].ok + "/" + c[3].tot);
+      l.push("  Compétences manquées cette séance : " +
+             (manquees.length ? manquees.join(" ; ") : "aucune"));
+      l.push("  Manques non repris : " + (report.length ? report.join(" ; ") : "aucun"));
+      l.push("  Exercices déjà posés : " + etat.resultats.map(function (r) { return r.resume; }).join(" ; "));
+    }
+    l.push("");
+    l.push("pilote V3 · moteur 2.8 + voix par langue + blocs par matière");
+    return l.join("\n");
+  }
+
+  function corpsEnvoi(c, txt) {
+    var f = new FormData();
+    f.append("access_key", CLE_ENVOI);
+    f.append("subject", sujet(c));
+    f.append("from_name", "Fichier de révision");
+    f.append("message", txt);
+    return f;
+  }
+
+  function envoyer(c, txt) {
+    if (etat.envoye) return;
+    etat.envoye = true;
+    var z = document.getElementById("envoi");
+    z.textContent = "Envoi du bilan…";
+    fetch("https://api.web3forms.com/submit", { method: "POST", body: corpsEnvoi(c, txt) })
+      .then(function (r) { return r.json(); })
+      .then(function (d) {
+        if (d && d.success) { z.className = "envoi ok"; z.textContent = "Bilan envoyé."; }
+        else { z.className = "envoi ko"; z.textContent = "Envoi refusé. Utilise le bouton Copier ci-dessous."; }
+      })
+      .catch(function () {
+        fetch("https://api.web3forms.com/submit",
+              { method: "POST", body: corpsEnvoi(c, txt), mode: "no-cors" })
+          .then(function () {
+            z.className = "envoi ok";
+            z.textContent = "Bilan envoyé (sans accusé de réception).";
+          })
+          .catch(function () {
+            z.className = "envoi ko";
+            z.textContent = "Envoi impossible — pas de réseau. Utilise le bouton Copier ci-dessous.";
+          });
+      });
+  }
+
+  /* ---------- Démarrage ---------- */
+
+  var ECHAUF = L.echauffement || [];
+  var TOUS = ECHAUF.concat(L.exercices);
+
+  function signaler(msg) {
+    var d = document.getElementById("diagnostic");
+    if (d) { d.className = "diag"; d.textContent = msg; }
+  }
+
+  document.getElementById("demarrer").addEventListener("click", function () {
+    panneau.classList.add("flottant");
+    this.parentNode.style.display = "none";
+    var avant = document.getElementById("avant");
+    if (avant) avant.style.display = "none";
+    zone.style.display = "block";
+    boutonRappel.classList.add("visible");
+    var premiers = zone.querySelectorAll(".exo");
+    if (!premiers.length) {
+      signaler("Les exercices n'ont pas pu être construits sur cet appareil.");
+      return;
+    }
+    premiers[0].classList.add("actif");
+    ancreCourante = TOUS[0].ancre || null;
+    etat.debut = Date.now();
+    window.scrollTo(0, 0);
+  });
+
+  var batis = 0;
+  TOUS.forEach(function (ex, k) {
+    try {
+      zone.appendChild(rendreExercice(ex, k < ECHAUF.length ? k + 1 : k - ECHAUF.length + 1));
+      batis++;
+    } catch (err) {
+      signaler("L'exercice " + (k + 1) + " n'a pas pu être construit : " + err.message);
+    }
+  });
+  if (batis !== TOUS.length) {
+    signaler(batis + " exercice(s) construits sur " + TOUS.length + " attendus.");
+  }
+
+  try { construireSommaire(); } catch (err) { signaler("Sommaire : " + err.message); }
+
+  document.querySelectorAll(".angle-btn").forEach(function (b) {
+    b.addEventListener("click", function () {
+      var t = b.nextElementSibling;
+      t.classList.toggle("ouvert");
+      b.textContent = t.classList.contains("ouvert") ? "Masquer" : "Une autre façon de le voir";
+    });
+  });
+
+  document.querySelectorAll("[data-lire]").forEach(function (n) {
+    n.appendChild(boutonLire(n));
+  });
+})();
+
+</script>
+</body>
+</html>
