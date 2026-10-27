@@ -5,29 +5,33 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex, nofollow">
 <meta name="referrer" content="no-referrer">
-<title>Nouvelle s&#233;ance</title>
+<title>Nouvelle séance</title>
 <style>
 :root { --encre: #1c1917; --encre-2: #57534e; --trait: #e7e5e4; --fond: #fafaf9; --carte: #fff; --accent: #4338ca; --accent-bg: #eef2ff; --ok: #15803d; --ok-bg: #f0fdf4; }
 * { box-sizing: border-box; }
 body { margin: 0; background: var(--fond); color: var(--encre); font: 17px/1.5 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
 .page { max-width: 34rem; margin: 0 auto; padding: 18px 16px 40px; }
 h1 { font-size: 1.35rem; margin: 0 0 12px; }
+h2 { font-size: 1.1rem; margin: 0 0 8px; }
 .carte { background: var(--carte); border: 1px solid var(--trait); border-radius: 14px; padding: 14px; margin: 0 0 14px; }
+.carte.message { border-color: var(--accent); background: var(--accent-bg); }
 .lbl { color: var(--encre-2); font-size: .85rem; margin: 0; }
 .val { margin: 0 0 10px; font-weight: 600; }
-textarea { width: 100%; min-height: 90px; font: inherit; border: 1px solid var(--trait); border-radius: 10px; padding: 10px; }
-button { width: 100%; font: inherit; font-weight: 700; border-radius: 999px; padding: 12px 16px; min-height: 48px; border: 1px solid var(--accent); background: var(--accent); color: #fff; cursor: pointer; }
+textarea { width: 100%; min-height: 90px; font: inherit; border: 1px solid var(--trait); border-radius: 10px; padding: 10px; background: #fff; color: var(--encre); }
+textarea.prompt { min-height: 330px; font-size: .95rem; line-height: 1.45; }
+button { width: 100%; font: inherit; font-weight: 700; border-radius: 999px; padding: 12px 16px; min-height: 48px; border: 1px solid var(--accent); background: var(--accent); color: #fff; cursor: pointer; margin: 10px 0 0; }
+button.copie-ok { background: var(--ok); border-color: var(--ok); }
 button:disabled { opacity: .5; }
+.etape { margin: 0 0 8px; }
 .etat { margin: 12px 0 0; padding: 12px; border-radius: 10px; background: var(--trait); font-weight: 600; }
 .etat.ok { background: var(--ok-bg); color: var(--ok); }
-.etat.ko { background: #fee2e2; color: #7f1d1d; }
 .aide { color: var(--encre-2); font-size: .9rem; }
 </style>
 </head>
 <body>
 <div class="page" id="page">
-  <h1>Nouvelle s&#233;ance</h1>
-  <div id="contenu"><p class="aide">Cette page s'ouvre depuis le tableau de bord, bouton &#171; Nouvelle s&#233;ance &#187;.</p></div>
+  <h1>Nouvelle séance</h1>
+  <div id="contenu"><p class="aide">Cette page s'ouvre depuis le tableau de bord, bouton « Nouvelle séance ».</p></div>
 </div>
 <script>
 (function () {
@@ -38,46 +42,94 @@ button:disabled { opacity: .5; }
   if (!D.e || !D.id) return;
   var box = document.getElementById("contenu");
   function el(tag, cls, txt) { var x = document.createElement(tag); if (cls) x.className = cls; if (txt != null) x.textContent = txt; return x; }
+  function z(n) { return String(n).padStart(2, "0"); }
+  function maintenant() { var t = new Date(); return z(t.getDate()) + "/" + z(t.getMonth() + 1) + " à " + z(t.getHours()) + ":" + z(t.getMinutes()); }
+
+  // Le message à coller dans Claude : complet, pour qu'une nouvelle conversation du projet le comprenne seule.
+  function message(precision, quand, mailParti) {
+    return [
+      "Génère la séance demandée pour " + D.e + ", seule, sans attendre un lot (procédure « Demande traitée seule » de LISEZMOI.md).",
+      "Séance d'origine : " + D.id,
+      "Matière : " + (D.m || "?"),
+      "Chapitre : " + (D.c || "?"),
+      "Sur : " + (D.t || "?"),
+      "Précision : " + (precision ? precision.replace(/\s*\n+\s*/g, " / ") : "aucune"),
+      "Demande du " + quand + (mailParti ? " (mail [DEMANDE] envoyé)." : " (mail [DEMANDE] non parti).")
+    ].join("\n");
+  }
+
   box.innerHTML = "";
   var c = el("div", "carte");
-  [["Pour", D.e], ["Mati\u00e8re", D.m], ["Chapitre", D.c], ["Sur le th\u00e8me de", D.t]].forEach(function (p) {
+  [["Pour", D.e], ["Matière", D.m], ["Chapitre", D.c], ["Sur le thème de", D.t]].forEach(function (p) {
     if (!p[1]) return;
     c.appendChild(el("p", "lbl", p[0]));
     c.appendChild(el("p", "val", p[1]));
   });
   box.appendChild(c);
-  box.appendChild(el("p", "lbl", "Une pr\u00e9cision ? (facultatif : ce qui coince, ce que tu veux en plus)"));
+  box.appendChild(el("p", "lbl", "Une précision ? (facultatif : ce qui coince, ce que tu veux en plus)"));
   var txt = el("textarea"); box.appendChild(txt);
-  box.appendChild(el("p", "aide", "La nouvelle s\u00e9ance sera faite au prochain \u00ab g\u00e9n\u00e8re pour " + D.e + " \u00bb."));
-  var b = el("button", null, "Envoyer la demande"); b.type = "button"; box.appendChild(b);
-  var etat = el("p", "etat"); etat.hidden = true; box.appendChild(etat);
+  var b = el("button", null, "Préparer le message pour Claude"); b.type = "button"; box.appendChild(b);
   var CLE = "rev-demande:" + D.id, deja = null;
   try { deja = localStorage.getItem(CLE); } catch (e) {}
-  if (deja) { etat.hidden = false; etat.className = "etat"; etat.textContent = "D\u00e9j\u00e0 demand\u00e9e le " + deja + ". Tu peux la redemander si tu veux pr\u00e9ciser."; }
+  var etat = el("p", "etat"); etat.hidden = !deja; box.appendChild(etat);
+  if (deja) etat.textContent = "Déjà demandée le " + deja + ". Tu peux la redemander si tu veux préciser.";
+
+  // Bloc « message pour Claude », affiché après « Préparer ».
+  var zone = el("div", "carte message"); zone.hidden = true;
+  zone.appendChild(el("h2", null, "À envoyer à Claude"));
+  zone.appendChild(el("p", "etape", "1. Touche « Copier le message »."));
+  zone.appendChild(el("p", "etape", "2. Dans Claude, ouvre le projet « Outil De Révision » et colle le message dans une conversation."));
+  zone.appendChild(el("p", "etape", "3. Envoie : la séance est faite tout de suite et arrive dans le tableau de bord."));
+  var prompt = el("textarea", "prompt"); prompt.readOnly = true; prompt.setAttribute("aria-label", "Message pour Claude");
+  zone.appendChild(prompt);
+  var copier = el("button", null, "Copier le message"); copier.type = "button"; zone.appendChild(copier);
+  zone.appendChild(el("p", "aide", "Si tu préfères attendre : ne fais rien, elle sera faite au prochain « génère pour " + D.e + " »."));
+  box.appendChild(zone);
+
+  function copierTexte(t) {
+    if (navigator.clipboard && window.isSecureContext) return navigator.clipboard.writeText(t);
+    return new Promise(function (ok, ko) {
+      prompt.focus(); prompt.select();
+      try { if (document.execCommand("copy")) ok(); else ko(new Error("copie")); } catch (e) { ko(e); }
+    });
+  }
+  copier.addEventListener("click", function () {
+    copierTexte(prompt.value).then(function () {
+      copier.textContent = "Message copié ✓"; copier.className = "copie-ok";
+    }, function () {
+      prompt.focus(); prompt.select();
+      copier.textContent = "Sélectionné : appuie longuement, puis Copier";
+    });
+  });
+
   b.addEventListener("click", function () {
-    var l = ["Demande : nouvelle s\u00e9ance", "Enfant : " + D.e, "S\u00e9ance : " + D.id, "Mati\u00e8re : " + D.m, "Chapitre : " + D.c,
-             "Sur : " + D.t, "Pr\u00e9cision : " + (txt.value.trim() || "aucune"), "", "pilote V3 \u00b7 demande depuis le tableau de bord (27 octobre)"];
+    var precision = txt.value.trim(), quand = maintenant();
+    var l = ["Demande : nouvelle séance", "Enfant : " + D.e, "Séance : " + D.id, "Matière : " + D.m, "Chapitre : " + D.c,
+             "Sur : " + D.t, "Précision : " + (precision || "aucune"), "",
+             "pilote V3 · demande depuis le tableau de bord (27 octobre)"];
     var f = new FormData();
     f.append("access_key", CLE_ENVOI);
-    f.append("subject", "[DEMANDE] " + D.id + " \u2014 nouvelle s\u00e9ance");
+    f.append("subject", "[DEMANDE] " + D.id + " — nouvelle séance");
     f.append("from_name", "Tableau de bord");
     f.append("message", l.join("\n"));
-    b.disabled = true; b.textContent = "Envoi\u2026";
+    b.disabled = true; b.textContent = "Préparation…";
+    function montrer(mailParti) {
+      prompt.value = message(precision, quand, mailParti);
+      zone.hidden = false;
+      copier.textContent = "Copier le message"; copier.className = "";
+      b.disabled = false; b.textContent = "Refaire le message";
+      etat.hidden = false; etat.className = mailParti ? "etat ok" : "etat";
+      etat.textContent = mailParti ? "Demande notée le " + quand + "." : "Mail de demande non parti (connexion ?). Le message pour Claude suffit.";
+      zone.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
     fetch("https://api.web3forms.com/submit", { method: "POST", body: f })
       .then(function (r) { return r.json(); })
       .then(function (d) {
-        if (!d || !d.success) throw new Error("refus\u00e9");
-        var t = new Date(), z = function (n) { return String(n).padStart(2, "0"); };
-        var quand = z(t.getDate()) + "/" + z(t.getMonth() + 1) + " \u00e0 " + z(t.getHours()) + ":" + z(t.getMinutes());
+        if (!d || !d.success) throw new Error("refusé");
         try { localStorage.setItem(CLE, quand); } catch (e) {}
-        etat.hidden = false; etat.className = "etat ok";
-        etat.textContent = "Demande envoy\u00e9e. Elle sera trait\u00e9e au prochain \u00ab g\u00e9n\u00e8re pour " + D.e + " \u00bb. Tu peux fermer cette page.";
-        b.textContent = "Demande envoy\u00e9e";
+        montrer(true);
       })
-      .catch(function () {
-        b.disabled = false; b.textContent = "R\u00e9essayer";
-        etat.hidden = false; etat.className = "etat ko"; etat.textContent = "Envoi impossible. V\u00e9rifie la connexion, puis r\u00e9essaie.";
-      });
+      .catch(function () { montrer(false); });
   });
 })();
 </script>
