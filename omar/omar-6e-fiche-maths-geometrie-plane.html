@@ -1,0 +1,148 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Fiche &#183; G&#233;om&#233;trie plane</title>
+<style>
+:root { --encre:#1c1917; --gris:#57534e; --or:#b45309; --or-bg:#fffbeb; --bleu:#1e3a8a; color-scheme: light; }
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body { margin: 0; background: #e7ecf3; color: var(--encre);
+       font: 15px/1.35 system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif; }
+.affiche { background: #fff; margin: 0 auto; padding: 14px 12px 18px; }
+/* bandeau */
+.bandeau { display: flex; align-items: center; gap: 12px; padding: 12px 14px; border-radius: 16px;
+           background: linear-gradient(135deg, #1e3a8a, #3730a3); color: #fff; }
+.bandeau .titres { flex: 1 1 auto; min-width: 0; }
+.bandeau h1 { margin: 0; font-size: 27px; line-height: 1.05; font-weight: 900; letter-spacing: .02em;
+              text-transform: uppercase; }
+.bandeau .sous { display: inline-block; margin: 6px 0 0; padding: 2px 12px; border-radius: 999px; background: #facc15;
+                 color: #1e1b4b; font-weight: 850; font-size: 14px; letter-spacing: .02em; text-transform: uppercase; }
+.bandeau .qui { flex: 0 0 auto; display: flex; align-items: center; gap: 8px; }
+.bandeau .badge { padding: 6px 12px; border-radius: 999px; background: #fff; color: var(--bleu); font-weight: 900;
+                  font-size: 15px; white-space: nowrap; }
+.legende { display: flex; flex-wrap: wrap; gap: 2px 14px; margin: 10px 2px 0; color: var(--gris); font-size: 13px; }
+.legende b { color: var(--or); }
+.legende i { font-style: normal; color: #b91c1c; font-weight: 700; }
+/* cartes */
+.grille { display: grid; grid-template-columns: 1fr; gap: 10px; margin: 10px 0 0; }
+.carte { display: flex; flex-direction: column; min-width: 0; padding: 9px 11px 10px; border: 2px solid var(--c);
+         border-radius: 14px; background: var(--bg); }
+.carte h2 { display: flex; align-items: center; gap: 8px; margin: 0 0 6px; color: var(--c); font-size: 17px;
+            line-height: 1.15; font-weight: 850; }
+.num { flex: 0 0 auto; display: inline-grid; place-items: center; width: 27px; height: 27px; border-radius: 50%;
+       background: var(--c); color: #fff; font-size: 14px; font-weight: 900; }
+.fig { background: #fff; border-radius: 10px; padding: 3px; margin: 0 0 6px; }
+.fig svg { display: block; width: 100%; height: auto; max-height: 150px; }
+.nota { margin: 0; color: var(--c); font-size: 25px; line-height: 1.1; font-weight: 900; letter-spacing: .03em;
+        white-space: nowrap; }
+.nota.petite { font-size: 19px; }
+.ligne { margin: 3px 0 0; }
+.coeur { position: relative; margin: 7px 0 0; padding: 5px 8px 5px 25px; border-left: 4px solid #d97706;
+         border-radius: 0 8px 8px 0; background: var(--or-bg); font-size: 14px; }
+.coeur::before { content: "\2605"; position: absolute; left: 7px; top: 4px; color: #d97706; }
+.piege { margin: 7px 0 0; padding: 4px 8px; border: 1.5px dashed #dc2626; border-radius: 8px; background: #fef2f2;
+         color: #991b1b; font-size: 14px; }
+.piege b { color: #b91c1c; }
+.si, .alors { display: flex; flex-wrap: wrap; align-items: baseline; gap: 2px 7px; margin: 3px 0 0; font-weight: 700; }
+.mot { display: inline-block; min-width: 3.9em; padding: 0 6px; border-radius: 6px; background: var(--c); color: #fff;
+       text-align: center; font-size: 12px; font-weight: 900; letter-spacing: .05em; }
+.alors .mot { background: var(--encre); }
+.sym { white-space: nowrap; font-weight: 800; letter-spacing: .02em; }
+ol.etapes { list-style: none; margin: 2px 0 0; padding: 0; counter-reset: e; }
+ol.etapes li { counter-increment: e; position: relative; margin: 4px 0 0; padding: 0 0 0 27px; }
+ol.etapes li::before { content: counter(e); position: absolute; left: 0; top: 0; width: 20px; height: 20px;
+                       border-radius: 50%; display: grid; place-items: center; background: var(--c); color: #fff;
+                       font-size: 12px; font-weight: 900; }
+.renvoi { margin: 5px 0 0; color: var(--c); font-weight: 700; font-size: 14px; }
+/* \0000e0 retenir */
+.retenir { margin: 10px 0 0; padding: 10px 12px; border: 2px solid var(--bleu); border-radius: 14px; background: #eff6ff; }
+.retenir h2 { display: inline-block; margin: 0 0 6px; padding: 3px 12px; border-radius: 8px; background: var(--bleu);
+              color: #fff; font-size: 17px; font-weight: 900; text-transform: uppercase; letter-spacing: .03em;
+              transform: rotate(-2deg); }
+.colonnes { display: grid; grid-template-columns: 1fr; gap: 8px 16px; }
+.colonnes h3 { margin: 0 0 3px; color: var(--bleu); font-size: 14px; text-transform: uppercase; letter-spacing: .04em; }
+.ok { list-style: none; margin: 0; padding: 0; }
+.ok li { position: relative; margin: 3px 0 0; padding: 0 0 0 24px; }
+.ok li::before { content: "\2714"; position: absolute; left: 0; top: 1px; width: 17px; height: 17px; border-radius: 50%;
+                 display: grid; place-items: center; background: #16a34a; color: #fff; font-size: 10px; }
+.ok b { white-space: nowrap; }
+.ok [data-coeur]::before { content: "\2605  "; color: #d97706; }
+.imprimer { display: block; margin: 12px auto 24px; font: inherit; font-weight: 700; padding: 8px 18px; min-height: 44px;
+            border-radius: 999px; border: 1px solid #cbd5e1; background: #fff; color: var(--encre); cursor: pointer; }
+@media (min-width: 560px) {
+  .grille { grid-template-columns: 1fr 1fr; }
+  .colonnes { grid-template-columns: 1fr 1fr; }
+}
+/* L'affiche : \0000e9cran large, image et impression (794 px = 210 mm). */
+@media (min-width: 780px), print {
+  body { font-size: 12px; line-height: 1.26; }
+  .affiche { width: 794px; min-height: 1123px; padding: 20px 22px 12px; margin: 16px auto 0;
+             box-shadow: 0 2px 14px rgba(15, 23, 42, .12); }
+  .bandeau { padding: 8px 16px; border-radius: 14px; }
+  .bandeau h1 { font-size: 31px; }
+  .bandeau .sous { font-size: 12px; margin-top: 4px; padding: 1px 10px; }
+  .bandeau .badge { font-size: 13px; padding: 4px 10px; }
+  .bandeau svg { width: 44px; height: 44px; }
+  .grille { grid-template-columns: repeat(3, 1fr); gap: 6px; margin-top: 6px; }
+  .carte { padding: 5px 8px 6px; border-radius: 12px; }
+  .carte h2 { font-size: 14px; margin: 0 0 3px; gap: 6px; }
+  .num { width: 21px; height: 21px; font-size: 11.5px; }
+  .fig { margin: 0 0 3px; padding: 1px; border-radius: 8px; }
+  .fig svg { max-height: 66px; }
+  .nota { font-size: 19px; }
+  .nota.petite { font-size: 15px; }
+  .ligne { margin: 1px 0 0; font-size: 11.6px; }
+  .coeur { margin: 4px 0 0; padding: 2px 6px 2px 19px; font-size: 10.6px; line-height: 1.22; border-left-width: 3px; }
+  .coeur::before { left: 5px; top: 2px; }
+  .piege { margin: 4px 0 0; padding: 2px 6px; font-size: 10.6px; line-height: 1.22; }
+  .si, .alors { margin: 1px 0 0; font-size: 11.8px; }
+  .mot { font-size: 10px; }
+  ol.etapes li { margin: 2px 0 0; padding-left: 22px; font-size: 11.2px; line-height: 1.22; }
+  ol.etapes li::before { width: 16px; height: 16px; font-size: 10px; }
+  .renvoi { font-size: 11.2px; margin: 2px 0 0; }
+  .retenir { margin: 6px 0 0; padding: 5px 12px 7px; }
+  .retenir h2 { font-size: 13.5px; margin: 0 0 3px; padding: 2px 10px; }
+  .colonnes { grid-template-columns: 1.2fr .85fr 1.1fr; gap: 2px 16px; font-size: 11.4px; }
+  .colonnes h3 { font-size: 11px; margin: 0 0 1px; }
+  .ok li { margin: 1px 0 0; padding-left: 20px; }
+  .ok li::before { width: 14px; height: 14px; font-size: 8.5px; }
+  .pied { margin: 5px 2px 0; font-size: 10px; }
+}
+@page { size: A4; margin: 0; }
+@media print {
+  * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  body { background: #fff; }
+  .affiche { margin: 0; box-shadow: none; width: 210mm; height: 297mm; min-height: 0; overflow: hidden; }
+  .imprimer { display: none; }
+}
+</style>
+</head>
+<body data-fiche="omar-6e-fiche-maths-geometrie-plane">
+<main class="affiche" id="affiche">
+<header class="bandeau">
+<div class="titres"><h1>G&#233;om&#233;trie plane</h1><span class="sous">L'essentiel de la le&#231;on</span></div>
+<div class="qui"><span class="badge">Omar &#183; 6e</span><svg viewBox="0 0 64 64" width="54" height="54" aria-hidden="true"><path d="M8 6 V56 H58 Z" fill="#fde68a" stroke="#f59e0b" stroke-width="3" stroke-linejoin="round"/><path d="M18 26 V46 H38 Z" fill="#1e3a8a" stroke="#f59e0b" stroke-width="2" stroke-linejoin="round"/><path d="M8 46 h6 M8 36 h4 M8 26 h6 M8 16 h4 M18 56 v-6 M28 56 v-4 M38 56 v-6 M48 56 v-4" stroke="#b45309" stroke-width="2"/></svg></div>
+</header>
+<div class="grille">
+<section class="carte" style="--c:#4338ca;--bg:#eef2ff"><h2><span class="num">1</span>Le segment</h2><div class="fig"><svg viewBox="0 0 200 80" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="figure de notation" style="background:#fff"><line x1="60" y1="50" x2="140" y2="34" stroke="#1c1917" stroke-width="2.4" stroke-linecap="round"/><path d="M54.5 50 L65.5 50 M60 44.5 L60 55.5" stroke="#1c1917" stroke-width="2" stroke-linecap="round"/><text x="58" y="74" font-size="15" fill="#1c1917" text-anchor="middle" font-weight="700" font-family="Arial, Helvetica, sans-serif">A</text><path d="M134.5 34 L145.5 34 M140 28.5 L140 39.5" stroke="#1c1917" stroke-width="2" stroke-linecap="round"/><text x="142" y="22" font-size="15" fill="#1c1917" text-anchor="middle" font-weight="700" font-family="Arial, Helvetica, sans-serif">B</text></svg></div><p class="nota">[AB]</p><p class="ligne">Il s'arr&#234;te en A et en B : ce sont ses extr&#233;mit&#233;s.</p><p class="coeur" data-coeur>Les points A et B sont les extr&#233;mit&#233;s du segment [AB].</p></section>
+<section class="carte" style="--c:#4338ca;--bg:#eef2ff"><h2><span class="num">2</span>La droite</h2><div class="fig"><svg viewBox="0 0 200 80" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="figure de notation" style="background:#fff"><line x1="8" y1="60.4" x2="192" y2="23.6" stroke="#1c1917" stroke-width="2.4" stroke-linecap="round"/><path d="M54.5 50 L65.5 50 M60 44.5 L60 55.5" stroke="#1c1917" stroke-width="2" stroke-linecap="round"/><text x="58" y="74" font-size="15" fill="#1c1917" text-anchor="middle" font-weight="700" font-family="Arial, Helvetica, sans-serif">A</text><path d="M134.5 34 L145.5 34 M140 28.5 L140 39.5" stroke="#1c1917" stroke-width="2" stroke-linecap="round"/><text x="142" y="22" font-size="15" fill="#1c1917" text-anchor="middle" font-weight="700" font-family="Arial, Helvetica, sans-serif">B</text></svg></div><p class="nota">(AB)</p><p class="ligne">Elle continue des deux c&#244;t&#233;s, sans fin.</p><p class="coeur" data-coeur>Une droite est une ligne droite illimit&#233;e, elle peut &#234;tre prolong&#233;e des deux c&#244;t&#233;s.</p></section>
+<section class="carte" style="--c:#4338ca;--bg:#eef2ff"><h2><span class="num">3</span>La demi-droite</h2><div class="fig"><svg viewBox="0 0 200 80" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="figure de notation" style="background:#fff"><line x1="60" y1="50" x2="192" y2="23.6" stroke="#1c1917" stroke-width="2.4" stroke-linecap="round"/><line x1="58.6" y1="43.1" x2="61.4" y2="56.9" stroke="#1c1917" stroke-width="2.4" stroke-linecap="round"/><path d="M54.5 50 L65.5 50 M60 44.5 L60 55.5" stroke="#1c1917" stroke-width="2" stroke-linecap="round"/><text x="58" y="74" font-size="15" fill="#1c1917" text-anchor="middle" font-weight="700" font-family="Arial, Helvetica, sans-serif">A</text><path d="M134.5 34 L145.5 34 M140 28.5 L140 39.5" stroke="#1c1917" stroke-width="2" stroke-linecap="round"/><text x="142" y="22" font-size="15" fill="#1c1917" text-anchor="middle" font-weight="700" font-family="Arial, Helvetica, sans-serif">B</text></svg></div><p class="nota">[AB)</p><p class="ligne">Elle part de A et passe par B. A est son origine.</p><p class="coeur" data-coeur>Le point A est l'origine de la demi-droite [AB).</p><p class="piege"><b>Pi&#232;ge</b> : [AB) et [BA) ne sont pas la m&#234;me demi-droite.</p></section>
+<section class="carte" style="--c:#0f766e;--bg:#ecfdf5"><h2><span class="num">4</span>Points align&#233;s</h2><div class="fig"><svg viewBox="0 0 220 84" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="trois points align&#233;s" style="background:#fff"><line x1="8" y1="60" x2="212" y2="20.3" stroke="#1c1917" stroke-width="2.4" stroke-linecap="round"/><path d="M39.5 52.8 L50.5 52.8 M45 47.3 L45 58.3" stroke="#1c1917" stroke-width="2" stroke-linecap="round"/><text x="45" y="74.8" font-size="15" fill="#1c1917" text-anchor="middle" font-weight="700" font-family="Arial, Helvetica, sans-serif">M</text><path d="M104.5 40.2 L115.5 40.2 M110 34.7 L110 45.7" stroke="#1c1917" stroke-width="2" stroke-linecap="round"/><text x="110" y="62.2" font-size="15" fill="#1c1917" text-anchor="middle" font-weight="700" font-family="Arial, Helvetica, sans-serif">A</text><path d="M169.5 27.5 L180.5 27.5 M175 22 L175 33" stroke="#1c1917" stroke-width="2" stroke-linecap="round"/><text x="175" y="49.5" font-size="15" fill="#1c1917" text-anchor="middle" font-weight="700" font-family="Arial, Helvetica, sans-serif">B</text></svg></div><p class="ligne">M, A et B sont sur la m&#234;me droite.</p><p class="coeur" data-coeur>Des points align&#233;s sont des points qui appartiennent &#224; une m&#234;me droite.</p></section>
+<section class="carte" style="--c:#0f766e;--bg:#ecfdf5"><h2><span class="num">5</span>Appartenir : &#8712; et &#8713;</h2><div class="fig"><svg viewBox="0 0 220 90" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="M sur la droite (AB), N hors de la droite" style="background:#fff"><line x1="8" y1="60" x2="212" y2="20.3" stroke="#1c1917" stroke-width="2.4" stroke-linecap="round"/><path d="M34.5 53.8 L45.5 53.8 M40 48.3 L40 59.3" stroke="#1c1917" stroke-width="2" stroke-linecap="round"/><text x="40" y="75.8" font-size="15" fill="#1c1917" text-anchor="middle" font-weight="700" font-family="Arial, Helvetica, sans-serif">M</text><path d="M99.5 41.1 L110.5 41.1 M105 35.6 L105 46.6" stroke="#1c1917" stroke-width="2" stroke-linecap="round"/><text x="105" y="63.1" font-size="15" fill="#1c1917" text-anchor="middle" font-weight="700" font-family="Arial, Helvetica, sans-serif">A</text><path d="M164.5 28.5 L175.5 28.5 M170 23 L170 34" stroke="#1c1917" stroke-width="2" stroke-linecap="round"/><text x="170" y="50.5" font-size="15" fill="#1c1917" text-anchor="middle" font-weight="700" font-family="Arial, Helvetica, sans-serif">B</text><path d="M134.5 76 L145.5 76 M140 70.5 L140 81.5" stroke="#1c1917" stroke-width="2" stroke-linecap="round"/><text x="154" y="81" font-size="15" fill="#1c1917" text-anchor="middle" font-weight="700" font-family="Arial, Helvetica, sans-serif">N</text></svg></div><p class="nota petite">M &#8712; (AB)</p><p class="nota petite">N &#8713; (AB)</p><p class="ligne">&#8712; se lit &#171; appartient &#224; &#187;.</p><p class="piege"><b>Pi&#232;ge</b> : M &#8712; (AB), mais M &#8713; [AB] : M n'est pas entre A et B.</p></section>
+<section class="carte" style="--c:#c2410c;--bg:#fff7ed"><h2><span class="num">6</span>Droites s&#233;cantes</h2><div class="fig"><svg viewBox="0 0 210 100" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="deux droites" style="background:#fff"><line x1="8" y1="63.6" x2="202" y2="36.4" stroke="#1d4ed8" stroke-width="2.4" stroke-linecap="round"/><line x1="89.7" y1="92" x2="120.3" y2="8" stroke="#b91c1c" stroke-width="2.4" stroke-linecap="round"/><text x="184.7" y="58.9" font-size="15" fill="#1d4ed8" text-anchor="middle" font-style="italic" font-family="Arial, Helvetica, sans-serif">(d)</text><text x="102.5" y="17.9" font-size="15" fill="#b91c1c" text-anchor="middle" font-style="italic" font-family="Arial, Helvetica, sans-serif">(d')</text></svg></div><p class="ligne">Elles se coupent en un point.</p><p class="coeur" data-coeur>Deux droites s&#233;cantes sont deux droites qui ont un seul point commun.</p><p class="piege"><b>Pi&#232;ge</b> : pas de point commun sur le dessin ? Prolonge : elles peuvent &#234;tre s&#233;cantes.</p></section>
+<section class="carte" style="--c:#c2410c;--bg:#fff7ed"><h2><span class="num">7</span>Droites perpendiculaires</h2><div class="fig"><svg viewBox="0 0 210 100" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="deux droites" style="background:#fff"><line x1="37.8" y1="92" x2="172.2" y2="8" stroke="#1d4ed8" stroke-width="2.4" stroke-linecap="round"/><line x1="78.8" y1="8" x2="131.2" y2="92" stroke="#b91c1c" stroke-width="2.4" stroke-linecap="round"/><text x="166.7" y="34.1" font-size="15" fill="#1d4ed8" text-anchor="middle" font-style="italic" font-family="Arial, Helvetica, sans-serif">(d)</text><text x="138.7" y="80.7" font-size="15" fill="#b91c1c" text-anchor="middle" font-style="italic" font-family="Arial, Helvetica, sans-serif">(d')</text><path d="M115.2 43.6 L108.8 33.5 L98.6 39.8" fill="none" stroke="#1c1917" stroke-width="1.8"/></svg></div><p class="nota">(d) &#8869; (d')</p><p class="ligne">On code un seul angle droit : <svg viewBox="0 0 18 18" width="15" height="15" aria-hidden="true" style="vertical-align:-2px"><path d="M3 2 V15 H16" fill="none" stroke="#1c1917" stroke-width="2"/><path d="M3 9 H10 V15" fill="none" stroke="#1c1917" stroke-width="1.6"/></svg></p><p class="coeur" data-coeur>Deux droites perpendiculaires sont deux droites s&#233;cantes qui forment quatre angles droits.</p></section>
+<section class="carte" style="--c:#c2410c;--bg:#fff7ed"><h2><span class="num">8</span>Droites parall&#232;les</h2><div class="fig"><svg viewBox="0 0 210 100" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="deux droites parall&#232;les" style="background:#fff"><line x1="8" y1="43.4" x2="202" y2="16.2" stroke="#1d4ed8" stroke-width="2.4" stroke-linecap="round"/><line x1="8" y1="83.8" x2="202" y2="56.6" stroke="#b91c1c" stroke-width="2.4" stroke-linecap="round"/><text x="29.2" y="30.3" font-size="15" fill="#1d4ed8" text-anchor="middle" font-style="italic" font-family="Arial, Helvetica, sans-serif">(d)</text><text x="180.8" y="79.7" font-size="15" fill="#b91c1c" text-anchor="middle" font-style="italic" font-family="Arial, Helvetica, sans-serif">(d')</text></svg></div><p class="nota">(d) // (d')</p><p class="ligne">Elles n'ont pas de point commun.</p><p class="coeur" data-coeur>Deux droites parall&#232;les sont deux droites qui ne sont pas s&#233;cantes.</p></section>
+<section class="carte" style="--c:#7c3aed;--bg:#f5f3ff"><h2><span class="num">9</span>Propri&#233;t&#233; 1</h2><div class="fig"><svg viewBox="0 0 220 100" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="deux droites perpendiculaires &#224; une m&#234;me droite" style="background:#fff"><line x1="8" y1="72" x2="212" y2="72" stroke="#1c1917" stroke-width="2.4" stroke-linecap="round"/><line x1="75" y1="8" x2="75" y2="92" stroke="#1d4ed8" stroke-width="2.4" stroke-linecap="round"/><line x1="150" y1="8" x2="150" y2="92" stroke="#b91c1c" stroke-width="2.4" stroke-linecap="round"/><text x="201.8" y="92" font-size="15" fill="#1c1917" text-anchor="middle" font-style="italic" font-family="Arial, Helvetica, sans-serif">(d)</text><text x="60" y="18.9" font-size="15" fill="#1d4ed8" text-anchor="middle" font-style="italic" font-family="Arial, Helvetica, sans-serif">(d&#8321;)</text><path d="M87 72 L87 60 L75 60" fill="none" stroke="#1c1917" stroke-width="1.8"/><text x="135" y="18.9" font-size="15" fill="#b91c1c" text-anchor="middle" font-style="italic" font-family="Arial, Helvetica, sans-serif">(d&#8322;)</text><path d="M162 72 L162 60 L150 60" fill="none" stroke="#1c1917" stroke-width="1.8"/></svg></div><p class="si"><span class="mot">SI</span><span class="sym">(d&#8321;) &#8869; (d)</span> et <span class="sym">(d&#8322;) &#8869; (d)</span></p><p class="alors"><span class="mot">ALORS</span><span class="sym">(d&#8321;) // (d&#8322;)</span></p><p class="coeur" data-coeur>Si deux droites sont perpendiculaires &#224; une m&#234;me droite, alors elles sont parall&#232;les.</p></section>
+<section class="carte" style="--c:#7c3aed;--bg:#f5f3ff"><h2><span class="num">10</span>Propri&#233;t&#233; 2</h2><div class="fig"><svg viewBox="0 0 220 104" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="une droite perpendiculaire &#224; deux parall&#232;les" style="background:#fff"><line x1="8" y1="49.3" x2="212" y2="20.6" stroke="#1d4ed8" stroke-width="2.4" stroke-linecap="round"/><line x1="8" y1="89.7" x2="212" y2="61" stroke="#b91c1c" stroke-width="2.4" stroke-linecap="round"/><line x1="59" y1="8" x2="71.4" y2="96" stroke="#1c1917" stroke-width="2.4" stroke-linecap="round"/><text x="195.6" y="12.7" font-size="15" fill="#1d4ed8" text-anchor="middle" font-style="italic" font-family="Arial, Helvetica, sans-serif">(d&#8321;)</text><text x="199.8" y="82.8" font-size="15" fill="#b91c1c" text-anchor="middle" font-style="italic" font-family="Arial, Helvetica, sans-serif">(d&#8322;)</text><text x="74.9" y="18" font-size="15" fill="#1c1917" text-anchor="middle" font-style="italic" font-family="Arial, Helvetica, sans-serif">(d)</text><path d="M75.6 39.8 L73.9 27.9 L62.1 29.5" fill="none" stroke="#1c1917" stroke-width="1.8"/></svg></div><p class="si"><span class="mot">SI</span><span class="sym">(d&#8321;) // (d&#8322;)</span> et <span class="sym">(d) &#8869; (d&#8321;)</span></p><p class="alors"><span class="mot">ALORS</span><span class="sym">(d) &#8869; (d&#8322;)</span></p><p class="coeur" data-coeur>Si deux droites sont parall&#232;les, et si une troisi&#232;me droite est perpendiculaire &#224; l'une, alors elle est aussi perpendiculaire &#224; l'autre.</p></section>
+<section class="carte" style="--c:#15803d;--bg:#f0fdf4"><h2><span class="num">11</span>Tracer la perpendiculaire &#224; (d) par A</h2><div class="fig"><svg viewBox="0 0 220 96" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="la perpendiculaire &#224; (d) passant par A" style="background:#fff"><line x1="8" y1="76" x2="212" y2="76" stroke="#1d4ed8" stroke-width="2.4" stroke-linecap="round"/><line x1="110" y1="8" x2="110" y2="88" stroke="#b91c1c" stroke-width="2.4" stroke-linecap="round"/><text x="201.8" y="66" font-size="15" fill="#1d4ed8" text-anchor="middle" font-style="italic" font-family="Arial, Helvetica, sans-serif">(d)</text><text x="125" y="19.4" font-size="15" fill="#b91c1c" text-anchor="middle" font-style="italic" font-family="Arial, Helvetica, sans-serif">(d')</text><path d="M122 76 L122 64 L110 64" fill="none" stroke="#1c1917" stroke-width="1.8"/><path d="M104.5 24 L115.5 24 M110 18.5 L110 29.5" stroke="#1c1917" stroke-width="2" stroke-linecap="round"/><text x="96" y="28" font-size="15" fill="#1c1917" text-anchor="middle" font-weight="700" font-family="Arial, Helvetica, sans-serif">A</text></svg></div><ol class="etapes"><li>Un c&#244;t&#233; de l'angle droit de l'&#233;querre le long de (d).</li><li>Fais glisser l'&#233;querre jusqu'&#224; A.</li><li>Trace, prolonge, code l'angle droit.</li></ol></section>
+<section class="carte" style="--c:#15803d;--bg:#f0fdf4"><h2><span class="num">12</span>Tracer la parall&#232;le &#224; (d) par A</h2><div class="fig"><svg viewBox="0 0 220 96" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="la parall&#232;le &#224; (d) passant par A" style="background:#fff"><line x1="8" y1="55.7" x2="212" y2="84.3" stroke="#1d4ed8" stroke-width="2.4" stroke-linecap="round"/><line x1="8" y1="19.3" x2="212" y2="48" stroke="#b91c1c" stroke-width="2.4" stroke-linecap="round"/><text x="20.2" y="77.5" font-size="15" fill="#1d4ed8" text-anchor="middle" font-style="italic" font-family="Arial, Helvetica, sans-serif">(d)</text><text x="199.8" y="36.1" font-size="15" fill="#b91c1c" text-anchor="middle" font-style="italic" font-family="Arial, Helvetica, sans-serif">(d')</text><path d="M91.7 31.8 L102.7 31.8 M97.2 26.3 L97.2 37.3" stroke="#1c1917" stroke-width="2" stroke-linecap="round"/><text x="97.2" y="20.8" font-size="15" fill="#1c1917" text-anchor="middle" font-weight="700" font-family="Arial, Helvetica, sans-serif">A</text></svg></div><ol class="etapes"><li>L'&#233;querre le long de (d), la r&#232;gle contre l'&#233;querre.</li><li>Tiens la r&#232;gle. Fais glisser l'&#233;querre jusqu'&#224; A. Trace.</li><li>Prolonge, nomme la droite (d').</li></ol><p class="renvoi">Cette m&#233;thode utilise la propri&#233;t&#233; 1.</p></section>
+</div>
+<section class="retenir"><h2>&#192; retenir</h2><div class="colonnes"><div><h3>&#201;crire</h3><ul class="ok"><li><b>[AB]</b> le segment &#183; <b>(AB)</b> la droite</li><li><b>[AB)</b> la demi-droite, d'origine A</li><li><b>&#8712;</b> appartient &#224; &#183; <b>&#8713;</b> n'appartient pas</li><li><b>&#8869;</b> perpendiculaires &#183; <b>//</b> parall&#232;les</li></ul></div><div><h3>Une seule droite</h3><ul class="ok"><li><span data-coeur>Par deux points distincts, il passe une seule droite.</span></li><li>Distincts : &#224; deux endroits diff&#233;rents.</li></ul></div><div><h3>Pour justifier</h3><ul class="ok"><li><b>On sait que</b> &#8230; (les donn&#233;es)</li><li><b>Or</b> &#8230; (la propri&#233;t&#233; qui va avec)</li><li><b>Donc</b> &#8230; (la conclusion). Le dessin ne suffit pas.</li></ul></div></div></section>
+<p class="pied legende"><span><b>&#9733;</b> phrase de la le&#231;on, &#224; savoir mot pour mot</span><span><i>Pi&#232;ge</i> : erreur &#224; &#233;viter</span><span>Maths &#183; le&#231;on du 20/10/2026 : manuel, chapitre 9 &#171; &#201;tude de configurations planes &#187;, p. 146 &#224; 149</span></p>
+</main>
+<button class="imprimer" type="button" onclick="window.print()">Imprimer la fiche</button>
+</body>
+</html>
