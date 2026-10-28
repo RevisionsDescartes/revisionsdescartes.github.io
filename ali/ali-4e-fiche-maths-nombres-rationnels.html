@@ -1,0 +1,175 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Fiche &#183; Nombres rationnels</title>
+<style>
+:root { --encre:#1c1917; --gris:#57534e; --or:#b45309; --or-bg:#fffbeb; --bleu:#1e3a8a; color-scheme: light; }
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body { margin: 0; background: #e7ecf3; color: var(--encre);
+       font: 15px/1.35 system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif; }
+.affiche { background: #fff; margin: 0 auto; padding: 14px 12px 18px; }
+/* bandeau */
+.bandeau { display: flex; align-items: center; gap: 12px; padding: 12px 14px; border-radius: 16px;
+           background: linear-gradient(135deg, #1e3a8a, #3730a3); color: #fff; }
+.bandeau .titres { flex: 1 1 auto; min-width: 0; }
+.bandeau h1 { margin: 0; font-size: 27px; line-height: 1.05; font-weight: 900; letter-spacing: .02em;
+              text-transform: uppercase; }
+.bandeau .sous { display: inline-block; margin: 6px 0 0; padding: 2px 12px; border-radius: 999px; background: #facc15;
+                 color: #1e1b4b; font-weight: 850; font-size: 14px; letter-spacing: .02em; text-transform: uppercase; }
+.bandeau .qui { flex: 0 0 auto; display: flex; align-items: center; gap: 8px; }
+.bandeau .badge { padding: 6px 12px; border-radius: 999px; background: #fff; color: var(--bleu); font-weight: 900;
+                  font-size: 15px; white-space: nowrap; }
+.legende { display: flex; flex-wrap: wrap; gap: 2px 14px; margin: 10px 2px 0; color: var(--gris); font-size: 13px; }
+.legende b { color: var(--or); }
+.legende i { font-style: normal; color: #b91c1c; font-weight: 700; }
+.legende em { font-style: normal; color: #1e3a8a; font-weight: 700; }
+/* cartes */
+.grille { display: grid; grid-template-columns: 1fr; gap: 10px; margin: 10px 0 0; }
+.carte { display: flex; flex-direction: column; min-width: 0; padding: 9px 11px 10px; border: 2px solid var(--c);
+         border-radius: 14px; background: var(--bg); }
+.carte h2 { display: flex; align-items: center; gap: 8px; margin: 0 0 6px; color: var(--c); font-size: 17px;
+            line-height: 1.15; font-weight: 850; }
+.num { flex: 0 0 auto; display: inline-grid; place-items: center; width: 27px; height: 27px; border-radius: 50%;
+       background: var(--c); color: #fff; font-size: 14px; font-weight: 900; }
+.fig { background: #fff; border-radius: 10px; padding: 3px; margin: 0 0 6px; }
+.fig svg { display: block; width: 100%; height: auto; max-height: 150px; }
+.nota { margin: 0; color: var(--c); font-size: 25px; line-height: 1.1; font-weight: 900; letter-spacing: .03em;
+        white-space: nowrap; }
+.nota.petite { font-size: 19px; }
+.ligne { margin: 3px 0 0; }
+.coeur { position: relative; margin: 7px 0 0; padding: 5px 8px 5px 25px; border-left: 4px solid #d97706;
+         border-radius: 0 8px 8px 0; background: var(--or-bg); font-size: 14px; }
+.coeur::before { content: "\2605"; position: absolute; left: 7px; top: 4px; color: #d97706; }
+.piege { margin: 7px 0 0; padding: 4px 8px; border: 1.5px dashed #dc2626; border-radius: 8px; background: #fef2f2;
+         color: #991b1b; font-size: 14px; }
+.piege b { color: #b91c1c; }
+.si, .alors { display: flex; flex-wrap: wrap; align-items: baseline; gap: 2px 7px; margin: 3px 0 0; font-weight: 700; }
+.mot { display: inline-block; min-width: 3.9em; padding: 0 6px; border-radius: 6px; background: var(--c); color: #fff;
+       text-align: center; font-size: 12px; font-weight: 900; letter-spacing: .05em; }
+.alors .mot { background: var(--encre); }
+.sym { white-space: nowrap; font-weight: 800; letter-spacing: .02em; }
+ol.etapes { list-style: none; margin: 2px 0 0; padding: 0; counter-reset: e; }
+ol.etapes li { counter-increment: e; position: relative; margin: 4px 0 0; padding: 0 0 0 27px; }
+ol.etapes li::before { content: counter(e); position: absolute; left: 0; top: 0; width: 20px; height: 20px;
+                       border-radius: 50%; display: grid; place-items: center; background: var(--c); color: #fff;
+                       font-size: 12px; font-weight: 900; }
+.renvoi { margin: 5px 0 0; color: var(--c); font-weight: 700; font-size: 14px; }
+.conseil { margin: 6px 0 0; padding: 3px 8px; border: 1.5px solid var(--c); border-radius: 8px; background: #fff; font-size: 14px; }
+.conseil b { color: var(--c); }
+/* \0000e0 retenir */
+.retenir { margin: 10px 0 0; padding: 10px 12px; border: 2px solid var(--bleu); border-radius: 14px; background: #eff6ff; }
+.retenir h2 { display: inline-block; margin: 0 0 6px; padding: 3px 12px; border-radius: 8px; background: var(--bleu);
+              color: #fff; font-size: 17px; font-weight: 900; text-transform: uppercase; letter-spacing: .03em;
+              transform: rotate(-2deg); }
+.colonnes { display: grid; grid-template-columns: 1fr; gap: 8px 16px; }
+.colonnes h3 { margin: 0 0 3px; color: var(--bleu); font-size: 14px; text-transform: uppercase; letter-spacing: .04em; }
+.ok { list-style: none; margin: 0; padding: 0; }
+.ok li { position: relative; margin: 3px 0 0; padding: 0 0 0 24px; }
+.ok li::before { content: "\2714"; position: absolute; left: 0; top: 1px; width: 17px; height: 17px; border-radius: 50%;
+                 display: grid; place-items: center; background: #16a34a; color: #fff; font-size: 10px; }
+.ok b { white-space: nowrap; }
+.ok [data-coeur]::before { content: "\2605  "; color: #d97706; }
+.imprimer { display: block; margin: 12px auto 24px; font: inherit; font-weight: 700; padding: 8px 18px; min-height: 44px;
+            border-radius: 999px; border: 1px solid #cbd5e1; background: #fff; color: var(--encre); cursor: pointer; }
+@media (min-width: 560px) {
+  .grille { grid-template-columns: 1fr 1fr; }
+  .colonnes { grid-template-columns: 1fr 1fr; }
+}
+/* L'affiche : \0000e9cran large, image et impression (794 px = 210 mm). */
+@media (min-width: 780px), print {
+  body { font-size: 12px; line-height: 1.26; }
+  .affiche { width: 794px; min-height: 1123px; padding: 20px 22px 12px; margin: 16px auto 0;
+             box-shadow: 0 2px 14px rgba(15, 23, 42, .12); display: flex; flex-direction: column; }
+  .grille { flex: 1 1 auto; }
+  .bandeau { padding: 8px 16px; border-radius: 14px; }
+  .bandeau h1 { font-size: 31px; }
+  .bandeau .sous { font-size: 12px; margin-top: 4px; padding: 1px 10px; }
+  .bandeau .badge { font-size: 13px; padding: 4px 10px; }
+  .bandeau svg { width: 44px; height: 44px; }
+  .grille { grid-template-columns: repeat(3, 1fr); gap: 6px; margin-top: 6px; }
+  .carte { padding: 5px 8px 6px; border-radius: 12px; }
+  .carte h2 { font-size: 14px; margin: 0 0 3px; gap: 6px; }
+  .num { width: 21px; height: 21px; font-size: 11.5px; }
+  .fig { margin: 0 0 3px; padding: 1px; border-radius: 8px; }
+  .fig svg { max-height: 66px; }
+  .nota { font-size: 19px; }
+  .nota.petite { font-size: 15px; }
+  .ligne { margin: 1px 0 0; font-size: 11.6px; }
+  .coeur { margin: 4px 0 0; padding: 2px 6px 2px 19px; font-size: 10.6px; line-height: 1.22; border-left-width: 3px; }
+  .coeur::before { left: 5px; top: 2px; }
+  .piege { margin: 4px 0 0; padding: 2px 6px; font-size: 10.6px; line-height: 1.22; }
+  .si, .alors { margin: 1px 0 0; font-size: 11.8px; }
+  .mot { font-size: 10px; }
+  ol.etapes li { margin: 2px 0 0; padding-left: 22px; font-size: 11.2px; line-height: 1.22; }
+  ol.etapes li::before { width: 16px; height: 16px; font-size: 10px; }
+  .renvoi { font-size: 11.2px; margin: 2px 0 0; }
+  .conseil { margin: 4px 0 0; padding: 2px 6px; font-size: 10.6px; line-height: 1.22; }
+  .retenir { margin: 6px 0 0; padding: 5px 12px 7px; }
+  .retenir h2 { font-size: 13.5px; margin: 0 0 3px; padding: 2px 10px; }
+  .colonnes { grid-template-columns: 1.2fr .85fr 1.1fr; gap: 2px 16px; font-size: 11.4px; }
+  .colonnes h3 { font-size: 11px; margin: 0 0 1px; }
+  .ok li { margin: 1px 0 0; padding-left: 20px; }
+  .ok li::before { width: 14px; height: 14px; font-size: 8.5px; }
+  .pied { margin: 5px 2px 0; font-size: 10px; }
+}
+@page { size: A4; margin: 0; }
+@media print {
+  * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  body { background: #fff; }
+  .affiche { margin: 0; box-shadow: none; width: 210mm; height: 297mm; min-height: 0; overflow: hidden; }
+  .imprimer { display: none; }
+}
+
+.fr { display: inline-flex; flex-direction: column; align-items: stretch; vertical-align: middle;
+      margin: 0 .1em; font-size: .94em; line-height: 1.15; text-align: center; font-weight: inherit; }
+.fr > span { display: block; padding: 0 .2em; white-space: nowrap; }
+.fr > span + span { border-top: 1.5px solid currentColor; }
+sup { line-height: 0; font-size: .72em; }
+.nb { white-space: nowrap; }
+.chip { display: inline-block; min-width: 1.7em; margin: 1.5px 1px; padding: 0 4px; border-radius: 7px;
+        background: var(--c); color: #fff; text-align: center; font-weight: 800; }
+.chip.clair { background: #fff; color: var(--c); border: 1.5px solid var(--c); padding: 0 3px; }
+.dp { border-collapse: collapse; margin: 1px auto; font-weight: 700; }
+.dp td { padding: 0 11px; text-align: right; }
+.dp td + td { border-left: 2px solid var(--c); text-align: left; color: var(--c); }
+.cadre { text-align: center; margin: 1px 0; font-weight: 700; }
+.grand { color: var(--c); font-size: 19px; font-weight: 900; line-height: 1.5; margin: 0; }
+.nota.mini { font-size: 15px; }
+@media (min-width: 780px), print {
+  .nota.mini { font-size: 11.6px; letter-spacing: 0; }
+  .grand { font-size: 15px; line-height: 1.55; }
+  .chip { font-size: 11.5px; }
+  .dp { font-size: 12px; }
+}
+</style>
+</head>
+<body data-fiche="ali-4e-fiche-maths-nombres-rationnels">
+<main class="affiche" id="affiche">
+<header class="bandeau">
+<div class="titres"><h1>Nombres rationnels</h1><span class="sous">L'essentiel du cours</span></div>
+<div class="qui"><span class="badge">Ali &#183; 4e</span><svg viewBox="0 0 64 64" width="50" height="50" aria-hidden="true"><rect x="5" y="5" width="54" height="54" rx="14" fill="#fde68a" stroke="#f59e0b" stroke-width="3"/><text x="32" y="28" text-anchor="middle" font-size="22" font-weight="900" fill="#1e3a8a">a</text><line x1="16" x2="48" y1="33" y2="33" stroke="#1e3a8a" stroke-width="4" stroke-linecap="round"/><text x="32" y="54" text-anchor="middle" font-size="22" font-weight="900" fill="#1e3a8a">b</text></svg></div>
+</header>
+<div class="grille">
+<section class="carte" style="--c:#4338ca;--bg:#eef2ff"><h2><span class="num">1</span>Nombre rationnel</h2><p class="nota"><span class="fr"><span>a</span><span>b</span></span></p><p class="coeur" data-coeur>Un nombre rationnel est un nombre qui peut s'&#233;crire comme quotient d'un nombre entier relatif par un nombre entier relatif non nul.</p></section>
+<section class="carte" style="--c:#4338ca;--bg:#eef2ff"><h2><span class="num">2</span>Entiers, d&#233;cimaux, autres</h2><p class="ligne">Entier relatif : <b>&#8722;5 = <span class="nb">&#8722;<span class="fr"><span>5</span><span>1</span></span></span></b></p><p class="ligne">D&#233;cimal relatif : <b>2,25 = <span class="fr"><span>9</span><span>4</span></span></b></p><p class="ligne">Ni entier ni d&#233;cimal : <b><span class="fr"><span>11</span><span>3</span></span></b>. La division de 11 par 3 ne se termine jamais.</p></section>
+<section class="carte" style="--c:#4338ca;--bg:#eef2ff"><h2><span class="num">3</span>&#201;crire avec des entiers positifs</h2><p class="ligne"><span class="fr"><span>&#8722;2</span><span>&#8722;3</span></span> = <span class="fr"><span>2</span><span>3</span></span> ; <span class="fr"><span>&#8722;7</span><span>9</span></span> = <span class="nb">&#8722;<span class="fr"><span>7</span><span>9</span></span></span> ; <span class="fr"><span>5</span><span>&#8722;4</span></span> = <span class="nb">&#8722;<span class="fr"><span>5</span><span>4</span></span></span></p><p class="coeur" data-coeur>Un nombre rationnel peut s'&#233;crire sous la forme <span class="fr"><span>a</span><span>b</span></span> ou <span class="nb">&#8722;<span class="fr"><span>a</span><span>b</span></span></span> avec a et b nombres entiers positifs, b &#8800; 0.</p></section>
+<section class="carte" style="--c:#0f766e;--bg:#ecfdf5"><h2><span class="num">4</span>Le quotient de a par b</h2><p class="ligne">a et b d&#233;signent deux nombres rationnels, avec b &#8800; 0.</p><div class="fig"><svg viewBox="0 0 230 62" role="img" aria-label="num&#233;rateur et d&#233;nominateur"><text x="46.0" y="29.0" text-anchor="middle" font-size="20" font-weight="800" fill="#c2410c">a</text><line x1="37.8" x2="54.2" y1="31.0" y2="31.0" stroke="#c2410c" stroke-width="1.3"/><text x="46.0" y="51.0" text-anchor="middle" font-size="20" font-weight="800" fill="#c2410c">b</text><line x1="70" x2="92" y1="13" y2="13" stroke="#c2410c" stroke-width="2"/><text x="98" y="17" font-size="15" font-weight="800" fill="#c2410c">num&#233;rateur</text><line x1="70" x2="92" y1="43" y2="43" stroke="#c2410c" stroke-width="2"/><text x="98" y="47" font-size="15" font-weight="800" fill="#c2410c">d&#233;nominateur</text></svg></div><p class="coeur" data-coeur>Le quotient de a par b est le nombre, qui multipli&#233; par b, donne a.</p><p class="ligne">Ainsi, <span class="fr"><span>a</span><span>b</span></span> &#215; b = a. On le note a : b ou <span class="fr"><span>a</span><span>b</span></span>.</p></section>
+<section class="carte" style="--c:#0f766e;--bg:#ecfdf5"><h2><span class="num">5</span>Quotients &#233;gaux</h2><div class="fig"><svg viewBox="0 0 230 84" role="img" aria-label="quotients &#233;gaux"><text x="52.0" y="40.0" text-anchor="middle" font-size="13" font-weight="800" fill="#1c1917">25</text><line x1="41.9" x2="62.1" y1="42.0" y2="42.0" stroke="#1c1917" stroke-width="1.3"/><text x="52.0" y="55.0" text-anchor="middle" font-size="13" font-weight="800" fill="#1c1917">35</text><text x="40.9" y="46.0" text-anchor="end" font-size="15" font-weight="800" fill="#1c1917">&#8722;</text><text x="115" y="47.0" text-anchor="middle" font-size="16" font-weight="900" fill="#1c1917">=</text><text x="178.0" y="40.0" text-anchor="middle" font-size="13" font-weight="800" fill="#1c1917">5</text><line x1="172.0" x2="184.0" y1="42.0" y2="42.0" stroke="#1c1917" stroke-width="1.3"/><text x="178.0" y="55.0" text-anchor="middle" font-size="13" font-weight="800" fill="#1c1917">7</text><text x="171.0" y="46.0" text-anchor="end" font-size="15" font-weight="800" fill="#1c1917">&#8722;</text><path d="M70.0 28.0 Q115 18.0 158.0 28.0" fill="none" stroke="#c2410c" stroke-width="1.8"/><path d="M159.0 28.0 l-3 -5 l-3.5 6 z" fill="#c2410c" transform="rotate(25 159.0 28.0)"/><text x="115" y="15.0" text-anchor="middle" font-size="12" font-weight="900" fill="#c2410c">&#247;5</text><path d="M70.0 59.0 Q115 70.0 158.0 59.0" fill="none" stroke="#c2410c" stroke-width="1.8"/><path d="M159.0 59.0 l-3 -5 l-3.5 6 z" fill="#c2410c" transform="rotate(25 159.0 59.0)"/><text x="115" y="78.0" text-anchor="middle" font-size="12" font-weight="900" fill="#c2410c">&#247;5</text></svg></div><p class="ligne"><b><span class="fr"><span>a</span><span>b</span></span> = <span class="fr"><span>a &#215; k</span><span>b &#215; k</span></span></b> et <b><span class="fr"><span>a</span><span>b</span></span> = <span class="fr"><span>a : k</span><span>b : k</span></span></b> (b &#8800; 0, k &#8800; 0)</p><p class="coeur" data-coeur>Un quotient ne change pas lorsqu'on multiplie ou divise son num&#233;rateur et son d&#233;nominateur par un m&#234;me nombre relatif diff&#233;rent de z&#233;ro.</p><p class="ligne">Exemple : <span class="fr"><span>0,3</span><span>&#8722;4</span></span> = <span class="nb">&#8722;<span class="fr"><span>0,3 &#215; 10</span><span>4 &#215; 10</span></span></span> = <span class="nb">&#8722;<span class="fr"><span>3</span><span>40</span></span></span></p></section>
+<section class="carte" style="--c:#c2410c;--bg:#fff7ed"><h2><span class="num">6</span>Comparer : les trois propri&#233;t&#233;s</h2><div class="fig"><svg viewBox="0 0 230 64" role="img" aria-label="droite gradu&#233;e"><line x1="8.0" x2="224.0" y1="44" y2="44" stroke="#1c1917" stroke-width="1.8"/><path d="M226.0 44 l-6 -4 v8 z" fill="#1c1917"/><line x1="16.0" x2="16.0" y1="40" y2="48" stroke="#1c1917" stroke-width="1.6"/><text x="16.0" y="60" text-anchor="middle" font-size="12" font-weight="700" fill="#57534e">&#8722;2</text><line x1="82.0" x2="82.0" y1="40" y2="48" stroke="#1c1917" stroke-width="1.6"/><text x="82.0" y="60" text-anchor="middle" font-size="12" font-weight="700" fill="#57534e">&#8722;1</text><line x1="148.0" x2="148.0" y1="40" y2="48" stroke="#1c1917" stroke-width="1.6"/><text x="148.0" y="60" text-anchor="middle" font-size="12" font-weight="700" fill="#57534e">0</text><line x1="214.0" x2="214.0" y1="40" y2="48" stroke="#1c1917" stroke-width="1.6"/><text x="214.0" y="60" text-anchor="middle" font-size="12" font-weight="700" fill="#57534e">1</text><circle cx="55.6" cy="44" r="3.6" fill="#7c3aed"/><text x="55.6" y="25.0" text-anchor="middle" font-size="12" font-weight="800" fill="#7c3aed">7</text><line x1="49.9" x2="61.3" y1="27.0" y2="27.0" stroke="#7c3aed" stroke-width="1.3"/><text x="55.6" y="39.0" text-anchor="middle" font-size="12" font-weight="800" fill="#7c3aed">5</text><text x="48.9" y="31.0" text-anchor="end" font-size="14" font-weight="800" fill="#7c3aed">&#8722;</text><circle cx="95.2" cy="44" r="3.6" fill="#7c3aed"/><text x="95.2" y="25.0" text-anchor="middle" font-size="12" font-weight="800" fill="#7c3aed">4</text><line x1="89.5" x2="100.9" y1="27.0" y2="27.0" stroke="#7c3aed" stroke-width="1.3"/><text x="95.2" y="39.0" text-anchor="middle" font-size="12" font-weight="800" fill="#7c3aed">5</text><text x="88.5" y="31.0" text-anchor="end" font-size="14" font-weight="800" fill="#7c3aed">&#8722;</text><circle cx="166.9" cy="44" r="3.6" fill="#7c3aed"/><text x="166.9" y="25.0" text-anchor="middle" font-size="12" font-weight="800" fill="#7c3aed">2</text><line x1="161.1" x2="172.6" y1="27.0" y2="27.0" stroke="#7c3aed" stroke-width="1.3"/><text x="166.9" y="39.0" text-anchor="middle" font-size="12" font-weight="800" fill="#7c3aed">7</text><circle cx="195.1" cy="44" r="3.6" fill="#7c3aed"/><text x="195.1" y="25.0" text-anchor="middle" font-size="12" font-weight="800" fill="#7c3aed">5</text><line x1="189.4" x2="200.9" y1="27.0" y2="27.0" stroke="#7c3aed" stroke-width="1.3"/><text x="195.1" y="39.0" text-anchor="middle" font-size="12" font-weight="800" fill="#7c3aed">7</text></svg></div><p class="coeur" data-coeur>Un nombre n&#233;gatif est plus petit qu'un nombre positif.</p><p class="coeur" data-coeur>De deux nombres positifs, le plus petit est celui qui a la plus petite distance &#224; z&#233;ro.</p><p class="coeur" data-coeur>De deux nombres n&#233;gatifs, le plus petit est celui qui a la plus grande distance &#224; z&#233;ro.</p></section>
+<section class="carte" style="--c:#c2410c;--bg:#fff7ed"><h2><span class="num">7</span>Comparer : m&#234;me d&#233;nominateur</h2><p class="coeur" data-coeur>Pour comparer deux quotients de d&#233;nominateurs diff&#233;rents, on les &#233;crit d'abord avec le m&#234;me d&#233;nominateur.</p><p class="ligne"><b><span class="fr"><span>4</span><span>3</span></span> = <span class="fr"><span>4 &#215; 4</span><span>3 &#215; 4</span></span> = <span class="fr"><span>16</span><span>12</span></span></b></p><p class="ligne">Or 17 > 16, donc <b><span class="fr"><span>17</span><span>12</span></span> > <span class="fr"><span>4</span><span>3</span></span></b></p><p class="conseil"><b>Conseil</b> : Lorsque le num&#233;rateur est plus petit que le d&#233;nominateur, le quotient est plus petit que 1 : <span class="fr"><span>5</span><span>7</span></span> < 1 < <span class="fr"><span>7</span><span>5</span></span>.</p></section>
+<section class="carte" style="--c:#c2410c;--bg:#fff7ed"><h2><span class="num">8</span>Ranger des nombres</h2><p class="nota petite"><span class="nb">&#8722;<span class="fr"><span>2</span><span>3</span></span></span> < <span class="fr"><span>3</span><span>4</span></span> < <span class="fr"><span>11</span><span>12</span></span> < <span class="fr"><span>5</span><span>3</span></span></p><p class="ligne"><span class="nb">&#8722;<span class="fr"><span>2</span><span>3</span></span></span> : le seul n&#233;gatif, le plus petit.</p><p class="ligne"><span class="fr"><span>5</span><span>3</span></span> : le seul sup&#233;rieur &#224; 1, le plus grand.</p><p class="ligne"><span class="fr"><span>3</span><span>4</span></span> = <span class="fr"><span>3 &#215; 3</span><span>4 &#215; 3</span></span> = <span class="fr"><span>9</span><span>12</span></span></p><p class="ligne">Or 9 < 11, donc <span class="fr"><span>9</span><span>12</span></span> < <span class="fr"><span>11</span><span>12</span></span></p><p class="conseil"><b>Conseil</b> : on commence par observer ces nombres : on rep&#232;re ais&#233;ment le plus petit et le plus grand.</p></section>
+<section class="carte" style="--c:#7c3aed;--bg:#f5f3ff"><h2><span class="num">9</span>Additionner : m&#234;me d&#233;nominateur</h2><p class="coeur" data-coeur>La somme (ou la diff&#233;rence) de deux quotients de m&#234;me d&#233;nominateur, est le nombre obtenu en : additionnant (ou soustrayant) les num&#233;rateurs ; en conservant le d&#233;nominateur commun.</p><p class="ligne"><b><span class="fr"><span>a</span><span>c</span></span> + <span class="fr"><span>b</span><span>c</span></span> = <span class="fr"><span>a + b</span><span>c</span></span></b></p><p class="ligne"><b><span class="fr"><span>a</span><span>c</span></span> &#8722; <span class="fr"><span>b</span><span>c</span></span> = <span class="fr"><span>a &#8722; b</span><span>c</span></span></b> (c &#8800; 0)</p><p class="ligne"><span class="fr"><span>11</span><span>3</span></span> + <span class="fr"><span>5</span><span>3</span></span> = <span class="fr"><span>11 + 5</span><span>3</span></span> = <span class="fr"><span>16</span><span>3</span></span></p><p class="ligne"><span class="fr"><span>&#8722;5</span><span>7</span></span> &#8722; <span class="fr"><span>3</span><span>7</span></span> = <span class="fr"><span>&#8722;5 &#8722; 3</span><span>7</span></span> = <span class="nb">&#8722;<span class="fr"><span>8</span><span>7</span></span></span></p></section>
+<section class="carte" style="--c:#7c3aed;--bg:#f5f3ff"><h2><span class="num">10</span>Additionner : d&#233;nominateurs diff&#233;rents</h2><p class="coeur" data-coeur>Pour additionner (ou soustraire) deux quotients de d&#233;nominateurs diff&#233;rents, on les &#233;crit avec le m&#234;me d&#233;nominateur (on dit qu'on les r&#233;duit au m&#234;me d&#233;nominateur), puis on applique la propri&#233;t&#233; pr&#233;c&#233;dente.</p><p class="ligne"><span class="nb">&#8722;<span class="fr"><span>3</span><span>4</span></span></span> + <span class="fr"><span>1</span><span>8</span></span> = <span class="nb">&#8722;<span class="fr"><span>3 &#215; 2</span><span>4 &#215; 2</span></span></span> + <span class="fr"><span>1</span><span>8</span></span></p><p class="ligne">= <span class="nb">&#8722;<span class="fr"><span>6</span><span>8</span></span></span> + <span class="fr"><span>1</span><span>8</span></span> = <span class="nb">&#8722;<span class="fr"><span>5</span><span>8</span></span></span></p></section>
+<section class="carte" style="--c:#7c3aed;--bg:#f5f3ff"><h2><span class="num">11</span>Trouver le d&#233;nominateur commun</h2><p class="ligne">Pour <span class="fr"><span>9</span><span>4</span></span> &#8722; <span class="fr"><span>19</span><span>6</span></span> ; <span class="nb">&#8722;<span class="fr"><span>2</span><span>7</span></span></span> + <span class="fr"><span>8</span><span>5</span></span> ; <span class="fr"><span>3</span><span>8</span></span> &#8722; <span class="fr"><span>1</span><span>4</span></span> &#8722; 3 :</p><p class="ligne"><b>Premiers multiples</b> de 4 : 4 ; 8 ; 12. De 6 : 6 ; 12. <b>12</b> est un multiple commun &#224; 4 et 6.</p><p class="ligne">5 et 7 n'ont pas d'autre diviseur commun que 1 : on prend leur produit <b>5 &#215; 7</b>.</p><p class="ligne"><b>3 = <span class="fr"><span>3</span><span>1</span></span></b> et 8 est un multiple de 4 et de 1 : on prend 8.</p><p class="conseil"><b>Conseil</b> : on peut contr&#244;ler les r&#233;ponses avec la calculatrice.</p></section>
+<section class="carte" style="--c:#be123c;--bg:#fff1f2"><h2><span class="num">12</span>D&#233;composer une fraction</h2><div class="fig"><svg viewBox="0 0 230 64" role="img" aria-label="droite gradu&#233;e"><line x1="8.0" x2="224.0" y1="44" y2="44" stroke="#1c1917" stroke-width="1.8"/><path d="M226.0 44 l-6 -4 v8 z" fill="#1c1917"/><line x1="16.0" x2="16.0" y1="40" y2="48" stroke="#1c1917" stroke-width="1.6"/><text x="16.0" y="60" text-anchor="middle" font-size="12" font-weight="700" fill="#57534e">19</text><line x1="214.0" x2="214.0" y1="40" y2="48" stroke="#1c1917" stroke-width="1.6"/><text x="214.0" y="60" text-anchor="middle" font-size="12" font-weight="700" fill="#57534e">20</text><circle cx="153.1" cy="44" r="3.6" fill="#be123c"/><text x="153.1" y="25.0" text-anchor="middle" font-size="12" font-weight="800" fill="#be123c">256</text><line x1="139.9" x2="166.2" y1="27.0" y2="27.0" stroke="#be123c" stroke-width="1.3"/><text x="153.1" y="39.0" text-anchor="middle" font-size="12" font-weight="800" fill="#be123c">13</text></svg></div><p class="coeur" data-coeur>Toute fraction peut s'&#233;crire sous la forme d'une somme (ou d'une diff&#233;rence) d'un nombre entier relatif et d'une fraction comprise entre 0 et 1.</p><p class="ligne">256 = 19 &#215; 13 + 9, donc <b><span class="fr"><span>256</span><span>13</span></span> = 19 + <span class="fr"><span>9</span><span>13</span></span></b></p><p class="ligne"><span class="fr"><span>15</span><span>4</span></span> = <span class="fr"><span>16</span><span>4</span></span> &#8722; <span class="fr"><span>1</span><span>4</span></span> = 4 &#8722; <span class="fr"><span>1</span><span>4</span></span></p></section>
+</div>
+<section class="retenir"><h2>&#192; retenir</h2><div class="colonnes"><div><h3>&#201;crire</h3><ul class="ok"><li>Les signes moins se regroupent : <span class="fr"><span>5</span><span>&#8722;4</span></span> = <span class="nb">&#8722;<span class="fr"><span>5</span><span>4</span></span></span></li><li>Un entier s'&#233;crit sur 1 : 3 = <span class="fr"><span>3</span><span>1</span></span></li></ul></div><div><h3>Comparer, ranger</h3><ul class="ok"><li>M&#234;me d&#233;nominateur : on compare les num&#233;rateurs</li><li>Num&#233;rateur plus petit que d&#233;nominateur : quotient &lt; 1</li></ul></div><div><h3>Calculer</h3><ul class="ok"><li>M&#234;me d&#233;nominateur : on calcule les num&#233;rateurs, on garde le d&#233;nominateur</li><li>D&#233;nominateurs diff&#233;rents : on r&#233;duit d'abord</li></ul></div></div></section>
+<p class="pied legende"><span><b>&#9733;</b> phrase de la le&#231;on, &#224; savoir mot pour mot</span><span><em>Conseil</em> : donn&#233; par le manuel</span><span>Maths &#183; le&#231;on du 21/10/2026 : manuel, chapitre 3 &#171; Utiliser les nombres rationnels &#187;, p. 54 &#224; 57</span></p>
+</main>
+<button class="imprimer" type="button" onclick="window.print()">Imprimer la fiche</button>
+</body>
+</html>

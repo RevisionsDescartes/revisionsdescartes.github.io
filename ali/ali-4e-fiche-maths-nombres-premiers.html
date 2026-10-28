@@ -1,0 +1,175 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Fiche &#183; Nombres premiers</title>
+<style>
+:root { --encre:#1c1917; --gris:#57534e; --or:#b45309; --or-bg:#fffbeb; --bleu:#1e3a8a; color-scheme: light; }
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body { margin: 0; background: #e7ecf3; color: var(--encre);
+       font: 15px/1.35 system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif; }
+.affiche { background: #fff; margin: 0 auto; padding: 14px 12px 18px; }
+/* bandeau */
+.bandeau { display: flex; align-items: center; gap: 12px; padding: 12px 14px; border-radius: 16px;
+           background: linear-gradient(135deg, #1e3a8a, #3730a3); color: #fff; }
+.bandeau .titres { flex: 1 1 auto; min-width: 0; }
+.bandeau h1 { margin: 0; font-size: 27px; line-height: 1.05; font-weight: 900; letter-spacing: .02em;
+              text-transform: uppercase; }
+.bandeau .sous { display: inline-block; margin: 6px 0 0; padding: 2px 12px; border-radius: 999px; background: #facc15;
+                 color: #1e1b4b; font-weight: 850; font-size: 14px; letter-spacing: .02em; text-transform: uppercase; }
+.bandeau .qui { flex: 0 0 auto; display: flex; align-items: center; gap: 8px; }
+.bandeau .badge { padding: 6px 12px; border-radius: 999px; background: #fff; color: var(--bleu); font-weight: 900;
+                  font-size: 15px; white-space: nowrap; }
+.legende { display: flex; flex-wrap: wrap; gap: 2px 14px; margin: 10px 2px 0; color: var(--gris); font-size: 13px; }
+.legende b { color: var(--or); }
+.legende i { font-style: normal; color: #b91c1c; font-weight: 700; }
+.legende em { font-style: normal; color: #1e3a8a; font-weight: 700; }
+/* cartes */
+.grille { display: grid; grid-template-columns: 1fr; gap: 10px; margin: 10px 0 0; }
+.carte { display: flex; flex-direction: column; min-width: 0; padding: 9px 11px 10px; border: 2px solid var(--c);
+         border-radius: 14px; background: var(--bg); }
+.carte h2 { display: flex; align-items: center; gap: 8px; margin: 0 0 6px; color: var(--c); font-size: 17px;
+            line-height: 1.15; font-weight: 850; }
+.num { flex: 0 0 auto; display: inline-grid; place-items: center; width: 27px; height: 27px; border-radius: 50%;
+       background: var(--c); color: #fff; font-size: 14px; font-weight: 900; }
+.fig { background: #fff; border-radius: 10px; padding: 3px; margin: 0 0 6px; }
+.fig svg { display: block; width: 100%; height: auto; max-height: 150px; }
+.nota { margin: 0; color: var(--c); font-size: 25px; line-height: 1.1; font-weight: 900; letter-spacing: .03em;
+        white-space: nowrap; }
+.nota.petite { font-size: 19px; }
+.ligne { margin: 3px 0 0; }
+.coeur { position: relative; margin: 7px 0 0; padding: 5px 8px 5px 25px; border-left: 4px solid #d97706;
+         border-radius: 0 8px 8px 0; background: var(--or-bg); font-size: 14px; }
+.coeur::before { content: "\2605"; position: absolute; left: 7px; top: 4px; color: #d97706; }
+.piege { margin: 7px 0 0; padding: 4px 8px; border: 1.5px dashed #dc2626; border-radius: 8px; background: #fef2f2;
+         color: #991b1b; font-size: 14px; }
+.piege b { color: #b91c1c; }
+.si, .alors { display: flex; flex-wrap: wrap; align-items: baseline; gap: 2px 7px; margin: 3px 0 0; font-weight: 700; }
+.mot { display: inline-block; min-width: 3.9em; padding: 0 6px; border-radius: 6px; background: var(--c); color: #fff;
+       text-align: center; font-size: 12px; font-weight: 900; letter-spacing: .05em; }
+.alors .mot { background: var(--encre); }
+.sym { white-space: nowrap; font-weight: 800; letter-spacing: .02em; }
+ol.etapes { list-style: none; margin: 2px 0 0; padding: 0; counter-reset: e; }
+ol.etapes li { counter-increment: e; position: relative; margin: 4px 0 0; padding: 0 0 0 27px; }
+ol.etapes li::before { content: counter(e); position: absolute; left: 0; top: 0; width: 20px; height: 20px;
+                       border-radius: 50%; display: grid; place-items: center; background: var(--c); color: #fff;
+                       font-size: 12px; font-weight: 900; }
+.renvoi { margin: 5px 0 0; color: var(--c); font-weight: 700; font-size: 14px; }
+.conseil { margin: 6px 0 0; padding: 3px 8px; border: 1.5px solid var(--c); border-radius: 8px; background: #fff; font-size: 14px; }
+.conseil b { color: var(--c); }
+/* \0000e0 retenir */
+.retenir { margin: 10px 0 0; padding: 10px 12px; border: 2px solid var(--bleu); border-radius: 14px; background: #eff6ff; }
+.retenir h2 { display: inline-block; margin: 0 0 6px; padding: 3px 12px; border-radius: 8px; background: var(--bleu);
+              color: #fff; font-size: 17px; font-weight: 900; text-transform: uppercase; letter-spacing: .03em;
+              transform: rotate(-2deg); }
+.colonnes { display: grid; grid-template-columns: 1fr; gap: 8px 16px; }
+.colonnes h3 { margin: 0 0 3px; color: var(--bleu); font-size: 14px; text-transform: uppercase; letter-spacing: .04em; }
+.ok { list-style: none; margin: 0; padding: 0; }
+.ok li { position: relative; margin: 3px 0 0; padding: 0 0 0 24px; }
+.ok li::before { content: "\2714"; position: absolute; left: 0; top: 1px; width: 17px; height: 17px; border-radius: 50%;
+                 display: grid; place-items: center; background: #16a34a; color: #fff; font-size: 10px; }
+.ok b { white-space: nowrap; }
+.ok [data-coeur]::before { content: "\2605  "; color: #d97706; }
+.imprimer { display: block; margin: 12px auto 24px; font: inherit; font-weight: 700; padding: 8px 18px; min-height: 44px;
+            border-radius: 999px; border: 1px solid #cbd5e1; background: #fff; color: var(--encre); cursor: pointer; }
+@media (min-width: 560px) {
+  .grille { grid-template-columns: 1fr 1fr; }
+  .colonnes { grid-template-columns: 1fr 1fr; }
+}
+/* L'affiche : \0000e9cran large, image et impression (794 px = 210 mm). */
+@media (min-width: 780px), print {
+  body { font-size: 12px; line-height: 1.26; }
+  .affiche { width: 794px; min-height: 1123px; padding: 20px 22px 12px; margin: 16px auto 0;
+             box-shadow: 0 2px 14px rgba(15, 23, 42, .12); display: flex; flex-direction: column; }
+  .grille { flex: 1 1 auto; }
+  .bandeau { padding: 8px 16px; border-radius: 14px; }
+  .bandeau h1 { font-size: 31px; }
+  .bandeau .sous { font-size: 12px; margin-top: 4px; padding: 1px 10px; }
+  .bandeau .badge { font-size: 13px; padding: 4px 10px; }
+  .bandeau svg { width: 44px; height: 44px; }
+  .grille { grid-template-columns: repeat(3, 1fr); gap: 6px; margin-top: 6px; }
+  .carte { padding: 5px 8px 6px; border-radius: 12px; }
+  .carte h2 { font-size: 14px; margin: 0 0 3px; gap: 6px; }
+  .num { width: 21px; height: 21px; font-size: 11.5px; }
+  .fig { margin: 0 0 3px; padding: 1px; border-radius: 8px; }
+  .fig svg { max-height: 66px; }
+  .nota { font-size: 19px; }
+  .nota.petite { font-size: 15px; }
+  .ligne { margin: 1px 0 0; font-size: 11.6px; }
+  .coeur { margin: 4px 0 0; padding: 2px 6px 2px 19px; font-size: 10.6px; line-height: 1.22; border-left-width: 3px; }
+  .coeur::before { left: 5px; top: 2px; }
+  .piege { margin: 4px 0 0; padding: 2px 6px; font-size: 10.6px; line-height: 1.22; }
+  .si, .alors { margin: 1px 0 0; font-size: 11.8px; }
+  .mot { font-size: 10px; }
+  ol.etapes li { margin: 2px 0 0; padding-left: 22px; font-size: 11.2px; line-height: 1.22; }
+  ol.etapes li::before { width: 16px; height: 16px; font-size: 10px; }
+  .renvoi { font-size: 11.2px; margin: 2px 0 0; }
+  .conseil { margin: 4px 0 0; padding: 2px 6px; font-size: 10.6px; line-height: 1.22; }
+  .retenir { margin: 6px 0 0; padding: 5px 12px 7px; }
+  .retenir h2 { font-size: 13.5px; margin: 0 0 3px; padding: 2px 10px; }
+  .colonnes { grid-template-columns: 1.2fr .85fr 1.1fr; gap: 2px 16px; font-size: 11.4px; }
+  .colonnes h3 { font-size: 11px; margin: 0 0 1px; }
+  .ok li { margin: 1px 0 0; padding-left: 20px; }
+  .ok li::before { width: 14px; height: 14px; font-size: 8.5px; }
+  .pied { margin: 5px 2px 0; font-size: 10px; }
+}
+@page { size: A4; margin: 0; }
+@media print {
+  * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  body { background: #fff; }
+  .affiche { margin: 0; box-shadow: none; width: 210mm; height: 297mm; min-height: 0; overflow: hidden; }
+  .imprimer { display: none; }
+}
+
+.fr { display: inline-flex; flex-direction: column; align-items: stretch; vertical-align: middle;
+      margin: 0 .1em; font-size: .94em; line-height: 1.15; text-align: center; font-weight: inherit; }
+.fr > span { display: block; padding: 0 .2em; white-space: nowrap; }
+.fr > span + span { border-top: 1.5px solid currentColor; }
+sup { line-height: 0; font-size: .72em; }
+.nb { white-space: nowrap; }
+.chip { display: inline-block; min-width: 1.7em; margin: 1.5px 1px; padding: 0 4px; border-radius: 7px;
+        background: var(--c); color: #fff; text-align: center; font-weight: 800; }
+.chip.clair { background: #fff; color: var(--c); border: 1.5px solid var(--c); padding: 0 3px; }
+.dp { border-collapse: collapse; margin: 1px auto; font-weight: 700; }
+.dp td { padding: 0 11px; text-align: right; }
+.dp td + td { border-left: 2px solid var(--c); text-align: left; color: var(--c); }
+.cadre { text-align: center; margin: 1px 0; font-weight: 700; }
+.grand { color: var(--c); font-size: 19px; font-weight: 900; line-height: 1.5; margin: 0; }
+.nota.mini { font-size: 15px; }
+@media (min-width: 780px), print {
+  .nota.mini { font-size: 11.6px; letter-spacing: 0; }
+  .grand { font-size: 15px; line-height: 1.55; }
+  .chip { font-size: 11.5px; }
+  .dp { font-size: 12px; }
+}
+</style>
+</head>
+<body data-fiche="ali-4e-fiche-maths-nombres-premiers">
+<main class="affiche" id="affiche">
+<header class="bandeau">
+<div class="titres"><h1>Nombres premiers</h1><span class="sous">L'essentiel du cours</span></div>
+<div class="qui"><span class="badge">Ali &#183; 4e</span><svg viewBox="0 0 64 64" width="50" height="50" aria-hidden="true"><rect x="5" y="5" width="54" height="54" rx="14" fill="#fde68a" stroke="#f59e0b" stroke-width="3"/><text x="32" y="30" text-anchor="middle" font-size="20" font-weight="900" fill="#1e3a8a">2 3 5</text><text x="32" y="51" text-anchor="middle" font-size="20" font-weight="900" fill="#1e3a8a">7 11</text></svg></div>
+</header>
+<div class="grille">
+<section class="carte" style="--c:#4338ca;--bg:#eef2ff"><h2><span class="num">1</span>Nombre premier</h2><p class="coeur" data-coeur>Un nombre premier est un nombre entier qui n'a que deux diviseurs : 1 et lui-m&#234;me.</p><p class="ligne">Les plus petits : <span class="chip">2</span><span class="chip">3</span><span class="chip">5</span><span class="chip">7</span><span class="chip">11</span>&#8230;</p></section>
+<section class="carte" style="--c:#4338ca;--bg:#eef2ff"><h2><span class="num">2</span>Premiers inf&#233;rieurs &#224; 100</h2><p class="cadre"><span class="chip">2</span><span class="chip">3</span><span class="chip">5</span><span class="chip">7</span><span class="chip">11</span><span class="chip">13</span><span class="chip">17</span><span class="chip">19</span><span class="chip">23</span><span class="chip">29</span><span class="chip clair">31</span><span class="chip clair">37</span><span class="chip clair">41</span><span class="chip clair">43</span><span class="chip clair">47</span><span class="chip clair">53</span><span class="chip clair">59</span><span class="chip clair">61</span><span class="chip clair">67</span><span class="chip clair">71</span><span class="chip clair">73</span><span class="chip clair">79</span><span class="chip clair">83</span><span class="chip clair">89</span><span class="chip clair">97</span></p><p class="ligne">Liste du cours : 25 nombres. En fonc&#233; : ceux qui sont inf&#233;rieurs &#224; 30.</p></section>
+<section class="carte" style="--c:#4338ca;--bg:#eef2ff"><h2><span class="num">3</span>Nombres non premiers</h2><p class="ligne"><b>8</b> : divisible par 1, 2, 4 et 8. Il a plus de deux diviseurs.</p><p class="ligne"><b>1</b> : il admet un seul diviseur, lui-m&#234;me.</p><p class="ligne"><b>0</b> : il est divisible par n'importe quel nombre non nul.</p></section>
+<section class="carte" style="--c:#0f766e;--bg:#ecfdf5"><h2><span class="num">4</span>D&#233;composition en facteurs premiers</h2><p class="nota">84 = 2<sup>2</sup> &#215; 3 &#215; 7</p><p class="coeur" data-coeur>Un nombre entier sup&#233;rieur ou &#233;gal &#224; 2 se d&#233;compose en produit de facteurs premiers. Cette d&#233;composition est unique, &#224; l'ordre pr&#232;s.</p></section>
+<section class="carte" style="--c:#0f766e;--bg:#ecfdf5"><h2><span class="num">5</span>1re m&#233;thode : diviseurs premiers</h2><p class="ligne">On cherche les diviseurs premiers de 84, dans l'ordre croissant.</p><p class="nota petite">84 = 2 &#215; 42</p><p class="nota petite">84 = 2 &#215; 2 &#215; 21</p><p class="nota petite">84 = 2 &#215; 2 &#215; 3 &#215; 7</p><p class="ligne">7 est premier : c'est termin&#233;.</p><p class="nota petite">84 = 2<sup>2</sup> &#215; 3 &#215; 7</p></section>
+<section class="carte" style="--c:#0f766e;--bg:#ecfdf5"><h2><span class="num">6</span>Disposition pratique</h2><p class="cadre"><table class="dp"><tr><td>84</td><td>2</td></tr><tr><td>42</td><td>2</td></tr><tr><td>21</td><td>3</td></tr><tr><td>7</td><td>7</td></tr><tr><td>1</td><td></td></tr></table></p><p class="ligne">On divise par un diviseur premier jusqu'&#224; arriver &#224; 1. <b>84 = 2<sup>2</sup> &#215; 3 &#215; 7</b></p></section>
+<section class="carte" style="--c:#0f766e;--bg:#ecfdf5"><h2><span class="num">7</span>2e m&#233;thode : un produit quelconque</h2><p class="ligne">On &#233;crit d'abord un produit quelconque &#233;gal &#224; 84.</p><p class="nota petite">84 = 4 &#215; 21</p><p class="nota petite">donc 84 = 2 &#215; 2 &#215; 3 &#215; 7</p><p class="ligne">2, 3 et 7 sont premiers : <b>84 = 2<sup>2</sup> &#215; 3 &#215; 7</b>. La d&#233;composition est unique, elle ne d&#233;pend pas du proc&#233;d&#233;.</p></section>
+<section class="carte" style="--c:#c2410c;--bg:#fff7ed"><h2><span class="num">8</span>D&#233;composer 1 600</h2><p class="nota petite">1 600 = 16 &#215; 100</p><p class="nota petite">= 4 &#215; 4 &#215; 4 &#215; 25</p><p class="nota mini">donc 1 600 = 2 &#215; 2 &#215; 2 &#215; 2 &#215; 2 &#215; 2 &#215; 5 &#215; 5</p><p class="nota">1 600 = 2<sup>6</sup> &#215; 5<sup>2</sup></p></section>
+<section class="carte" style="--c:#c2410c;--bg:#fff7ed"><h2><span class="num">9</span>D&#233;composer 56 et 75</h2><p class="nota petite">56 = 2 &#215; 28 = 2 &#215; 2 &#215; 14</p><p class="nota petite">= 2 &#215; 2 &#215; 2 &#215; 7</p><p class="nota petite">56 = 2<sup>3</sup> &#215; 7</p><p class="nota petite">75 = 3 &#215; 25 = 3 &#215; 5 &#215; 5</p><p class="nota petite">75 = 3 &#215; 5<sup>2</sup></p><p class="conseil"><b>Conseil</b> : on utilise les crit&#232;res de divisibilit&#233; pour reconna&#238;tre des diviseurs ; on peut effectuer certaines divisions &#224; la calculatrice. On &#233;crit souvent dans l'ordre croissant les facteurs premiers de la d&#233;composition.</p></section>
+<section class="carte" style="--c:#7c3aed;--bg:#f5f3ff"><h2><span class="num">10</span>Simplifier une fraction</h2><p class="ligne">Exemple du cours : <span class="fr"><span>140</span><span>105</span></span>. On d&#233;compose.</p><p class="nota petite">140 = 14 &#215; 10</p><p class="nota petite">= 2 &#215; 7 &#215; 2 &#215; 5</p><p class="nota petite">= 2 &#215; 2 &#215; 5 &#215; 7</p><p class="nota petite">105 = 5 &#215; 21</p><p class="nota petite">= 5 &#215; 3 &#215; 7</p><p class="nota petite">= 3 &#215; 5 &#215; 7</p><p class="ligne">Donc <span class="fr"><span>140</span><span>105</span></span> = <span class="fr"><span>2 &#215; 2 &#215; 5 &#215; 7</span><span>3 &#215; 5 &#215; 7</span></span> = <span class="fr"><span>2 &#215; 2</span><span>3</span></span> = <b><span class="fr"><span>4</span><span>3</span></span></b></p><p class="ligne">4 et 3 n'ont pas de diviseur commun autre que 1.</p></section>
+<section class="carte" style="--c:#be123c;--bg:#fff1f2"><h2><span class="num">11</span>Bouquets : 186 roses, 310 tulipes</h2><p class="ligne">Un fleuriste fait des bouquets tous identiques. Toutes les compositions possibles ?</p><p class="nota petite">186 = 2 &#215; 93 = 2 &#215; 3 &#215; 31</p><p class="nota petite">310 = 31 &#215; 10 = 2 &#215; 5 &#215; 31</p><p class="ligne">Le nombre de bouquets est un diviseur commun &#224; 186 et 310 : <b>1, 2, 31, 62</b>.</p><p class="conseil"><b>Conseil</b> : les seuls diviseurs premiers communs sont 2 et 31. 186 = 3 &#215; 62 et 310 = 5 &#215; 62, donc 62 (= 2 &#215; 31) est un diviseur commun. Il ne faut pas oublier que 1 est aussi un diviseur commun.</p></section>
+<section class="carte" style="--c:#be123c;--bg:#fff1f2"><h2><span class="num">12</span>Les quatre compositions</h2><p class="ligne"><b>1</b> bouquet de 186 roses et 310 tulipes</p><p class="ligne"><b>2</b> bouquets de 93 roses et 155 tulipes</p><p class="ligne"><b>31</b> bouquets de 6 roses et 10 tulipes</p><p class="ligne"><b>62</b> bouquets de 3 roses et 5 tulipes</p><p class="conseil"><b>Conseil</b> : bien s&#251;r, les deux premi&#232;res solutions ne sont pas tr&#232;s r&#233;alistes.</p></section>
+</div>
+<section class="retenir"><h2>&#192; retenir</h2><div class="colonnes"><div><h3>Reconna&#238;tre</h3><ul class="ok"><li>Premier : deux diviseurs seulement, 1 et lui-m&#234;me</li><li>0 et 1 ne sont pas premiers</li><li>Un diviseur autre que 1 et lui-m&#234;me : il n'est pas premier</li></ul></div><div><h3>D&#233;composer</h3><ul class="ok"><li>On divise par des nombres premiers, dans l'ordre croissant, jusqu'&#224; 1</li><li>Ou on part d'un produit quelconque, puis on d&#233;compose chaque facteur</li><li>On &#233;crit avec des puissances : 84 = 2<sup>2</sup> &#215; 3 &#215; 7</li></ul></div><div><h3>Utiliser</h3><ul class="ok"><li>Simplifier : on d&#233;compose en haut et en bas, puis on simplifie</li><li>Diviseurs communs : ne pas oublier 1</li></ul></div></div></section>
+<p class="pied legende"><span><b>&#9733;</b> phrase de la le&#231;on, &#224; savoir mot pour mot</span><span><em>Conseil</em> : donn&#233; par le manuel</span><span>Maths &#183; le&#231;on du 21/10/2026 : manuel, chapitre 6 &#171; Utiliser les nombres premiers &#187;, p. 100 et 101</span></p>
+</main>
+<button class="imprimer" type="button" onclick="window.print()">Imprimer la fiche</button>
+</body>
+</html>
