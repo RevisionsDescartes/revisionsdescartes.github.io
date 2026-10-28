@@ -52,18 +52,19 @@ button:disabled { opacity: .5; }
       "Matière : " + (D.m || "?"),
       "Chapitre : " + (D.c || "?"),
       "Sur : " + (D.t || "?"),
-      "Demande du " + quand + "."
+      "Demande du " + quand + ".",
+      "Précision : "
     ].join("\n");
   }
 
   // Pas de formulaire : le message est prêt tout de suite.
   box.innerHTML = "";
-  box.appendChild(el("p", "etape", "Copie ce message, colle-le dans une conversation du projet « Outil De Révision », puis envoie-le."));
-  var prompt = el("textarea", "prompt"); prompt.readOnly = true; prompt.setAttribute("aria-label", "Message pour Claude");
+  box.appendChild(el("p", "etape", "Copie ce message, colle-le dans une conversation du projet « Outil De Révision », puis envoie-le. Tu peux d'abord le modifier ici, par exemple écrire ta précision à la dernière ligne."));
+  var prompt = el("textarea", "prompt"); prompt.setAttribute("aria-label", "Message pour Claude (modifiable)"); prompt.spellcheck = false;
   prompt.value = message(maintenant());
   box.appendChild(prompt);
   var copier = el("button", null, "Copier le message"); copier.type = "button"; box.appendChild(copier);
-  box.appendChild(el("p", "aide", "Une précision ? Ajoute-la sous le message collé, avant d'envoyer."));
+  prompt.addEventListener("input", function () { copier.textContent = "Copier le message"; copier.className = ""; });
 
   function copierTexte(t) {
     if (navigator.clipboard && window.isSecureContext) return navigator.clipboard.writeText(t);
