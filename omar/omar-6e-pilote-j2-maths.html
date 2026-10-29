@@ -1,0 +1,1819 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Jour 2 · Maths — Perpendiculaires et parallèles</title>
+<style>
+/* ============================================================
+   Feuille de style commune — spec V2.3 §6.7 (couleurs d'accent)
+   Variante "omar" : §3.1 (corps large, interlignage, espacement)
+   Pilote V3 : ajout du bloc « papier » (consignes sur feuille)
+   ============================================================ */
+
+:root {
+  --notion:      #4338ca;   /* indigo — couleur principale */
+  --notion-bg:   #eef2ff;
+  --voc:         #0f766e;   /* bleu-vert */
+  --voc-bg:      #f0fdfa;
+  --methode:     #b45309;   /* ambre */
+  --methode-bg:  #fffbeb;
+  --piege:       #b91c1c;   /* rouge */
+  --piege-bg:    #fef2f2;
+  --exemple:     #15803d;   /* vert */
+  --exemple-bg:  #f0fdf4;
+
+  --p1: #15803d;            /* palier basique      — vert   */
+  --p1-bg: #f0fdf4;
+  --p2: #b45309;            /* palier intermédiaire — ambre  */
+  --p2-bg: #fffbeb;
+  --p3: #6d28d9;            /* palier avancé        — violet */
+  --p3-bg: #f5f3ff;
+
+  --encre:   #1c1917;
+  --encre-2: #57534e;
+  --trait:   #e7e5e4;
+  --fond:    #fafaf9;
+  --carte:   #ffffff;
+
+  --matiere: var(--notion);
+  --corps: 16.5px;
+  --interligne: 1.65;
+  --lettres: 0;
+  --rayon: 12px;
+}
+
+body[data-profil="omar"] {
+  --corps: 19.5px;
+  --interligne: 1.85;
+  --lettres: 0.018em;
+  --rayon: 16px;
+}
+
+body[data-matiere="maths"]                { --matiere: #1d4ed8; }
+body[data-matiere="francais"]             { --matiere: #a21caf; }
+body[data-matiere="histoire-geo"]         { --matiere: #b45309; }
+body[data-matiere="sciences-technologie"] { --matiere: #047857; }
+body[data-matiere="svt"]                  { --matiere: #15803d; }
+body[data-matiere="physique-chimie"]      { --matiere: #0e7490; }
+body[data-matiere="technologie"]          { --matiere: #4b5563; }
+body[data-matiere="anglais"]              { --matiere: #b91c1c; }
+body[data-matiere="arabe"]                { --matiere: #6d28d9; }
+
+[lang="ar"] {
+  direction: rtl;
+  text-align: right;
+  unicode-bidi: isolate;
+  font-size: 1.15em;
+  line-height: 2;
+}
+[lang="ar"] .btn-voix { display: none; }
+
+* { box-sizing: border-box; }
+
+html { -webkit-text-size-adjust: 100%; }
+
+body {
+  margin: 0;
+  background: var(--fond);
+  color: var(--encre);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  font-size: var(--corps);
+  line-height: var(--interligne);
+  letter-spacing: var(--lettres);
+  text-align: left;
+}
+
+body[data-profil="omar"] p,
+body[data-profil="omar"] li,
+body[data-profil="omar"] .enonce { text-align: left; text-wrap: pretty; }
+
+.page { max-width: 780px; margin: 0 auto; padding: 0 16px 80px; }
+
+/* ---------- Bandeau ---------- */
+.bandeau {
+  background: var(--matiere);
+  color: #fff;
+  padding: 18px 16px 16px;
+  margin: 0 -16px 22px;
+  border-radius: 0 0 var(--rayon) var(--rayon);
+}
+.bandeau .eleve {
+  font-size: 0.78em; text-transform: uppercase; letter-spacing: 0.09em;
+  opacity: 0.85; margin: 0 0 4px;
+}
+.bandeau h1 { margin: 0; font-size: 1.42em; line-height: 1.25; font-weight: 700; }
+.bandeau .sous { margin: 6px 0 0; font-size: 0.86em; opacity: 0.9; }
+
+/* ---------- Blocs de leçon ---------- */
+.bloc {
+  background: var(--carte);
+  border: 1px solid var(--trait);
+  border-left: 5px solid var(--accent, var(--notion));
+  border-radius: var(--rayon);
+  padding: 16px 18px;
+  margin: 0 0 16px;
+}
+.bloc > h3 {
+  margin: 0 0 10px;
+  font-size: 1.02em;
+  color: var(--accent, var(--notion));
+  letter-spacing: 0.01em;
+}
+.bloc.notion  { --accent: var(--notion); }
+.bloc.voc     { --accent: var(--voc); }
+.bloc.methode { --accent: var(--methode); }
+.bloc.piege   { --accent: var(--piege); background: var(--piege-bg); }
+.bloc.resume  { --accent: var(--notion); background: var(--notion-bg); }
+
+.exemples {
+  background: var(--exemple-bg);
+  border: 1px dashed #86efac;
+  border-radius: 10px;
+  padding: 10px 14px;
+  margin: 12px 0 0;
+}
+.exemples .etiq {
+  font-size: 0.75em; text-transform: uppercase; letter-spacing: 0.08em;
+  color: var(--exemple); font-weight: 700; display: block; margin-bottom: 4px;
+}
+.exemples ul { margin: 0; padding-left: 18px; }
+.exemples li { margin: 3px 0; }
+
+.calc { font-family: ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace; font-size: 0.97em; }
+
+.etapes { margin: 8px 0 0; padding-left: 20px; }
+.etapes li { margin: 4px 0; }
+
+/* ---------- Second angle (§6.7) ---------- */
+.angle-btn {
+  margin-top: 12px; background: transparent; color: var(--notion);
+  border: 1px solid var(--notion); border-radius: 999px;
+  padding: 7px 14px; font-size: 0.86em; font-family: inherit; cursor: pointer;
+  min-height: 40px;
+}
+.angle-btn:hover { background: var(--notion-bg); }
+.angle-txt {
+  display: none; margin-top: 10px; padding: 11px 14px;
+  background: var(--notion-bg); border-radius: 10px; font-style: italic;
+}
+.angle-txt.ouvert { display: block; }
+
+/* ---------- Vocabulaire cliquable (§3.1) ---------- */
+.def {
+  border-bottom: 2px dotted var(--voc); cursor: pointer;
+  color: var(--voc); font-weight: 600;
+}
+.bulle {
+  position: fixed; left: 12px; right: 12px; bottom: 84px; z-index: 90;
+  background: #0f766e; color: #fff; padding: 14px 16px; border-radius: 12px;
+  box-shadow: 0 8px 28px rgba(0,0,0,.28); display: none; font-size: 0.95em;
+}
+.bulle.ouvert { display: block; }
+.bulle b { display: block; margin-bottom: 3px; }
+
+/* ---------- Bouton lecture à voix haute (§3.1) ---------- */
+.lire {
+  background: #fff; border: 1px solid var(--trait); border-radius: 999px;
+  min-width: 42px; min-height: 42px; font-size: 1.05em; cursor: pointer;
+  vertical-align: middle; margin-left: 6px; line-height: 1;
+}
+.lire:hover { background: var(--notion-bg); }
+.lire[hidden] { display: none; }
+
+/* ---------- Séance ---------- */
+.sep {
+  margin: 34px 0 18px; text-align: center; color: var(--encre-2);
+  font-size: 0.78em; text-transform: uppercase; letter-spacing: 0.13em;
+}
+.sep::before, .sep::after {
+  content: ""; display: block; height: 1px; background: var(--trait); margin: 10px 0;
+}
+
+.demarrer {
+  display: block; width: 100%; padding: 16px; font-size: 1.05em; font-family: inherit;
+  background: var(--matiere); color: #fff; border: 0; border-radius: var(--rayon);
+  cursor: pointer; font-weight: 600; min-height: 54px;
+}
+
+.exo { display: none; }
+.exo.actif { display: block; }
+
+.barre {
+  display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
+  margin: 0 0 12px; font-size: 0.85em; color: var(--encre-2);
+}
+.badge {
+  border-radius: 999px; padding: 4px 11px; font-weight: 700; font-size: 0.92em;
+  background: var(--pbg); color: var(--pc);
+}
+.exo[data-palier="0"] { --pc: #4338ca; --pbg: #eef2ff; }
+.exo[data-palier="1"] { --pc: var(--p1); --pbg: var(--p1-bg); }
+.exo[data-palier="2"] { --pc: var(--p2); --pbg: var(--p2-bg); }
+.exo[data-palier="3"] { --pc: var(--p3); --pbg: var(--p3-bg); }
+.jauge { flex: 1; height: 6px; background: var(--trait); border-radius: 99px; overflow: hidden; min-width: 70px; }
+.jauge i { display: block; height: 100%; background: var(--matiere); }
+
+.carte-exo {
+  background: var(--carte); border: 1px solid var(--trait);
+  border-radius: var(--rayon); padding: 18px; margin-bottom: 14px;
+}
+
+.cas {
+  background: var(--exemple-bg); border: 1px solid #bbf7d0;
+  border-radius: 12px; padding: 13px 15px; margin: 0 0 16px;
+}
+.cas .etiq {
+  font-size: 0.75em; text-transform: uppercase; letter-spacing: 0.08em;
+  color: var(--exemple); font-weight: 700; display: block; margin-bottom: 5px;
+}
+
+.enonce { font-size: 1.06em; margin: 0 0 14px; }
+.enonce strong { font-weight: 700; }
+
+.schema { margin: 14px 0; overflow-x: auto; }
+.schema svg { width: 100%; max-width: 420px; height: auto; display: block; }
+.cas svg { width: 100%; height: auto; display: block; }
+#lecon svg { width: 100%; height: auto; display: block; }
+
+/* ---------- Champs de réponse ---------- */
+.champ-num { display: flex; align-items: center; gap: 8px; margin: 10px 0; flex-wrap: wrap; }
+input[type="text"] {
+  font: inherit; padding: 13px 14px; border: 2px solid var(--trait);
+  border-radius: 10px; width: 170px; background: #fff; min-height: 50px;
+}
+input[type="text"]:focus { outline: 3px solid var(--matiere); outline-offset: 1px; border-color: var(--matiere); }
+.moins {
+  font: inherit; font-weight: 700; font-size: 1.3em; min-width: 54px; min-height: 50px;
+  border: 2px solid var(--trait); border-radius: 10px; background: #fff; cursor: pointer;
+}
+.unite { color: var(--encre-2); }
+
+.opts { display: grid; gap: 9px; margin: 10px 0; }
+.opt {
+  display: flex; align-items: flex-start; gap: 10px; padding: 13px 14px;
+  border: 2px solid var(--trait); border-radius: 12px; background: #fff;
+  cursor: pointer; text-align: left; font: inherit; min-height: 52px;
+}
+.opt:hover { border-color: var(--matiere); }
+.opt.choisi { border-color: var(--matiere); background: var(--notion-bg); }
+.opt .puce {
+  flex: 0 0 auto; width: 24px; height: 24px; border-radius: 50%;
+  border: 2px solid var(--trait); margin-top: 1px;
+}
+.opt.choisi .puce { border-color: var(--matiere); background: var(--matiere); }
+.opt > span:last-child { flex: 1 1 auto; min-width: 0; }
+.opt svg { width: 100%; max-width: 320px; height: auto; display: block; }
+
+.mots { display: flex; flex-wrap: wrap; gap: 8px; margin: 12px 0; }
+.mot {
+  padding: 11px 14px; border: 2px solid var(--trait); border-radius: 10px;
+  background: #fff; cursor: pointer; font: inherit; min-height: 46px;
+}
+.mot.choisi { border-color: var(--matiere); background: var(--notion-bg); font-weight: 600; }
+
+.paires { display: grid; gap: 10px; margin: 12px 0; }
+.paire { display: grid; grid-template-columns: 1fr auto; gap: 10px; align-items: center; }
+.paire .gauche {
+  padding: 11px 13px; background: var(--notion-bg); border-radius: 10px; font-weight: 600;
+}
+.paire .gauche svg { width: 100%; max-width: 320px; height: auto; display: block; background: #fff; border-radius: 8px; }
+select {
+  font: inherit; padding: 12px 10px; border: 2px solid var(--trait);
+  border-radius: 10px; background: #fff; min-height: 50px; max-width: 100%;
+}
+select:focus { outline: 3px solid var(--matiere); outline-offset: 1px; }
+
+.rangs { display: grid; gap: 9px; margin: 12px 0; }
+.rang { display: grid; grid-template-columns: auto 1fr auto auto; gap: 8px; align-items: center; }
+.rang .num { color: var(--encre-2); font-size: 0.85em; width: 22px; }
+.rang .val { padding: 11px 13px; background: #fff; border: 2px solid var(--trait); border-radius: 10px; }
+.fleche {
+  font: inherit; min-width: 46px; min-height: 46px; border: 2px solid var(--trait);
+  border-radius: 10px; background: #fff; cursor: pointer;
+}
+.fleche:disabled { opacity: .35; cursor: default; }
+
+.etape-bloc {
+  border: 1px solid var(--trait); border-radius: 12px; padding: 13px 15px; margin: 0 0 11px;
+}
+.etape-bloc.verrou { opacity: .45; pointer-events: none; }
+.etape-bloc .consigne { font-weight: 600; margin: 0 0 8px; }
+
+/* ---------- Actions et retours ---------- */
+.actions { display: flex; gap: 9px; flex-wrap: wrap; margin-top: 14px; }
+.btn {
+  font: inherit; padding: 13px 18px; border-radius: 10px; border: 0;
+  cursor: pointer; font-weight: 600; min-height: 50px;
+}
+.btn.valider { background: var(--matiere); color: #fff; flex: 1; min-width: 140px; }
+.btn.valider:disabled { background: #d6d3d1; cursor: default; }
+.btn.sec { background: #fff; border: 2px solid var(--trait); color: var(--encre-2); }
+.btn.sec:disabled { opacity: .4; cursor: default; }
+
+.indice {
+  display: none; margin-top: 12px; padding: 12px 14px;
+  background: var(--methode-bg); border-left: 4px solid var(--methode); border-radius: 8px;
+}
+.indice.ouvert { display: block; }
+
+.retour { display: none; margin-top: 14px; padding: 14px 16px; border-radius: 12px; }
+.retour.ouvert { display: block; }
+.retour.juste { background: var(--exemple-bg); border: 1px solid #86efac; }
+.retour.faux  { background: var(--piege-bg);  border: 1px solid #fecaca; }
+.retour.presque { background: var(--methode-bg); border: 1px solid #fcd34d; }
+.retour .verdict { font-weight: 700; margin: 0 0 7px; }
+.retour.juste .verdict { color: var(--exemple); }
+.retour.faux .verdict  { color: var(--piege); }
+.retour.presque .verdict { color: var(--methode); }
+.retour .cible {
+  margin: 9px 0 0; padding: 10px 12px; background: rgba(255,255,255,.75);
+  border-radius: 8px; border-left: 3px solid currentColor;
+}
+.signaler {
+  margin-top: 12px; background: none; border: 0; color: var(--encre-2);
+  font: inherit; font-size: 0.84em; text-decoration: underline; cursor: pointer;
+  padding: 8px 0; min-height: 40px;
+}
+.signaler.fait { color: var(--piege); text-decoration: none; font-weight: 600; }
+
+/* ---------- Bilan ---------- */
+#bilan { display: none; }
+#bilan.ouvert { display: block; }
+.score-grand {
+  text-align: center; font-size: 3.4em; font-weight: 800;
+  color: var(--matiere); line-height: 1; margin: 6px 0 2px;
+}
+.score-sous { text-align: center; color: var(--encre-2); font-size: 0.9em; margin-bottom: 18px; }
+.paliers { display: grid; gap: 9px; margin: 16px 0; }
+.pal { display: flex; justify-content: space-between; align-items: center;
+       padding: 12px 15px; border-radius: 11px; font-weight: 600; }
+.pal.p1 { background: var(--p1-bg); color: var(--p1); }
+.pal.p2 { background: var(--p2-bg); color: var(--p2); }
+.pal.p3 { background: var(--p3-bg); color: var(--p3); }
+.message {
+  padding: 16px 18px; border-radius: 12px; background: var(--notion-bg);
+  border-left: 5px solid var(--notion); margin: 16px 0; font-size: 1.04em;
+}
+.envoi {
+  margin-top: 18px; padding: 13px 15px; border-radius: 11px;
+  background: #f5f5f4; color: var(--encre-2); font-size: 0.9em;
+}
+.envoi.ok { background: var(--exemple-bg); color: var(--exemple); }
+.envoi.ko { background: var(--piege-bg); color: var(--piege); }
+pre.bilan-txt {
+  white-space: pre-wrap; word-break: break-word; background: #fff;
+  border: 1px solid var(--trait); border-radius: 11px; padding: 14px;
+  font-size: 0.84em; line-height: 1.55; margin: 12px 0;
+}
+
+/* ---------- Pilote V3 : consignes sur feuille ---------- */
+.papier {
+  background: var(--methode-bg);
+  border: 2px solid #fcd34d;
+  border-left: 6px solid var(--methode);
+  border-radius: var(--rayon);
+  padding: 16px 18px;
+  margin: 0 0 18px;
+}
+.papier > h2 {
+  margin: 0 0 8px; font-size: 1.04em; color: var(--methode);
+}
+.papier ol, .papier ul { margin: 6px 0 0; padding-left: 22px; }
+.papier li { margin: 5px 0; }
+.papier .duree { font-size: 0.82em; color: var(--encre-2); font-weight: 600; }
+
+/* ---------- Pilote V3, lot 2 : blocs par matière ---------- */
+.matiere-etiq {
+  border-radius: 999px; padding: 4px 11px; font-weight: 700; font-size: 0.92em;
+  background: #f5f5f4; color: var(--encre); border: 1px solid var(--trait);
+}
+.pal.pm { background: #f5f5f4; color: var(--encre); }
+
+/* ---------- 21 octobre : accès à la leçon et reprise de séance ---------- */
+.exo .barre {
+  position: sticky; top: 0; z-index: 20;
+  background: var(--fond); padding: 8px 0; margin: 0 0 10px;
+}
+.lecon-btn {
+  margin-left: auto; font: inherit; font-weight: 600; font-size: 0.9em;
+  background: var(--matiere); color: #fff; border: 0; border-radius: 999px;
+  padding: 8px 15px; min-height: 44px; cursor: pointer; white-space: nowrap;
+}
+.lecon-btn:focus-visible { outline: 3px solid var(--encre); outline-offset: 2px; }
+.toast {
+  position: fixed; left: 12px; right: 12px; bottom: 18px; z-index: 95;
+  background: #1c1917; color: #fff; padding: 13px 16px; border-radius: 12px;
+  box-shadow: 0 8px 28px rgba(0,0,0,.28); display: none; font-size: 0.95em;
+}
+.toast.ouvert { display: block; }
+.reprise-zone {
+  background: var(--exemple-bg); border: 2px solid #86efac; border-radius: var(--rayon);
+  padding: 14px 16px; margin: 0 0 18px;
+}
+.reprise-zone p { margin: 0 0 4px; }
+
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; } }
+@media (max-width: 420px) {
+  .paire { grid-template-columns: 1fr; }
+  .rang { grid-template-columns: auto 1fr auto auto; }
+}
+
+
+/* ---------- Rappel de leçon consultable pendant la séance ---------- */
+.panneau-tete { display: none; }
+
+.panneau.flottant {
+  position: fixed; inset: 0; z-index: 80; background: var(--fond);
+  overflow-y: auto; -webkit-overflow-scrolling: touch;
+  padding: 0 16px 48px; display: none;
+}
+.panneau.flottant.ouvert { display: block; }
+.panneau.flottant .panneau-tete {
+  display: flex; justify-content: space-between; align-items: center; gap: 12px;
+  position: sticky; top: 0; z-index: 3;
+  background: var(--matiere); color: #fff;
+  margin: 0 -16px 14px; padding: 12px 16px;
+}
+.panneau.flottant .panneau-tete b { font-size: 0.98em; }
+.panneau-tete .fermer {
+  font: inherit; font-weight: 600; background: rgba(255,255,255,.18); color: #fff;
+  border: 1px solid rgba(255,255,255,.45); border-radius: 999px;
+  padding: 9px 16px; min-height: 44px; cursor: pointer;
+}
+.panneau-tete .fermer:hover { background: rgba(255,255,255,.3); }
+
+.sommaire { display: none; }
+.panneau.flottant .sommaire {
+  display: flex; flex-wrap: wrap; gap: 7px; margin: 0 0 16px;
+}
+.panneau.flottant .sommaire a {
+  font-size: 0.83em; text-decoration: none; color: var(--encre-2);
+  border: 1px solid var(--trait); background: #fff;
+  border-radius: 999px; padding: 8px 12px; min-height: 38px; line-height: 22px;
+}
+.panneau.flottant .sommaire a:hover { border-color: var(--matiere); color: var(--matiere); }
+
+.rappel-btn {
+  position: fixed; right: 14px; bottom: 14px; z-index: 70;
+  font: inherit; font-weight: 600; font-size: 0.92em;
+  background: var(--matiere); color: #fff; border: 0;
+  border-radius: 999px; padding: 13px 20px; min-height: 50px;
+  box-shadow: 0 6px 20px rgba(0,0,0,.22); cursor: pointer; display: none;
+}
+.rappel-btn.visible { display: block; }
+.rappel-btn:focus-visible { outline: 3px solid #fff; outline-offset: 2px; }
+
+.cible-rappel { animation: souligne 1.6s ease-out 1; }
+@keyframes souligne {
+  0%, 40% { background: #fef08a; }
+  100% { background: transparent; }
+}
+
+
+/* Bannière affichée seulement quand JavaScript est désactivé */
+.sans-js {
+  background: #fef2f2; border: 2px solid #fecaca; border-left: 6px solid #b91c1c;
+  color: #7f1d1d; border-radius: 12px; padding: 16px 18px; margin: 16px 0 0;
+  line-height: 1.6;
+}
+
+
+#diagnostic { display: none; }
+#diagnostic.diag {
+  display: block; background: #fef2f2; border: 2px solid #b91c1c; color: #7f1d1d;
+  border-radius: 12px; padding: 14px 16px; margin: 16px 0; font-size: 0.9em;
+  word-break: break-word;
+}
+
+</style>
+</head>
+<body data-profil="omar" data-matiere="maths" data-format="pilote">
+<div class="page">
+
+  <noscript>
+    <div class="sans-js">
+      <b>Cette page a besoin de JavaScript pour fonctionner.</b>
+      La leçon s'affiche, mais les exercices ne pourront pas démarrer.<br>
+      Ouvre le fichier avec <b>Chrome</b> : appuie longuement sur le fichier,
+      puis choisis « Ouvrir avec » → Chrome.
+    </div>
+  </noscript>
+
+  <header class="bandeau">
+    <p class="eleve">Omar · 6e</p>
+    <h1>Jour 2 · Maths — Perpendiculaires et parallèles</h1>
+    <p class="sous">Révisions des vacances · environ 15 minutes · écran, puis feuille</p>
+  </header>
+
+  <div class="papier" id="avant">
+<h2>Avant de lire la leçon — sur ta feuille</h2>
+<p class="duree">2 minutes · sans regarder ton cahier</p>
+<ol><li>Dessine la demi-droite [AB), puis la demi-droite [BA).</li></ol>
+<p>Ensuite seulement, lis la leçon.</p>
+  </div>
+
+  <div class="panneau" id="panneau">
+    <div class="panneau-tete">
+      <b>Le rappel de leçon</b>
+      <button class="fermer" id="fermer-lecon" type="button">Revenir à l'exercice</button>
+    </div>
+    <nav class="sommaire" id="sommaire"></nav>
+    <main id="lecon">
+<div class="bloc notion" id="g-droites">
+<h3>Sécantes, perpendiculaires, parallèles</h3>
+<p data-lire><b>Définition.</b> Deux droites <span class="def" data-def="Qui se coupent en un point.">sécantes</span> sont deux droites qui ont un seul point commun.</p><p data-lire><b>Définition.</b> Deux droites <span class="def" data-def="Qui se coupent en angle droit.">perpendiculaires</span> sont deux droites sécantes qui forment quatre angles droits. On note <b>(d) ⊥ (d')</b>. On <span class="def" data-def="Marque d'un petit signe.">code</span> un seul angle droit.</p><p data-lire><b>Définition.</b> Deux droites <span class="def" data-def="Qui ne se coupent jamais.">parallèles</span> sont deux droites qui ne sont pas sécantes. On note <b>(d) // (d')</b>. Elles n'ont pas de point commun.</p><div style="display:flex;flex-wrap:wrap;gap:8px;margin:8px 0"><div style="flex:1 1 150px;min-width:140px"><svg viewBox="0 0 280 150" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="deux droites" style="background:#fff"><line x1="8" y1="93.6" x2="272" y2="56.4" stroke="#1d4ed8" stroke-width="2.4" stroke-linecap="round"/><line x1="115.6" y1="142" x2="164.4" y2="8" stroke="#b91c1c" stroke-width="2.4" stroke-linecap="round"/><text x="247.7" y="80" font-size="15" fill="#1d4ed8" text-anchor="middle" font-style="italic" font-family="Arial, Helvetica, sans-serif">(d)</text><text x="144.4" y="23.9" font-size="15" fill="#b91c1c" text-anchor="middle" font-style="italic" font-family="Arial, Helvetica, sans-serif">(d')</text></svg><div style="font-size:0.85em;color:#57534e;text-align:center">sécantes</div></div><div style="flex:1 1 150px;min-width:140px"><svg viewBox="0 0 280 150" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="deux droites" style="background:#fff"><line x1="32.8" y1="142" x2="247.2" y2="8" stroke="#1d4ed8" stroke-width="2.4" stroke-linecap="round"/><line x1="98.1" y1="8" x2="181.9" y2="142" stroke="#b91c1c" stroke-width="2.4" stroke-linecap="round"/><text x="233.7" y="39.1" font-size="15" fill="#1d4ed8" text-anchor="middle" font-style="italic" font-family="Arial, Helvetica, sans-serif">(d)</text><text x="186.2" y="125.7" font-size="15" fill="#b91c1c" text-anchor="middle" font-style="italic" font-family="Arial, Helvetica, sans-serif">(d')</text><path d="M150.2 68.6 L143.8 58.5 L133.6 64.8" fill="none" stroke="#1c1917" stroke-width="1.8"/></svg><div style="font-size:0.85em;color:#57534e;text-align:center">perpendiculaires</div></div><div style="flex:1 1 150px;min-width:140px"><svg viewBox="0 0 280 150" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="deux droites" style="background:#fff"><line x1="8" y1="80.6" x2="272" y2="24.5" stroke="#1d4ed8" stroke-width="2.4" stroke-linecap="round"/><line x1="8" y1="125.5" x2="272" y2="69.4" stroke="#b91c1c" stroke-width="2.4" stroke-linecap="round"/><text x="248.7" y="49.7" font-size="15" fill="#1d4ed8" text-anchor="middle" font-style="italic" font-family="Arial, Helvetica, sans-serif">(d)</text><text x="242.5" y="65.4" font-size="15" fill="#b91c1c" text-anchor="middle" font-style="italic" font-family="Arial, Helvetica, sans-serif">(d')</text></svg><div style="font-size:0.85em;color:#57534e;text-align:center">parallèles</div></div></div><button class="angle-btn" type="button">Une autre façon de le voir</button><div class="angle-txt">Sécantes : elles se croisent. Perpendiculaires : elles se croisent en faisant un angle droit, comme le coin d'une feuille. Parallèles : elles ne se croisent jamais, même prolongées.</div><div class="exemples"><span class="etiq">Exemples</span><ul><li><span class="ex">Les deux bords d'une règle : parallèles.</span></li><li><span class="ex">Deux bords voisins d'un cahier : perpendiculaires.</span></li></ul></div>
+</div>
+<div class="bloc piege" id="g-piege2">
+<h3>Pièges</h3>
+<ul><li>Deux droites qui ne se coupent pas <b>sur le dessin</b> peuvent être sécantes : prolonge-les.</li><li>Le petit carré code un angle droit. Sans lui, on vérifie avec l'équerre.</li><li>⊥ veut dire perpendiculaires. // veut dire parallèles.</li></ul>
+</div>
+<div class="bloc notion" id="g-prop1">
+<h3>Propriété 1 : deux perpendiculaires à une même droite</h3>
+<p data-lire><b>Propriété.</b> Si deux droites sont perpendiculaires à une même droite, alors elles sont parallèles.</p><div style="max-width:330px"><svg viewBox="0 0 300 170" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="deux droites perpendiculaires à une même droite" style="background:#fff"><line x1="8" y1="120" x2="292" y2="120" stroke="#1c1917" stroke-width="2.4" stroke-linecap="round"/><line x1="100" y1="8" x2="100" y2="162" stroke="#1d4ed8" stroke-width="2.4" stroke-linecap="round"/><line x1="210" y1="8" x2="210" y2="162" stroke="#b91c1c" stroke-width="2.4" stroke-linecap="round"/><text x="275" y="140" font-size="15" fill="#1c1917" text-anchor="middle" font-style="italic" font-family="Arial, Helvetica, sans-serif">(d)</text><text x="85" y="22.2" font-size="15" fill="#1d4ed8" text-anchor="middle" font-style="italic" font-family="Arial, Helvetica, sans-serif">(d₁)</text><path d="M112 120 L112 108 L100 108" fill="none" stroke="#1c1917" stroke-width="1.8"/><text x="195" y="22.2" font-size="15" fill="#b91c1c" text-anchor="middle" font-style="italic" font-family="Arial, Helvetica, sans-serif">(d₂)</text><path d="M222 120 L222 108 L210 108" fill="none" stroke="#1c1917" stroke-width="1.8"/></svg></div><p>Données : (d₁) ⊥ (d) et (d₂) ⊥ (d).<br>Donc, d'après cette propriété : <b>(d₁) // (d₂)</b>.</p><button class="angle-btn" type="button">Une autre façon de le voir</button><div class="angle-txt">Deux droites posées à angle droit sur la même droite gardent toujours le même écart : elles ne se croisent jamais.</div><div class="exemples"><span class="etiq">Exemples</span><ul><li><span class="ex">(a) ⊥ (c) et (b) ⊥ (c), donc (a) // (b).</span></li><li><span class="ex">Les barreaux d'une échelle sont perpendiculaires au même montant : ils sont parallèles.</span></li></ul></div>
+</div>
+<div class="bloc methode" id="g-trace-perp">
+<h3>Tracer la perpendiculaire à (d) passant par A</h3>
+<ol class="etapes"><li>On place un côté de l'angle droit de l'équerre le long de la droite (d).</li><li>On fait glisser l'équerre le long de (d), jusqu'à ce que l'autre côté de l'angle droit passe par A.</li><li>On trace, on prolonge, et on code l'angle droit.</li></ol><div class="exemples"><span class="etiq">Exemples</span><ul><li><span class="ex">Si A est sur (d), on place directement le coin de l'équerre en A.</span></li><li><span class="ex">À la fin, l'angle droit de l'équerre doit coller aux deux droites.</span></li></ul></div>
+</div>
+<div class="bloc resume" id="par-coeur">
+<h3>À savoir par cœur</h3>
+<p>Récite ces phrases sans regarder. Ce soir, on te les demandera.</p><ol><li>Deux droites sécantes sont deux droites qui ont un seul point commun.</li><li>Deux droites perpendiculaires sont deux droites sécantes qui forment quatre angles droits.</li><li>Deux droites parallèles sont deux droites qui ne sont pas sécantes.</li><li>On note (d) ⊥ (d') et (d) // (d').</li><li>Si deux droites sont perpendiculaires à une même droite, alors elles sont parallèles.</li></ol>
+</div>
+<div class="sep" style="margin-top:26px">Les jours d'avant</div>
+<div class="bloc resume" id="g-notations">
+<h3>Segment, droite, demi-droite (jour 1)</h3>
+<ul><li>[AB] : le tracé s'arrête en A et en B.</li><li>(AB) : le tracé continue des deux côtés.</li><li>[AB) : il s'arrête en A, l'origine, et continue après B.</li><li>M ∈ (AB) : M appartient à la droite (AB). N ∉ (AB) : N n'appartient pas à (AB).</li></ul>
+</div>
+
+    </main>
+  </div>
+
+  <div id="demarrage">
+    <div class="sep">La séance</div>
+    <button class="demarrer" id="demarrer" type="button">Commencer — 1 reprise, puis 3 exercices</button>
+  </div>
+
+  <section id="seance" style="display:none"></section>
+  <button class="rappel-btn" id="rappel-btn" type="button">Revoir la leçon</button>
+
+  <div id="diagnostic"></div>
+
+  <section id="bilan">
+    <div class="sep">Bilan de la séance</div>
+    <div class="score-grand" id="score-grand"></div>
+    <div class="score-sous" id="score-sous"></div>
+    <div class="paliers" id="paliers"></div>
+    <div class="message" id="message"></div>
+    <div class="papier" id="apres">
+<h2>Maintenant, sur ta feuille</h2>
+<p class="duree">5 minutes</p>
+<ol><li>Trace une droite (d). Place un point A qui n'appartient pas à (d).</li>
+<li>Avec ton équerre, trace la droite perpendiculaire à (d) qui passe par A.</li>
+<li>Code l'angle droit.</li>
+<li>Ce soir, montre ta feuille.</li></ol>
+    </div>
+    <div class="envoi" id="envoi"></div>
+    <details>
+      <summary style="cursor:pointer;padding:10px 0;color:#57534e">Voir le bilan envoyé</summary>
+      <pre class="bilan-txt" id="bilan-txt"></pre>
+    </details>
+    <div class="actions">
+      <button class="btn sec" id="copier" type="button">Copier le bilan</button>
+      <a class="btn sec" id="mailto" href="#" style="text-decoration:none;line-height:24px">Ouvrir dans l'application mail</a>
+    </div>
+  </section>
+
+</div>
+<script>
+window.addEventListener("error", function (e) {
+  var d = document.getElementById("diagnostic");
+  if (!d) return;
+  d.className = "diag";
+  d.textContent = "Erreur technique : " + (e.message || "inconnue") +
+                  "  [ligne " + (e.lineno || "?") + "]";
+});
+</script>
+<script>window.LECON = {"profil": "omar", "identifiant": "omar-6e-pilote-j2-maths", "titre": "Jour 2 · Maths — Perpendiculaires et parallèles", "orthographeEvaluee": false, "messages": ["Les bases ne sont pas encore en place. Ce n'est pas grave. Demain, ces notions reviennent au début de la séance.", "Les bases sont en place. Demain, ces notions reviennent au début de la séance.", "Bien joué : tu sais appliquer la leçon. Demain, ces notions reviennent au début de la séance.", "Excellent : même les questions les plus difficiles sont réussies. Demain, ces notions reviennent au début de la séance."], "exercices": [{"type": "classement", "palier": 1, "ancre": "g-droites", "competence": "Reconnaître sécantes, perpendiculaires, parallèles", "resume": "Classer des droites selon leur position", "casCorrige": "<div style=\"max-width:240px\"><svg viewBox=\"0 0 250 130\" xmlns=\"http://www.w3.org/2000/svg\" role=\"img\" aria-label=\"deux droites\" style=\"background:#fff\"><line x1=\"104.3\" y1=\"122\" x2=\"145.7\" y2=\"8\" stroke=\"#1d4ed8\" stroke-width=\"2.4\" stroke-linecap=\"round\"/><line x1=\"8\" y1=\"22.4\" x2=\"242\" y2=\"107.6\" stroke=\"#b91c1c\" stroke-width=\"2.4\" stroke-linecap=\"round\"/><text x=\"155.7\" y=\"29.5\" font-size=\"15\" fill=\"#1d4ed8\" text-anchor=\"middle\" font-style=\"italic\" font-family=\"Arial, Helvetica, sans-serif\">(d)<\/text><text x=\"223.7\" y=\"90\" font-size=\"15\" fill=\"#b91c1c\" text-anchor=\"middle\" font-style=\"italic\" font-family=\"Arial, Helvetica, sans-serif\">(d')<\/text><path d=\"M129.1 53.7 L117.8 49.6 L113.7 60.9\" fill=\"none\" stroke=\"#1c1917\" stroke-width=\"1.8\"/><\/svg><\/div>Ces deux droites se coupent. Le petit carré code un angle droit. Elles sont <b>perpendiculaires<\/b>.", "enonce": "Pour chaque figure, choisis comment sont les deux droites.", "categories": ["perpendiculaires", "sécantes, sans angle droit", "parallèles"], "items": [{"texte": "<svg viewBox=\"0 0 250 130\" xmlns=\"http://www.w3.org/2000/svg\" role=\"img\" aria-label=\"deux droites\" style=\"background:#fff\"><line x1=\"33.8\" y1=\"122\" x2=\"216.2\" y2=\"8\" stroke=\"#1d4ed8\" stroke-width=\"2.4\" stroke-linecap=\"round\"/><line x1=\"89.4\" y1=\"8\" x2=\"160.6\" y2=\"122\" stroke=\"#b91c1c\" stroke-width=\"2.4\" stroke-linecap=\"round\"/><text x=\"205.9\" y=\"37.1\" font-size=\"15\" fill=\"#1d4ed8\" text-anchor=\"middle\" font-style=\"italic\" font-family=\"Arial, Helvetica, sans-serif\">(d)<\/text><text x=\"166.2\" y=\"107.7\" font-size=\"15\" fill=\"#b91c1c\" text-anchor=\"middle\" font-style=\"italic\" font-family=\"Arial, Helvetica, sans-serif\">(d')<\/text><path d=\"M135.2 58.6 L128.8 48.5 L118.6 54.8\" fill=\"none\" stroke=\"#1c1917\" stroke-width=\"1.8\"/><\/svg>", "categorie": "perpendiculaires"}, {"texte": "<svg viewBox=\"0 0 250 130\" xmlns=\"http://www.w3.org/2000/svg\" role=\"img\" aria-label=\"deux droites\" style=\"background:#fff\"><line x1=\"8\" y1=\"67.4\" x2=\"242\" y2=\"17.6\" stroke=\"#1d4ed8\" stroke-width=\"2.4\" stroke-linecap=\"round\"/><line x1=\"8\" y1=\"112.4\" x2=\"242\" y2=\"62.6\" stroke=\"#b91c1c\" stroke-width=\"2.4\" stroke-linecap=\"round\"/><text x=\"221.7\" y=\"42.3\" font-size=\"15\" fill=\"#1d4ed8\" text-anchor=\"middle\" font-style=\"italic\" font-family=\"Arial, Helvetica, sans-serif\">(d)<\/text><text x=\"215.5\" y=\"57.9\" font-size=\"15\" fill=\"#b91c1c\" text-anchor=\"middle\" font-style=\"italic\" font-family=\"Arial, Helvetica, sans-serif\">(d')<\/text><\/svg>", "categorie": "parallèles"}, {"texte": "<svg viewBox=\"0 0 250 130\" xmlns=\"http://www.w3.org/2000/svg\" role=\"img\" aria-label=\"deux droites\" style=\"background:#fff\"><line x1=\"8\" y1=\"81.4\" x2=\"242\" y2=\"48.6\" stroke=\"#1d4ed8\" stroke-width=\"2.4\" stroke-linecap=\"round\"/><line x1=\"104.3\" y1=\"122\" x2=\"145.7\" y2=\"8\" stroke=\"#b91c1c\" stroke-width=\"2.4\" stroke-linecap=\"round\"/><text x=\"220.7\" y=\"71.7\" font-size=\"15\" fill=\"#1d4ed8\" text-anchor=\"middle\" font-style=\"italic\" font-family=\"Arial, Helvetica, sans-serif\">(d)<\/text><text x=\"126.7\" y=\"21.5\" font-size=\"15\" fill=\"#b91c1c\" text-anchor=\"middle\" font-style=\"italic\" font-family=\"Arial, Helvetica, sans-serif\">(d')<\/text><\/svg>", "categorie": "sécantes, sans angle droit"}, {"texte": "<svg viewBox=\"0 0 250 130\" xmlns=\"http://www.w3.org/2000/svg\" role=\"img\" aria-label=\"deux droites\" style=\"background:#fff\"><line x1=\"14\" y1=\"34\" x2=\"210\" y2=\"58\" stroke=\"#1d4ed8\" stroke-width=\"2.4\" stroke-linecap=\"round\"/><line x1=\"14\" y1=\"118\" x2=\"210\" y2=\"86\" stroke=\"#b91c1c\" stroke-width=\"2.4\" stroke-linecap=\"round\"/><text x=\"220\" y=\"56\" font-size=\"15\" fill=\"#1d4ed8\" text-anchor=\"start\" font-style=\"italic\" font-family=\"Arial, Helvetica, sans-serif\">(d)<\/text><text x=\"220\" y=\"94\" font-size=\"15\" fill=\"#b91c1c\" text-anchor=\"start\" font-style=\"italic\" font-family=\"Arial, Helvetica, sans-serif\">(d')<\/text><\/svg>", "categorie": "sécantes, sans angle droit"}, {"texte": "<svg viewBox=\"0 0 250 130\" xmlns=\"http://www.w3.org/2000/svg\" role=\"img\" aria-label=\"deux droites\" style=\"background:#fff\"><line x1=\"62.1\" y1=\"122\" x2=\"127.9\" y2=\"8\" stroke=\"#1d4ed8\" stroke-width=\"2.4\" stroke-linecap=\"round\"/><line x1=\"122.1\" y1=\"122\" x2=\"187.9\" y2=\"8\" stroke=\"#b91c1c\" stroke-width=\"2.4\" stroke-linecap=\"round\"/><text x=\"135.6\" y=\"29.6\" font-size=\"15\" fill=\"#1d4ed8\" text-anchor=\"middle\" font-style=\"italic\" font-family=\"Arial, Helvetica, sans-serif\">(d)<\/text><text x=\"169.7\" y=\"14.6\" font-size=\"15\" fill=\"#b91c1c\" text-anchor=\"middle\" font-style=\"italic\" font-family=\"Arial, Helvetica, sans-serif\">(d')<\/text><\/svg>", "categorie": "parallèles"}, {"texte": "<svg viewBox=\"0 0 250 130\" xmlns=\"http://www.w3.org/2000/svg\" role=\"img\" aria-label=\"deux droites\" style=\"background:#fff\"><line x1=\"8\" y1=\"75\" x2=\"242\" y2=\"75\" stroke=\"#1d4ed8\" stroke-width=\"2.4\" stroke-linecap=\"round\"/><line x1=\"95\" y1=\"8\" x2=\"95\" y2=\"122\" stroke=\"#b91c1c\" stroke-width=\"2.4\" stroke-linecap=\"round\"/><text x=\"218.6\" y=\"65\" font-size=\"15\" fill=\"#1d4ed8\" text-anchor=\"middle\" font-style=\"italic\" font-family=\"Arial, Helvetica, sans-serif\">(d)<\/text><text x=\"80\" y=\"26.7\" font-size=\"15\" fill=\"#b91c1c\" text-anchor=\"middle\" font-style=\"italic\" font-family=\"Arial, Helvetica, sans-serif\">(d')<\/text><path d=\"M107 75 L107 63 L95 63\" fill=\"none\" stroke=\"#1c1917\" stroke-width=\"1.8\"/><\/svg>", "categorie": "perpendiculaires"}], "indice": "Cherche d'abord le petit carré : il code un angle droit. Si deux droites ne se touchent pas sur le dessin, imagine-les prolongées.", "corrige": "Angle droit codé : perpendiculaires. Ne se croisent jamais : parallèles. Se croisent sans angle droit, même plus loin : sécantes.", "explication": "Deux figures ont un angle droit codé : perpendiculaires. Deux figures ont des droites qui gardent le même écart : parallèles. Les deux autres se coupent, l'une en dehors du dessin : sécantes."}, {"type": "appariement", "palier": 2, "ancre": "g-droites", "competence": "Lire les symboles ⊥, //, ∈, ∉", "resume": "Symboles ⊥, //, ∈ et ∉", "casCorrige": "<b>B ∈ [CD]<\/b> se lit : « le point B appartient au segment [CD] ».", "enonce": "Associe chaque écriture à sa signification.", "paires": [{"gauche": "(d) ⊥ (d')", "droite": "(d) et (d') sont perpendiculaires"}, {"gauche": "A ∉ (d)", "droite": "A n'est pas sur la droite (d)"}, {"gauche": "(d) // (d')", "droite": "(d) et (d') sont parallèles"}, {"gauche": "A ∈ (d)", "droite": "A est sur la droite (d)"}], "indice": "⊥ ressemble à un angle droit. // ressemble à deux traits qui ne se croisent jamais.", "corrige": "⊥ : perpendiculaires · ∉ : n'est pas sur · // : parallèles · ∈ : est sur", "explication": "⊥ : perpendiculaires. // : parallèles. ∈ : appartient. ∉ (barré) : n'appartient pas.", "retourConfusion": "⊥ et // se confondent souvent. ⊥ : un trait debout sur un trait couché, comme un angle droit. // : deux traits côte à côte."}, {"type": "qcm", "palier": 3, "ancre": "g-prop1", "competence": "Utiliser : deux perpendiculaires à une même droite", "resume": "Trouver les droites sûrement parallèles", "casCorrige": "<div style=\"max-width:260px\"><svg viewBox=\"0 0 300 150\" xmlns=\"http://www.w3.org/2000/svg\" role=\"img\" aria-label=\"deux droites perpendiculaires à une même droite\" style=\"background:#fff\"><line x1=\"8\" y1=\"120\" x2=\"292\" y2=\"120\" stroke=\"#1c1917\" stroke-width=\"2.4\" stroke-linecap=\"round\"/><line x1=\"100\" y1=\"8\" x2=\"100\" y2=\"142\" stroke=\"#1d4ed8\" stroke-width=\"2.4\" stroke-linecap=\"round\"/><line x1=\"210\" y1=\"8\" x2=\"210\" y2=\"142\" stroke=\"#b91c1c\" stroke-width=\"2.4\" stroke-linecap=\"round\"/><text x=\"275\" y=\"140\" font-size=\"15\" fill=\"#1c1917\" text-anchor=\"middle\" font-style=\"italic\" font-family=\"Arial, Helvetica, sans-serif\">(d)<\/text><text x=\"85\" y=\"21\" font-size=\"15\" fill=\"#1d4ed8\" text-anchor=\"middle\" font-style=\"italic\" font-family=\"Arial, Helvetica, sans-serif\">(d₁)<\/text><path d=\"M112 120 L112 108 L100 108\" fill=\"none\" stroke=\"#1c1917\" stroke-width=\"1.8\"/><text x=\"195\" y=\"21\" font-size=\"15\" fill=\"#b91c1c\" text-anchor=\"middle\" font-style=\"italic\" font-family=\"Arial, Helvetica, sans-serif\">(d₂)<\/text><path d=\"M222 120 L222 108 L210 108\" fill=\"none\" stroke=\"#1c1917\" stroke-width=\"1.8\"/><\/svg><\/div>(d₁) ⊥ (d) et (d₂) ⊥ (d). Deux droites perpendiculaires à une même droite sont parallèles : <b>(d₁) // (d₂)<\/b>.", "enonce": "Les angles droits sont codés. Quelles droites sont sûrement parallèles ?", "schema": "<div style=\"max-width:380px\"><svg viewBox=\"0 0 330 180\" xmlns=\"http://www.w3.org/2000/svg\" role=\"img\" aria-label=\"trois droites coupant (d)\" style=\"background:#fff\"><line x1=\"8\" y1=\"130\" x2=\"322\" y2=\"130\" stroke=\"#1c1917\" stroke-width=\"2.4\" stroke-linecap=\"round\"/><line x1=\"80\" y1=\"8\" x2=\"80\" y2=\"172\" stroke=\"#1d4ed8\" stroke-width=\"2.4\" stroke-linecap=\"round\"/><line x1=\"162.1\" y1=\"172\" x2=\"173.5\" y2=\"8\" stroke=\"#047857\" stroke-width=\"2.4\" stroke-linecap=\"round\"/><line x1=\"250\" y1=\"8\" x2=\"250\" y2=\"172\" stroke=\"#b91c1c\" stroke-width=\"2.4\" stroke-linecap=\"round\"/><text x=\"306.3\" y=\"150\" font-size=\"15\" fill=\"#1c1917\" text-anchor=\"middle\" font-style=\"italic\" font-family=\"Arial, Helvetica, sans-serif\">(d)<\/text><text x=\"65\" y=\"22.8\" font-size=\"15\" fill=\"#1d4ed8\" text-anchor=\"middle\" font-style=\"italic\" font-family=\"Arial, Helvetica, sans-serif\">(d₁)<\/text><path d=\"M92 130 L92 118 L80 118\" fill=\"none\" stroke=\"#1c1917\" stroke-width=\"1.8\"/><text x=\"147.8\" y=\"166.1\" font-size=\"15\" fill=\"#047857\" text-anchor=\"middle\" font-style=\"italic\" font-family=\"Arial, Helvetica, sans-serif\">(d₂)<\/text><text x=\"235\" y=\"22.8\" font-size=\"15\" fill=\"#b91c1c\" text-anchor=\"middle\" font-style=\"italic\" font-family=\"Arial, Helvetica, sans-serif\">(d₃)<\/text><path d=\"M262 130 L262 118 L250 118\" fill=\"none\" stroke=\"#1c1917\" stroke-width=\"1.8\"/><\/svg><\/div>", "options": [{"texte": "(d₁) et (d₂)", "retour": "(d₂) n'a pas d'angle droit codé : on ne peut rien affirmer pour elle."}, {"texte": "(d₁) et (d₃)", "bon": true}, {"texte": "(d₂) et (d₃)", "retour": "(d₂) n'a pas d'angle droit codé : on ne peut rien affirmer pour elle."}, {"texte": "Les trois droites", "retour": "Ton œil ne suffit pas. Seules (d₁) et (d₃) ont un angle droit codé avec (d)."}], "indice": "Ne te fie pas à ton œil. Cherche les petits carrés : quelles droites sont perpendiculaires à (d) ?", "corrige": "(d₁) et (d₃)", "explication": "(d₁) ⊥ (d) et (d₃) ⊥ (d) : elles sont perpendiculaires à une même droite, donc parallèles. Pour (d₂), aucun angle droit n'est codé : on ne peut rien affirmer."}], "echauffement": [{"type": "qcm", "palier": 0, "ancre": "g-notations", "competence": "Reconnaître segment, droite, demi-droite", "resume": "Retour : notation d'une demi-droite", "casCorrige": "<div style=\"max-width:260px\"><svg viewBox=\"0 0 300 96\" xmlns=\"http://www.w3.org/2000/svg\" role=\"img\" aria-label=\"figure de notation\" style=\"background:#fff\"><line x1=\"200\" y1=\"40\" x2=\"8\" y2=\"76.4\" stroke=\"#1c1917\" stroke-width=\"2.4\" stroke-linecap=\"round\"/><line x1=\"201.3\" y1=\"46.9\" x2=\"198.7\" y2=\"33.1\" stroke=\"#1c1917\" stroke-width=\"2.4\" stroke-linecap=\"round\"/><path d=\"M99.5 58 L110.5 58 M105 52.5 L105 63.5\" stroke=\"#1c1917\" stroke-width=\"2\" stroke-linecap=\"round\"/><text x=\"103\" y=\"82\" font-size=\"15\" fill=\"#1c1917\" text-anchor=\"middle\" font-weight=\"700\" font-family=\"Arial, Helvetica, sans-serif\">E<\/text><path d=\"M194.5 40 L205.5 40 M200 34.5 L200 45.5\" stroke=\"#1c1917\" stroke-width=\"2\" stroke-linecap=\"round\"/><text x=\"202\" y=\"28\" font-size=\"15\" fill=\"#1c1917\" text-anchor=\"middle\" font-weight=\"700\" font-family=\"Arial, Helvetica, sans-serif\">F<\/text><\/svg><\/div>Le tracé s'arrête en F et continue après E : c'est la demi-droite <b>[FE)<\/b>.", "enonce": "Quelle est la notation de cette figure ?", "schema": "<div style=\"max-width:320px\"><svg viewBox=\"0 0 300 96\" xmlns=\"http://www.w3.org/2000/svg\" role=\"img\" aria-label=\"figure de notation\" style=\"background:#fff\"><line x1=\"105\" y1=\"58\" x2=\"292\" y2=\"22.6\" stroke=\"#1c1917\" stroke-width=\"2.4\" stroke-linecap=\"round\"/><line x1=\"103.7\" y1=\"51.1\" x2=\"106.3\" y2=\"64.9\" stroke=\"#1c1917\" stroke-width=\"2.4\" stroke-linecap=\"round\"/><path d=\"M99.5 58 L110.5 58 M105 52.5 L105 63.5\" stroke=\"#1c1917\" stroke-width=\"2\" stroke-linecap=\"round\"/><text x=\"103\" y=\"82\" font-size=\"15\" fill=\"#1c1917\" text-anchor=\"middle\" font-weight=\"700\" font-family=\"Arial, Helvetica, sans-serif\">C<\/text><path d=\"M194.5 40 L205.5 40 M200 34.5 L200 45.5\" stroke=\"#1c1917\" stroke-width=\"2\" stroke-linecap=\"round\"/><text x=\"202\" y=\"28\" font-size=\"15\" fill=\"#1c1917\" text-anchor=\"middle\" font-weight=\"700\" font-family=\"Arial, Helvetica, sans-serif\">D<\/text><\/svg><\/div>", "options": [{"texte": "[CD]", "retour": "Le trait continue après D : ce n'est pas un segment."}, {"texte": "[DC)", "retour": "L'origine est le point où le trait s'arrête : ici, c'est C."}, {"texte": "[CD)", "bon": true}, {"texte": "(CD)", "retour": "Le trait s'arrête en C : ce n'est pas une droite."}], "indice": "Cherche le point où le trait s'arrête : c'est l'origine. Elle s'écrit avec un crochet.", "corrige": "[CD)", "explication": "Le tracé s'arrête en C et continue après D : demi-droite d'origine C, notée [CD)."}], "reportEntrant": []};</script>
+<script>
+/* ============================================================
+   Moteur de séance — pilote V3, dérivé du moteur 2.8
+   Lot 1 : la lecture à voix haute suit la langue des passages
+   (lang="en" lu avec une voix anglaise).
+   Lot 2 : exercices groupés par matière (champ `matiere`), étiquette
+   de matière à l'écran, score par matière à la fin et dans le bilan.
+   21 octobre : bouton « Revoir la leçon » en haut de chaque exercice ;
+   le bouton « retour » du téléphone ferme la leçon au lieu de quitter ;
+   la séance reprend où elle s'était arrêtée après fermeture ou
+   rechargement (mémoire du navigateur, si elle est disponible).
+   Aucun appel IA à l'exécution (D6). Correction 100 % déterministe.
+   ============================================================ */
+(function () {
+  "use strict";
+
+  var CLE_ENVOI = "259de897-beba-4c71-95c8-dcde527b79c1";
+  var L = window.LECON;
+  var OMAR = L.profil === "omar";
+
+  var etat = {
+    i: 0,
+    debut: null,
+    indices: 0,
+    retoursLecon: 0,
+    resultats: [],          // cœur — c'est lui, le score
+    echauffement: [],       // hors score (§6.9)
+    signalements: [],       // { n, donnee }
+    interruptions: 0,       // séance fermée puis reprise
+    envoye: false
+  };
+
+  /* ---------- Normalisation (§6.7) ---------------------------------
+     Tolère la FORME de la saisie, jamais le FOND : aucun mot porteur
+     de sens n'est retiré.                                            */
+
+  function sansAccent(s) {
+    return s.normalize("NFD").replace(/[̀-ͯ]/g, "");
+  }
+
+  function normTexte(s) {
+    return sansAccent(String(s).toLowerCase())
+      .replace(/[’ʼ`]/g, "'")
+      .replace(/[‐-―−]/g, "-")
+      .replace(/[-_]/g, " ")
+      .replace(/[.,;:!?"()\[\]]/g, " ")
+      .replace(/\s+/g, " ")
+      .trim();
+  }
+
+  /* Distance de Levenshtein — sert uniquement au profil aménagé.
+     §3.1 : l'orthographe n'est jamais évaluée hors chapitre d'orthographe. */
+  function lev(a, b) {
+    var m = a.length, n = b.length, i, j, prec = [], cour = [];
+    for (j = 0; j <= n; j++) prec[j] = j;
+    for (i = 1; i <= m; i++) {
+      cour[0] = i;
+      for (j = 1; j <= n; j++) {
+        cour[j] = Math.min(
+          prec[j] + 1,
+          cour[j - 1] + 1,
+          prec[j - 1] + (a.charAt(i - 1) === b.charAt(j - 1) ? 0 : 1)
+        );
+      }
+      prec = cour.slice();
+    }
+    return prec[n];
+  }
+
+  function texteEgal(saisie, attendu) {
+    var a = normTexte(saisie), b = normTexte(attendu);
+    if (a === b) return true;
+    if (!OMAR || L.orthographeEvaluee) return false;
+    if (b.length < 5) return false;
+    var seuil = b.length <= 8 ? 1 : 2;
+    return lev(a, b) <= seuil;
+  }
+
+  function texteAccepte(saisie, liste) {
+    for (var k = 0; k < liste.length; k++) if (texteEgal(saisie, liste[k])) return true;
+    return false;
+  }
+
+  function normNombre(s) {
+    var t = String(s).replace(/\s| /g, "").replace(/,/g, ".").replace(/^\+/, "");
+    if (t === "" || !/^-?\d*\.?\d+$/.test(t)) return null;
+    return parseFloat(t);
+  }
+
+  function nombreEgal(saisie, attendu, tol) {
+    var v = normNombre(saisie);
+    if (v === null) return false;
+    return Math.abs(v - attendu) <= (tol || 0) + 1e-9;
+  }
+
+  /* ---------- Petits utilitaires DOM ---------- */
+
+  function el(tag, cls, txt) {
+    var e = document.createElement(tag);
+    if (cls) e.className = cls;
+    if (txt !== undefined) e.textContent = txt;
+    return e;
+  }
+
+  function html(tag, cls, h) {
+    var e = document.createElement(tag);
+    if (cls) e.className = cls;
+    if (h !== undefined) e.innerHTML = h;
+    return e;
+  }
+
+  /* Mélange déterministe : même fichier, même ordre, à chaque ouverture. */
+  function melange(tab, graine) {
+    var t = tab.slice(), g = graine || 7, i, j, tmp;
+    for (i = t.length - 1; i > 0; i--) {
+      g = (g * 1103515245 + 12345) % 2147483648;
+      j = g % (i + 1);
+      tmp = t[i]; t[i] = t[j]; t[j] = tmp;
+    }
+    return t;
+  }
+
+  /* ---------- Synthèse vocale (§3.1) ----------
+     Pilote V3 : le texte est découpé par langue. Un passage marqué
+     lang="en" est lu par une voix anglaise, le reste en français.
+     Les boutons, les figures SVG et les définitions cachées ne sont
+     pas lus. Le découpage se fait au clic, sur le contenu affiché. */
+
+  var voixDispo = ("speechSynthesis" in window);
+
+  function segmentsLangue(noeud) {
+    var segs = [];
+    function ajouter(t, langue) {
+      if (!t || !t.trim()) return;
+      var d = segs[segs.length - 1];
+      if (d && d.lang === langue) d.texte += " " + t;
+      else segs.push({ texte: t, lang: langue });
+    }
+    function visiter(n, langue) {
+      if (n.nodeType === 3) { ajouter(n.nodeValue, langue); return; }
+      if (n.nodeType !== 1) return;
+      var tag = String(n.tagName).toLowerCase();
+      if (tag === "button" || tag === "svg" || tag === "script" || tag === "style") return;
+      var l = n.getAttribute("lang");
+      var suite = l ? l : langue;
+      for (var c = n.firstChild; c; c = c.nextSibling) visiter(c, suite);
+    }
+    visiter(noeud, "fr");
+    return segs;
+  }
+
+  function parler(segs) {
+    window.speechSynthesis.cancel();
+    segs.forEach(function (s) {
+      var u = new SpeechSynthesisUtterance(s.texte);
+      var en = s.lang.indexOf("en") === 0;
+      u.lang = en ? "en-GB" : "fr-FR";
+      u.rate = en ? 0.82 : 0.92;
+      window.speechSynthesis.speak(u);
+    });
+  }
+
+  function boutonLire(source) {
+    var b = el("button", "lire", "🔊");
+    b.type = "button";
+    b.setAttribute("aria-label", "Lire à voix haute");
+    if (!voixDispo) { b.hidden = true; return b; }
+    b.addEventListener("click", function () {
+      try {
+        var segs = (typeof source === "string")
+          ? [{ texte: source, lang: "fr" }]
+          : segmentsLangue(source);
+        parler(segs);
+      } catch (e) { b.hidden = true; }
+    });
+    return b;
+  }
+
+  /* ---------- Définitions au clic (§3.1) ---------- */
+
+  var bulle = el("div", "bulle");
+  document.body.appendChild(bulle);
+  document.addEventListener("click", function (ev) {
+    var c = ev.target.closest ? ev.target.closest(".def") : null;
+    if (c && c.dataset.def) {
+      bulle.innerHTML = "<b>" + c.textContent + "</b>" + c.dataset.def;
+      bulle.classList.add("ouvert");
+    } else if (!ev.target.closest || !ev.target.closest(".bulle")) {
+      bulle.classList.remove("ouvert");
+    }
+  });
+
+  /* =========================================================
+     Rappel de leçon consultable pendant la séance
+     Le panneau s'ouvre PAR-DESSUS l'exercice : rien ne bouge derrière,
+     on referme et on retrouve sa place (§3.1, un exercice par écran).
+     Chaque ouverture est comptée et remonte au bilan (§6.7, élément 3).
+     ========================================================= */
+
+  var panneau = document.getElementById("panneau");
+  var boutonRappel = document.getElementById("rappel-btn");
+  var ancreCourante = null;
+
+  function construireSommaire() {
+    var nav = document.getElementById("sommaire");
+    var n = 0;
+    document.querySelectorAll("#lecon .bloc").forEach(function (b) {
+      var t = b.querySelector("h3");
+      if (!t) return;
+      if (!b.id) { n++; b.id = "bloc" + n; }
+      var a = document.createElement("a");
+      a.href = "#" + b.id;
+      a.textContent = t.textContent.replace(/\s*🔊\s*$/, "");
+      a.addEventListener("click", function (ev) {
+        ev.preventDefault();
+        b.scrollIntoView({ block: "start" });
+      });
+      nav.appendChild(a);
+    });
+  }
+
+  /* ---------- Bouton « retour » du téléphone ----------
+     Ouvrir la leçon ou démarrer la séance ajoute une entrée d'historique.
+     Le bouton « retour » ferme alors la leçon, ou reste sur la séance en
+     cours, au lieu de quitter le fichier et de perdre la progression. */
+
+  var enSeance = false, ignorerRetour = false;
+
+  function pousserHistorique(nom) {
+    try { history.pushState({ rev: nom }, ""); } catch (e) {}
+  }
+
+  var toast = el("div", "toast");
+  document.body.appendChild(toast);
+  var minuteurToast = null;
+
+  function montrerToast(msg) {
+    toast.textContent = msg;
+    toast.classList.add("ouvert");
+    clearTimeout(minuteurToast);
+    minuteurToast = setTimeout(function () { toast.classList.remove("ouvert"); }, 4500);
+  }
+
+  window.addEventListener("popstate", function () {
+    if (ignorerRetour) { ignorerRetour = false; return; }
+    if (panneau.classList.contains("ouvert")) { fermerLecon(true); return; }
+    if (enSeance) {
+      pousserHistorique("seance");
+      montrerToast("Ta séance continue. Pour revoir la leçon, touche « Revoir la leçon » en haut.");
+    }
+  });
+
+  function ouvrirLecon() {
+    if (panneau.classList.contains("ouvert")) return;
+    etat.retoursLecon++;
+    panneau.classList.add("ouvert");
+    document.body.style.overflow = "hidden";
+    pousserHistorique("lecon");
+    var cible = null;
+    /* Omar : on ouvre directement sur la notion liée à l'exercice —
+       le défilement est un coût d'attention (§3.1). Ali navigue lui-même. */
+    if (OMAR && ancreCourante) cible = document.getElementById(ancreCourante);
+    if (cible) {
+      cible.scrollIntoView({ block: "start" });
+      cible.classList.remove("cible-rappel");
+      void cible.offsetWidth;
+      cible.classList.add("cible-rappel");
+    } else {
+      panneau.scrollTop = 0;
+    }
+    try { document.getElementById("fermer-lecon").focus({ preventScroll: true }); } catch (e) {}
+  }
+
+  /* depuisRetour : fermeture provoquée par le bouton « retour » du téléphone.
+     Sinon, on retire aussi l'entrée d'historique ajoutée à l'ouverture. */
+  function fermerLecon(depuisRetour) {
+    if (!panneau.classList.contains("ouvert")) return;
+    panneau.classList.remove("ouvert");
+    document.body.style.overflow = "";
+    if (depuisRetour !== true && history.state && history.state.rev === "lecon") {
+      ignorerRetour = true;
+      try { history.back(); } catch (e) { ignorerRetour = false; }
+    }
+    var b = zone.querySelector(".exo.actif .lecon-btn");
+    if (b) { try { b.focus({ preventScroll: true }); } catch (e) {} }
+  }
+
+  if (boutonRappel) boutonRappel.addEventListener("click", ouvrirLecon);
+  document.getElementById("fermer-lecon").addEventListener("click", function () { fermerLecon(); });
+  document.addEventListener("keydown", function (e) {
+    if (e.key === "Escape" && panneau.classList.contains("ouvert")) fermerLecon();
+  });
+
+  /* =========================================================
+     Rendu d'un exercice — un par écran (§3.1)
+     ========================================================= */
+
+  var zone = document.getElementById("seance");
+
+  function rendreExercice(ex, n) {
+    var wrap = el("div", "exo");
+    wrap.dataset.palier = String(ex.palier);
+    wrap.dataset.n = String(n);
+
+    /* barre de progression */
+    var barre = el("div", "barre");
+    var noms = ["Échauffement", "Bases", "Application", "Problèmes"];
+    var total = ex.palier === 0 ? (L.echauffement || []).length : L.exercices.length;
+    barre.appendChild(el("span", "badge", noms[ex.palier]));
+    barre.appendChild(el("span", null,
+      (ex.palier === 0 ? "Reprise " : "Exercice ") + n + " sur " + total));
+    if (ex.matiere) barre.insertBefore(el("span", "matiere-etiq", ex.matiere), barre.firstChild);
+    var j = el("span", "jauge"); var ji = el("i");
+    ji.style.width = Math.round((n - 1) / total * 100) + "%";
+    j.appendChild(ji); barre.appendChild(j);
+    /* Le bouton de leçon vit dans la barre, en haut de l'exercice : il reste
+       visible en faisant défiler et ne recouvre jamais les réponses. */
+    var bLecon = el("button", "lecon-btn", "📖 Revoir la leçon");
+    bLecon.type = "button";
+    bLecon.addEventListener("click", ouvrirLecon);
+    barre.appendChild(bLecon);
+    wrap.appendChild(barre);
+
+    var carte = el("div", "carte-exo");
+
+    /* §6.9 : chaque exercice d'échauffement peut porter son rappel d'une ligne. */
+    if (ex.rappelLigne) {
+      var rl = el("div", "cas");
+      rl.appendChild(el("span", "etiq", "À se rappeler"));
+      rl.appendChild(html("div", null, ex.rappelLigne));
+      carte.appendChild(rl);
+    }
+
+    /* cas corrigé — systématique pour Omar (§3) */
+    if (ex.casCorrige) {
+      var cas = el("div", "cas");
+      cas.appendChild(el("span", "etiq", "Exemple corrigé"));
+      cas.appendChild(html("div", null, ex.casCorrige));
+      carte.appendChild(cas);
+    }
+
+    var enonce = html("div", "enonce", ex.enonce);
+    enonce.appendChild(boutonLire(enonce));
+    carte.appendChild(enonce);
+
+    if (ex.schema) carte.appendChild(html("div", "schema", ex.schema));
+
+    var saisie = el("div", "saisie");
+    carte.appendChild(saisie);
+
+    var actions = el("div", "actions");
+    var bValider = el("button", "btn valider", "Valider");
+    bValider.type = "button";
+    var bIndice = el("button", "btn sec", "Indice");
+    bIndice.type = "button";
+    if (OMAR) { bIndice.disabled = true; bIndice.textContent = "Indice (après un essai)"; }
+    actions.appendChild(bValider);
+    if (ex.indice) actions.appendChild(bIndice);
+    carte.appendChild(actions);
+
+    var zIndice = html("div", "indice", "<b>Indice.</b> " + (ex.indice || ""));
+    carte.appendChild(zIndice);
+
+    var zRetour = el("div", "retour");
+    carte.appendChild(zRetour);
+
+    bIndice.addEventListener("click", function () {
+      if (zIndice.classList.contains("ouvert")) return;
+      zIndice.classList.add("ouvert");
+      etat.indices++;
+      bIndice.disabled = true;
+    });
+
+    var moteurType = TYPES[ex.type] || TYPES.reponse_numerique;
+    var api = moteurType(saisie, ex, n);
+
+    var essais = 0;
+
+    bValider.addEventListener("click", function () {
+      var lecture = api.lire();
+      if (lecture.vide) {
+        zRetour.className = "retour presque ouvert";
+        zRetour.innerHTML = "<p class='verdict'>Il manque une réponse.</p><p>Complète tout avant de valider.</p>";
+        return;
+      }
+      essais++;
+      var res = api.corriger(lecture);
+
+      /* Omar : un second essai après l'indice (§3.1, §6.8) */
+      if (!res.juste && OMAR && essais === 1) {
+        zIndice.classList.add("ouvert");
+        etat.indices++;
+        bIndice.disabled = true;
+        bValider.textContent = "Valider ma nouvelle réponse";
+        zRetour.className = "retour presque ouvert";
+        zRetour.innerHTML =
+          "<p class='verdict'>Pas encore. Relis l'indice, puis réessaie.</p>" +
+          "<p><button type='button' class='btn sec' id='vers-lecon-" + n + "'>" +
+          "Revoir la leçon sur ce point</button></p>";
+        var versLecon = document.getElementById("vers-lecon-" + n);
+        if (versLecon) versLecon.addEventListener("click", ouvrirLecon);
+        enregistrer(ex, n, false, lecture.brut);   // le score retient le premier essai
+        return;
+      }
+
+      if (essais === 1) enregistrer(ex, n, res.juste, lecture.brut);
+      terminer(res, lecture);
+    });
+
+    function terminer(res, lecture) {
+      api.figer();
+      bValider.disabled = true;
+      bIndice.disabled = true;
+
+      zRetour.className = "retour " + (res.juste ? "juste" : "faux") + " ouvert";
+      var h = "<p class='verdict'>" + (res.juste ? "Juste." : "Ce n'est pas ça.") + "</p>";
+      if (!res.juste) h += "<p>Réponse attendue : <b>" + ex.corrige + "</b></p>";
+      /* §6.8 : le retour ciblé remplace l'explication générique, jamais avant */
+      if (!res.juste && res.cible) {
+        h += "<div class='cible'>" + res.cible + "</div>";
+      } else {
+        h += "<p>" + ex.explication + "</p>";
+      }
+      zRetour.innerHTML = h;
+
+      var sig = el("button", "signaler", "Cette correction me paraît fausse");
+      sig.type = "button";
+      sig.addEventListener("click", function () {
+        if (sig.classList.contains("fait")) return;
+        sig.classList.add("fait");
+        sig.textContent = "Signalé — ce sera dans le bilan.";
+        etat.signalements.push({ n: n, donnee: lecture.brut });
+      });
+      zRetour.appendChild(sig);
+
+      var suite = el("div", "actions");
+      var dernier = (etat.i === TOUS.length - 1);
+      var bSuite = el("button", "btn valider", dernier ? "Voir mon bilan" : "Exercice suivant");
+      bSuite.type = "button";
+      bSuite.addEventListener("click", avancer);
+      suite.appendChild(bSuite);
+      zRetour.appendChild(suite);
+      zRetour.scrollIntoView({ block: "nearest" });
+      /* L'exercice est terminé : on mémorise la progression pour reprendre
+         à l'exercice suivant si le fichier est fermé ou rechargé. */
+      if (!dernier) ecrireSauvegarde(etat.i + 1);
+    }
+
+    wrap.appendChild(carte);
+    return wrap;
+  }
+
+  function enregistrer(ex, n, juste, donnee) {
+    if (ex.palier === 0) {
+      etat.echauffement.push({ n: n, juste: juste, competence: ex.competence, resume: ex.resume,
+                               matiere: ex.matiere || null });
+      return;
+    }
+    etat.resultats.push({
+      n: n, palier: ex.palier, juste: juste,
+      competence: ex.competence, resume: ex.resume, donnee: donnee,
+      matiere: ex.matiere || null
+    });
+  }
+
+  function avancer() {
+    var exos = zone.querySelectorAll(".exo");
+    exos[etat.i].classList.remove("actif");
+    etat.i++;
+    if (etat.i >= exos.length) { afficherBilan(); return; }
+    exos[etat.i].classList.add("actif");
+    ancreCourante = TOUS[etat.i].ancre || null;
+    window.scrollTo(0, zone.offsetTop - 10);
+  }
+
+  /* =========================================================
+     Les types de la famille A (§6.2)
+     ========================================================= */
+
+  var TYPES = {};
+
+  function chercheErreur(liste, test) {
+    if (!liste) return null;
+    for (var k = 0; k < liste.length; k++) if (test(liste[k])) return liste[k].retour;
+    return null;
+  }
+
+  /* --- réponse numérique / correction d'erreur --- */
+  function moteurNumerique(hote, ex) {
+    var d = el("div", "champ-num");
+    var inp = el("input");
+    inp.type = "text";
+    inp.setAttribute("inputmode", "decimal");   // §2, arbitrage O7
+    inp.setAttribute("autocomplete", "off");
+    inp.setAttribute("aria-label", "Ta réponse");
+    if (ex.signe) {
+      var b = el("button", "moins", "−");
+      b.type = "button";
+      b.title = "Ajouter le signe moins";
+      b.addEventListener("click", function () {
+        inp.value = inp.value.charAt(0) === "-" ? inp.value.slice(1) : "-" + inp.value;
+        inp.focus();
+      });
+      d.appendChild(b);
+    }
+    d.appendChild(inp);
+    if (ex.unite) d.appendChild(el("span", "unite", ex.unite));
+    hote.appendChild(d);
+    return {
+      lire: function () { return { vide: inp.value.trim() === "", brut: inp.value.trim() }; },
+      corriger: function (l) {
+        var juste = nombreEgal(l.brut, ex.reponse, ex.tolerance);
+        var v = normNombre(l.brut);
+        return {
+          juste: juste,
+          cible: juste ? null : chercheErreur(ex.erreurs, function (e) {
+            return v !== null && Math.abs(v - e.valeur) < 1e-9;
+          })
+        };
+      },
+      figer: function () { inp.disabled = true; }
+    };
+  }
+  TYPES.reponse_numerique = moteurNumerique;
+  TYPES.correction_erreur = moteurNumerique;
+
+  /* --- QCM --- */
+  TYPES.qcm = function (hote, ex) {
+    var box = el("div", "opts"), choisi = -1, boutons = [];
+    ex.options.forEach(function (o, k) {
+      var b = el("button", "opt");
+      b.type = "button";
+      b.appendChild(el("span", "puce"));
+      b.appendChild(html("span", null, o.texte));
+      b.addEventListener("click", function () {
+        boutons.forEach(function (x) { x.classList.remove("choisi"); });
+        b.classList.add("choisi"); choisi = k;
+      });
+      boutons.push(b); box.appendChild(b);
+    });
+    hote.appendChild(box);
+    return {
+      lire: function () {
+        return { vide: choisi < 0, brut: choisi < 0 ? "" : ex.options[choisi].texte.replace(/<[^>]+>/g, "") };
+      },
+      corriger: function () {
+        var o = ex.options[choisi];
+        return { juste: !!o.bon, cible: o.bon ? null : (o.retour || null) };
+      },
+      figer: function () { boutons.forEach(function (b) { b.disabled = true; }); }
+    };
+  };
+
+  /* --- texte à trous --- */
+  TYPES.texte_a_trous = function (hote, ex) {
+    var p = el("p"), champs = [];
+    ex.segments.forEach(function (s) {
+      if (typeof s === "string") { p.appendChild(html("span", null, s)); return; }
+      var i = el("input");
+      i.type = "text";
+      i.setAttribute("autocomplete", "off");
+      i.setAttribute("aria-label", "Mot à compléter");
+      i.style.width = (s.large || 150) + "px";
+      champs.push({ inp: i, def: s });
+      p.appendChild(i);
+    });
+    hote.appendChild(p);
+    return {
+      lire: function () {
+        var vals = champs.map(function (c) { return c.inp.value.trim(); });
+        return { vide: vals.some(function (v) { return v === ""; }), brut: vals.join(" / ") };
+      },
+      corriger: function () {
+        var juste = true, cible = null;
+        champs.forEach(function (c) {
+          var ok = texteAccepte(c.inp.value, c.def.acceptees);
+          if (!ok) {
+            juste = false;
+            if (!cible) cible = chercheErreur(c.def.erreurs, function (e) {
+              return normTexte(e.saisie) === normTexte(c.inp.value);
+            });
+          }
+        });
+        return { juste: juste, cible: cible };
+      },
+      figer: function () { champs.forEach(function (c) { c.inp.disabled = true; }); }
+    };
+  };
+
+  /* --- appariement --- */
+  TYPES.appariement = function (hote, ex) {
+    var box = el("div", "paires"), selects = [];
+    var droites = melange(ex.paires.map(function (p) { return p.droite; }).filter(
+      function (v, i, a) { return a.indexOf(v) === i; }), 31);
+    ex.paires.forEach(function (p) {
+      var ligne = el("div", "paire");
+      ligne.appendChild(html("div", "gauche", p.gauche));
+      var s = el("select");
+      s.setAttribute("aria-label", "Classe de " + p.gauche.replace(/<[^>]+>/g, ""));
+      s.appendChild(el("option", null, "— choisir —"));
+      droites.forEach(function (d) {
+        var o = el("option", null, d); o.value = d; s.appendChild(o);
+      });
+      selects.push({ s: s, attendu: p.droite });
+      ligne.appendChild(s); box.appendChild(ligne);
+    });
+    hote.appendChild(box);
+    return {
+      lire: function () {
+        var v = selects.map(function (x) { return x.s.value; });
+        return { vide: v.some(function (x) { return !x; }), brut: v.join(" / ") };
+      },
+      corriger: function () {
+        var faux = selects.filter(function (x) { return x.s.value !== x.attendu; });
+        return {
+          juste: faux.length === 0,
+          cible: faux.length ? (ex.retourConfusion || null) : null
+        };
+      },
+      figer: function () { selects.forEach(function (x) { x.s.disabled = true; }); }
+    };
+  };
+
+  /* --- classement --- */
+  TYPES.classement = function (hote, ex) {
+    var box = el("div", "paires"), selects = [];
+    melange(ex.items, 53).forEach(function (it) {
+      var ligne = el("div", "paire");
+      ligne.appendChild(html("div", "gauche", it.texte));
+      var s = el("select");
+      s.setAttribute("aria-label", "Catégorie de " + it.texte.replace(/<[^>]+>/g, ""));
+      s.appendChild(el("option", null, "— choisir —"));
+      ex.categories.forEach(function (c) {
+        var o = el("option", null, c); o.value = c; s.appendChild(o);
+      });
+      selects.push({ s: s, attendu: it.categorie, texte: it.texte });
+      ligne.appendChild(s); box.appendChild(ligne);
+    });
+    hote.appendChild(box);
+    return {
+      lire: function () {
+        var v = selects.map(function (x) { return x.s.value; });
+        return { vide: v.some(function (x) { return !x; }), brut: v.join(" / ") };
+      },
+      corriger: function () {
+        var faux = selects.filter(function (x) { return x.s.value !== x.attendu; });
+        var cible = null;
+        if (faux.length && ex.erreurs) {
+          cible = chercheErreur(ex.erreurs, function (e) {
+            return faux.some(function (f) {
+              return normTexte(f.texte).indexOf(normTexte(e.item)) >= 0 && f.s.value === e.mis;
+            });
+          });
+        }
+        return { juste: faux.length === 0, cible: cible };
+      },
+      figer: function () { selects.forEach(function (x) { x.s.disabled = true; }); }
+    };
+  };
+
+  /* --- repérage --- */
+  TYPES.reperage = function (hote, ex) {
+    var box = el("div", "mots"), boutons = [];
+    ex.mots.forEach(function (m) {
+      var b = el("button", "mot", m.texte);
+      b.type = "button";
+      if (ex.langueMots) b.setAttribute("lang", ex.langueMots);
+      b.addEventListener("click", function () { b.classList.toggle("choisi"); });
+      boutons.push({ b: b, def: m }); box.appendChild(b);
+    });
+    hote.appendChild(box);
+    hote.appendChild(el("p", "unite", "Touche les mots demandés. Touche à nouveau pour désélectionner."));
+    return {
+      lire: function () {
+        var pris = boutons.filter(function (x) { return x.b.classList.contains("choisi"); });
+        return { vide: pris.length === 0, brut: pris.map(function (x) { return x.def.texte; }).join(", ") };
+      },
+      corriger: function () {
+        var juste = boutons.every(function (x) {
+          return x.b.classList.contains("choisi") === !!x.def.cible;
+        });
+        var cible = null;
+        if (!juste && ex.erreurs) {
+          cible = chercheErreur(ex.erreurs, function (e) {
+            var t = boutons.filter(function (x) { return normTexte(x.def.texte) === normTexte(e.mot); })[0];
+            return t && t.b.classList.contains("choisi") && !t.def.cible;
+          });
+        }
+        return { juste: juste, cible: cible };
+      },
+      figer: function () {
+        boutons.forEach(function (x) {
+          x.b.disabled = true;
+          if (x.def.cible) x.b.style.borderColor = "#15803d";
+        });
+      }
+    };
+  };
+
+  /* --- ordonnancement --- */
+  TYPES.ordonnancement = function (hote, ex) {
+    var box = el("div", "rangs");
+    var courant = melange(ex.ordre, 17);
+    if (courant.join("|") === ex.ordre.join("|")) courant = melange(ex.ordre, 91);
+
+    function peindre() {
+      box.innerHTML = "";
+      courant.forEach(function (v, k) {
+        var r = el("div", "rang");
+        r.appendChild(el("span", "num", String(k + 1)));
+        r.appendChild(html("span", "val", v));
+        var up = el("button", "fleche", "↑"); up.type = "button"; up.disabled = (k === 0);
+        var dn = el("button", "fleche", "↓"); dn.type = "button"; dn.disabled = (k === courant.length - 1);
+        up.setAttribute("aria-label", "Monter"); dn.setAttribute("aria-label", "Descendre");
+        up.addEventListener("click", function () {
+          var t = courant[k - 1]; courant[k - 1] = courant[k]; courant[k] = t; peindre();
+        });
+        dn.addEventListener("click", function () {
+          var t = courant[k + 1]; courant[k + 1] = courant[k]; courant[k] = t; peindre();
+        });
+        r.appendChild(up); r.appendChild(dn);
+        box.appendChild(r);
+      });
+    }
+    peindre();
+    hote.appendChild(box);
+    hote.appendChild(el("p", "unite", ex.consigneOrdre || "Utilise les flèches pour ranger."));
+    return {
+      lire: function () { return { vide: false, brut: courant.join(" ; ").replace(/<[^>]+>/g, "") }; },
+      corriger: function () {
+        var juste = courant.join("|") === ex.ordre.join("|");
+        return {
+          juste: juste,
+          cible: juste ? null : chercheErreur(ex.erreurs, function (e) {
+            return e.ordre.join("|") === courant.join("|");
+          })
+        };
+      },
+      figer: function () {
+        box.querySelectorAll("button").forEach(function (b) { b.disabled = true; });
+      }
+    };
+  };
+
+  /* --- calcul par étapes (§6.7 : correction étape par étape) --- */
+  TYPES.calcul_par_etapes = function (hote, ex) {
+    var blocs = [];
+    ex.etapes.forEach(function (et, k) {
+      var b = el("div", "etape-bloc" + (k === 0 ? "" : " verrou"));
+      b.appendChild(html("p", "consigne", (k + 1) + ". " + et.consigne));
+      var d = el("div", "champ-num");
+      var inp = el("input");
+      inp.type = "text";
+      inp.setAttribute("autocomplete", "off");
+      inp.setAttribute("aria-label", "Étape " + (k + 1));
+      if (et.acceptees) { inp.style.width = "220px"; }
+      else { inp.setAttribute("inputmode", "decimal"); }
+      if (et.signe) {
+        var mb = el("button", "moins", "−"); mb.type = "button";
+        mb.addEventListener("click", function () {
+          inp.value = inp.value.charAt(0) === "-" ? inp.value.slice(1) : "-" + inp.value;
+          inp.focus();
+        });
+        d.appendChild(mb);
+      }
+      d.appendChild(inp);
+      if (et.unite) d.appendChild(el("span", "unite", et.unite));
+      b.appendChild(d);
+      var r = el("div", "retour");
+      b.appendChild(r);
+      blocs.push({ b: b, inp: inp, r: r, def: et, fait: false });
+      hote.appendChild(b);
+    });
+
+    return {
+      lire: function () {
+        var vals = blocs.map(function (x) { return x.inp.value.trim(); });
+        var premierVide = -1;
+        for (var k = 0; k < blocs.length; k++) { if (vals[k] === "") { premierVide = k; break; } }
+        return { vide: premierVide >= 0, brut: vals.join(" / ") };
+      },
+      corriger: function () {
+        var juste = true, cible = null;
+        blocs.forEach(function (x) {
+          var ok;
+          if (x.def.acceptees) ok = texteAccepte(x.inp.value, x.def.acceptees);
+          else ok = nombreEgal(x.inp.value, x.def.reponse, x.def.tolerance);
+          x.r.className = "retour " + (ok ? "juste" : "faux") + " ouvert";
+          var h = "<p class='verdict'>" + (ok ? "Étape juste." : "Étape fausse.") + "</p>";
+          if (!ok) {
+            h += "<p>Attendu : <b>" + (x.def.corrige !== undefined ? x.def.corrige : x.def.reponse) + "</b></p>";
+            var c = x.def.acceptees
+              ? chercheErreur(x.def.erreurs, function (e) { return normTexte(e.saisie) === normTexte(x.inp.value); })
+              : chercheErreur(x.def.erreurs, function (e) {
+                  var v = normNombre(x.inp.value);
+                  return v !== null && Math.abs(v - e.valeur) < 1e-9;
+                });
+            if (c) { h += "<div class='cible'>" + c + "</div>"; if (!cible) cible = c; }
+            juste = false;
+          }
+          x.r.innerHTML = h;
+          x.b.classList.remove("verrou");
+        });
+        return { juste: juste, cible: null, cibleEtape: cible };
+      },
+      figer: function () {
+        blocs.forEach(function (x) { x.inp.disabled = true; x.b.classList.remove("verrou"); });
+      }
+    };
+  };
+
+  document.addEventListener("input", function (ev) {
+    var b = ev.target.closest ? ev.target.closest(".etape-bloc") : null;
+    if (!b) return;
+    var suiv = b.nextElementSibling;
+    if (suiv && suiv.classList.contains("etape-bloc") && ev.target.value.trim() !== "") {
+      suiv.classList.remove("verrou");
+    }
+  });
+
+  /* =========================================================
+     Bilan (§6.7 — sept éléments) et envoi (§12.1)
+     ========================================================= */
+
+  function compteParPalier() {
+    var c = { 1: { ok: 0, tot: 0 }, 2: { ok: 0, tot: 0 }, 3: { ok: 0, tot: 0 } };
+    L.exercices.forEach(function (e) { c[e.palier].tot++; });
+    etat.resultats.forEach(function (r) { if (r.juste) c[r.palier].ok++; });
+    return c;
+  }
+
+  /* Pilote V3, lot 2 : score par matière, dans l'ordre d'apparition. */
+  function compteParMatiere() {
+    var r = { ordre: [], par: {} };
+    L.exercices.forEach(function (e) {
+      if (!e.matiere) return;
+      if (!r.par[e.matiere]) { r.par[e.matiere] = { ok: 0, tot: 0 }; r.ordre.push(e.matiere); }
+      r.par[e.matiere].tot++;
+    });
+    etat.resultats.forEach(function (x) {
+      if (x.matiere && r.par[x.matiere] && x.juste) r.par[x.matiere].ok++;
+    });
+    return r;
+  }
+
+  function prefixe(m) { return m ? "[" + m + "] " : ""; }
+
+  function atteint(c, p) {
+    return c[p].tot > 0 && c[p].ok / c[p].tot >= 2 / 3 - 1e-9;
+  }
+
+  function niveauAtteint(c) {
+    var n = 0, p;
+    for (p = 1; p <= 3; p++) if (atteint(c, p)) n = p;
+    return n;
+  }
+
+  function creuxSousNiveau(c, n) {
+    var creux = [], p;
+    for (p = 1; p < n; p++) if (!atteint(c, p)) creux.push(p);
+    return creux;
+  }
+
+  var NOMS_PALIER = { 1: "de base", 2: "d'application", 3: "de problème" };
+
+  function marcheAuDessus(c, n) {
+    var p = n + 1;
+    if (n < 1 || p > 3) return null;
+    return c[p].tot > 0 ? p : null;
+  }
+
+  function messageFin(c, n) {
+    var m = L.messages[n], creux = creuxSousNiveau(c, n), marche = marcheAuDessus(c, n);
+
+    if (creux.length) {
+      var bouts = creux.map(function (p) {
+        return "les exercices " + NOMS_PALIER[p] + " (" + c[p].ok + " sur " + c[p].tot + ")";
+      });
+      var liste = bouts.length === 1 ? bouts[0]
+        : bouts.slice(0, -1).join(", ") + " et " + bouts[bouts.length - 1];
+      m += " <b>Un point à ne pas laisser passer :</b> " + liste
+        + " n'ont pas suivi. C'est là qu'il faut revenir en premier.";
+    }
+
+    if (marche) {
+      m += " <b>La marche suivante :</b> les exercices " + NOMS_PALIER[marche]
+        + ", à " + c[marche].ok + " sur " + c[marche].tot + ".";
+    }
+    return m;
+  }
+
+  function afficherBilan() {
+    enSeance = false;
+    effacerSauvegarde();
+    var c = compteParPalier();
+    var total = etat.resultats.filter(function (r) { return r.juste; }).length;
+    var duree = Math.max(1, Math.round((Date.now() - etat.debut) / 60000));
+    var niv = niveauAtteint(c);
+
+    var b = document.getElementById("bilan");
+    b.classList.add("ouvert");
+    document.getElementById("score-grand").textContent = total + " / " + L.exercices.length;
+    document.getElementById("score-sous").textContent = L.titre;
+
+    var p = document.getElementById("paliers");
+    p.innerHTML = "";
+    [["p1", "Bases", 1], ["p2", "Application", 2], ["p3", "Problèmes", 3]].forEach(function (x) {
+      var d = el("div", "pal " + x[0]);
+      d.appendChild(el("span", null, x[1]));
+      d.appendChild(el("span", null, c[x[2]].ok + " / " + c[x[2]].tot));
+      p.appendChild(d);
+    });
+    var pm = compteParMatiere();
+    pm.ordre.forEach(function (m) {
+      var d = el("div", "pal pm");
+      d.appendChild(el("span", null, m));
+      d.appendChild(el("span", null, pm.par[m].ok + " / " + pm.par[m].tot));
+      p.appendChild(d);
+    });
+
+    document.getElementById("message").innerHTML = messageFin(c, niv);
+
+    var manquees = [];
+    etat.resultats.forEach(function (r) {
+      if (!r.juste && manquees.indexOf(r.competence) < 0) manquees.push(r.competence);
+    });
+
+    var txt = construireBilan(c, duree, manquees);
+    document.getElementById("bilan-txt").textContent = txt;
+    zone.style.display = "none";
+    if (boutonRappel) boutonRappel.classList.remove("visible");
+    window.scrollTo(0, 0);
+    envoyer(c, txt);
+
+    document.getElementById("copier").addEventListener("click", function () {
+      var f = function () {
+        var ta = document.createElement("textarea");
+        ta.value = txt; document.body.appendChild(ta); ta.select();
+        try { document.execCommand("copy"); } catch (e) {}
+        document.body.removeChild(ta);
+      };
+      if (navigator.clipboard) navigator.clipboard.writeText(txt).catch(f); else f();
+      document.getElementById("copier").textContent = "Copié";
+    });
+
+    document.getElementById("mailto").href =
+      "mailto:?subject=" + encodeURIComponent(sujet(c)) + "&body=" + encodeURIComponent(txt);
+  }
+
+  function sujet(c) {
+    return "[REV] " + L.identifiant + " — " +
+      c[1].ok + "/" + c[1].tot + " · " +
+      c[2].ok + "/" + c[2].tot + " · " +
+      c[3].ok + "/" + c[3].tot;
+  }
+
+  function calculerReport(manquees) {
+    var parComp = {};
+    etat.echauffement.forEach(function (r) {
+      if (!(r.competence in parComp)) parComp[r.competence] = true;
+      if (!r.juste) parComp[r.competence] = false;
+    });
+    var report = (L.reportEntrant || []).filter(function (comp) {
+      return parComp[comp] !== true;
+    });
+    manquees.forEach(function (m) { if (report.indexOf(m) < 0) report.push(m); });
+    return report;
+  }
+
+  function ligneEchauffement() {
+    if (!etat.echauffement.length) return null;
+    var ok = etat.echauffement.filter(function (r) { return r.juste; }).length;
+    var comps = [];
+    etat.echauffement.forEach(function (r) {
+      if (comps.indexOf(r.competence) < 0) comps.push(r.competence);
+    });
+    return "Échauffement (hors score) : " + ok + "/" + etat.echauffement.length +
+           " — " + comps.join(" ; ");
+  }
+
+  function lignesEchauffementDetail() {
+    return etat.echauffement.map(function (r) {
+      return "  R" + r.n + ". " + prefixe(r.matiere) + r.resume + (r.juste ? "  [ok]" : "  [raté]");
+    });
+  }
+
+  function construireBilan(c, duree, manquees) {
+    var report = calculerReport(manquees);
+    var l = [];
+    l.push("Séance : " + L.identifiant);                                    /* 1 */
+    l.push("Leçon : " + L.titre);
+    l.push("");
+    var le = ligneEchauffement();
+    if (le) { l.push(le); lignesEchauffementDetail().forEach(function (x) { l.push(x); }); }
+    l.push("Bases " + c[1].ok + "/" + c[1].tot +                            /* 2 */
+           " · Application " + c[2].ok + "/" + c[2].tot +
+           " · Problèmes " + c[3].ok + "/" + c[3].tot);
+    var pm = compteParMatiere();
+    if (pm.ordre.length) {
+      l.push("Par matière : " + pm.ordre.map(function (m) {
+        return m + " " + pm.par[m].ok + "/" + pm.par[m].tot;
+      }).join(" · "));
+    }
+    l.push("Durée : " + duree + " min · Indices ouverts : " + etat.indices +
+           " · Retours à la leçon : " + etat.retoursLecon +                    /* 3 */
+           (etat.interruptions ? " · Interruptions : " + etat.interruptions : ""));
+    l.push("");
+    l.push("Exercices posés");                                              /* 4 */
+    etat.resultats.forEach(function (r) {
+      l.push("  " + r.n + ". " + prefixe(r.matiere) + r.resume + (r.juste ? "  [ok]" : "  [raté]"));
+    });
+    l.push("");
+    l.push("Compétences manquées");                                         /* 5 */
+    if (manquees.length === 0) l.push("  aucune");
+    else manquees.forEach(function (m) { l.push("  - " + m); });
+    l.push("");
+    l.push("Signalements de l'enfant");                                     /* 6 */
+    if (etat.signalements.length === 0) l.push("  aucun");
+    else etat.signalements.forEach(function (s) {
+      l.push("  - exercice " + s.n + " : réponse donnée « " + s.donnee + " »");
+    });
+    l.push("");
+    if (report.length === 0 && etat.signalements.length === 0) {           /* 7 */
+      l.push("Rien à reporter.");
+    } else {
+      l.push("À coller à la prochaine demande :");
+      l.push("  Bases " + c[1].ok + "/" + c[1].tot +
+             " · Application " + c[2].ok + "/" + c[2].tot +
+             " · Problèmes " + c[3].ok + "/" + c[3].tot);
+      l.push("  Compétences manquées cette séance : " +
+             (manquees.length ? manquees.join(" ; ") : "aucune"));
+      l.push("  Manques non repris : " + (report.length ? report.join(" ; ") : "aucun"));
+      l.push("  Exercices déjà posés : " + etat.resultats.map(function (r) { return r.resume; }).join(" ; "));
+    }
+    l.push("");
+    l.push("pilote V3 · moteur 2.8 + voix par langue + reprise de séance");
+    return l.join("\n");
+  }
+
+  function corpsEnvoi(c, txt) {
+    var f = new FormData();
+    f.append("access_key", CLE_ENVOI);
+    f.append("subject", sujet(c));
+    f.append("from_name", "Fichier de révision");
+    f.append("message", txt);
+    return f;
+  }
+
+  function envoyer(c, txt) {
+    if (etat.envoye) return;
+    etat.envoye = true;
+    var z = document.getElementById("envoi");
+    z.textContent = "Envoi du bilan…";
+    fetch("https://api.web3forms.com/submit", { method: "POST", body: corpsEnvoi(c, txt) })
+      .then(function (r) { return r.json(); })
+      .then(function (d) {
+        if (d && d.success) { z.className = "envoi ok"; z.textContent = "Bilan envoyé."; }
+        else { z.className = "envoi ko"; z.textContent = "Envoi refusé. Utilise le bouton Copier ci-dessous."; }
+      })
+      .catch(function () {
+        fetch("https://api.web3forms.com/submit",
+              { method: "POST", body: corpsEnvoi(c, txt), mode: "no-cors" })
+          .then(function () {
+            z.className = "envoi ok";
+            z.textContent = "Bilan envoyé (sans accusé de réception).";
+          })
+          .catch(function () {
+            z.className = "envoi ko";
+            z.textContent = "Envoi impossible — pas de réseau. Utilise le bouton Copier ci-dessous.";
+          });
+      });
+  }
+
+  /* ---------- Démarrage ---------- */
+
+  var ECHAUF = L.echauffement || [];
+  var TOUS = ECHAUF.concat(L.exercices);
+
+  function signaler(msg) {
+    var d = document.getElementById("diagnostic");
+    if (d) { d.className = "diag"; d.textContent = msg; }
+  }
+
+  /* ---------- Sauvegarde de la progression ----------
+     Dans la mémoire du navigateur, sur l'appareil de l'enfant. Si elle n'est
+     pas disponible, le fichier fonctionne comme avant, sans reprise. */
+
+  var CLE_SAUVEGARDE = "rev-seance:" + L.identifiant;
+
+  function ecrireSauvegarde(prochain) {
+    var s;
+    try {
+      s = JSON.stringify({
+        v: 1, i: prochain, resultats: etat.resultats, echauffement: etat.echauffement,
+        indices: etat.indices, retoursLecon: etat.retoursLecon,
+        signalements: etat.signalements, interruptions: etat.interruptions,
+        ecoule: Date.now() - etat.debut
+      });
+    } catch (e) { return; }
+    try { window.localStorage.setItem(CLE_SAUVEGARDE, s); } catch (e) {}
+    try { window.sessionStorage.setItem(CLE_SAUVEGARDE, s); } catch (e) {}
+  }
+
+  function lireSauvegarde() {
+    var brut = null;
+    try { brut = window.localStorage.getItem(CLE_SAUVEGARDE); } catch (e) {}
+    if (!brut) { try { brut = window.sessionStorage.getItem(CLE_SAUVEGARDE); } catch (e) {} }
+    if (!brut) return null;
+    try {
+      var d = JSON.parse(brut);
+      if (d && d.v === 1 && d.i > 0 && d.i < TOUS.length &&
+          d.resultats instanceof Array && d.echauffement instanceof Array) return d;
+    } catch (e) {}
+    return null;
+  }
+
+  function effacerSauvegarde() {
+    try { window.localStorage.removeItem(CLE_SAUVEGARDE); } catch (e) {}
+    try { window.sessionStorage.removeItem(CLE_SAUVEGARDE); } catch (e) {}
+  }
+
+  function demarrerSeance(depart) {
+    panneau.classList.add("flottant");
+    var dem = document.getElementById("demarrage");
+    if (dem) dem.style.display = "none";
+    var avant = document.getElementById("avant");
+    if (avant) avant.style.display = "none";
+    var rz = document.getElementById("reprise-zone");
+    if (rz) rz.parentNode.removeChild(rz);
+    zone.style.display = "block";
+    var exos = zone.querySelectorAll(".exo");
+    if (!exos.length) {
+      signaler("Les exercices n'ont pas pu être construits sur cet appareil.");
+      return;
+    }
+    etat.i = depart;
+    exos[depart].classList.add("actif");
+    ancreCourante = TOUS[depart].ancre || null;
+    if (!etat.debut) etat.debut = Date.now();
+    enSeance = true;
+    pousserHistorique("seance");
+    window.scrollTo(0, 0);
+  }
+
+  document.getElementById("demarrer").addEventListener("click", function () {
+    effacerSauvegarde();
+    demarrerSeance(0);
+  });
+
+  var batis = 0;
+  TOUS.forEach(function (ex, k) {
+    try {
+      zone.appendChild(rendreExercice(ex, k < ECHAUF.length ? k + 1 : k - ECHAUF.length + 1));
+      batis++;
+    } catch (err) {
+      signaler("L'exercice " + (k + 1) + " n'a pas pu être construit : " + err.message);
+    }
+  });
+  if (batis !== TOUS.length) {
+    signaler(batis + " exercice(s) construits sur " + TOUS.length + " attendus.");
+  }
+
+  try { construireSommaire(); } catch (err) { signaler("Sommaire : " + err.message); }
+
+  /* Séance commencée puis interrompue : on propose de reprendre. */
+  var sauvegarde = lireSauvegarde();
+  if (sauvegarde && batis === TOUS.length) {
+    var nEch = ECHAUF.length;
+    var ou = sauvegarde.i < nEch
+      ? "la reprise " + (sauvegarde.i + 1)
+      : "l'exercice " + (sauvegarde.i - nEch + 1) + " sur " + L.exercices.length;
+    var zr = el("div", "reprise-zone");
+    zr.id = "reprise-zone";
+    zr.appendChild(html("p", null, "<b>Tu avais commencé cette séance.</b> Tu reprends à " + ou + "."));
+    var actR = el("div", "actions");
+    var bReprendre = el("button", "btn valider", "Reprendre à " + ou);
+    bReprendre.type = "button";
+    var bZero = el("button", "btn sec", "Recommencer depuis le début");
+    bZero.type = "button";
+    bReprendre.addEventListener("click", function () {
+      etat.resultats = sauvegarde.resultats;
+      etat.echauffement = sauvegarde.echauffement;
+      etat.indices = sauvegarde.indices || 0;
+      etat.retoursLecon = sauvegarde.retoursLecon || 0;
+      etat.signalements = sauvegarde.signalements || [];
+      etat.interruptions = (sauvegarde.interruptions || 0) + 1;
+      etat.debut = Date.now() - (sauvegarde.ecoule || 0);
+      demarrerSeance(sauvegarde.i);
+    });
+    bZero.addEventListener("click", function () {
+      effacerSauvegarde();
+      zr.parentNode.removeChild(zr);
+    });
+    actR.appendChild(bReprendre);
+    actR.appendChild(bZero);
+    zr.appendChild(actR);
+    var bandeau = document.querySelector(".bandeau");
+    if (bandeau) bandeau.parentNode.insertBefore(zr, bandeau.nextSibling);
+    /* Le navigateur rétablit la position de défilement au rechargement :
+       on remonte en haut pour que la proposition de reprise soit visible. */
+    try { if ("scrollRestoration" in history) history.scrollRestoration = "manual"; } catch (e) {}
+    window.scrollTo(0, 0);
+    setTimeout(function () { window.scrollTo(0, 0); }, 0);
+  }
+
+  document.querySelectorAll(".angle-btn").forEach(function (b) {
+    b.addEventListener("click", function () {
+      var t = b.nextElementSibling;
+      t.classList.toggle("ouvert");
+      b.textContent = t.classList.contains("ouvert") ? "Masquer" : "Une autre façon de le voir";
+    });
+  });
+
+  document.querySelectorAll("[data-lire]").forEach(function (n) {
+    n.appendChild(boutonLire(n));
+  });
+})();
+
+</script>
+</body>
+</html>
