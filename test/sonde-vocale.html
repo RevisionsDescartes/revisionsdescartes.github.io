@@ -95,6 +95,9 @@ select { font: inherit; font-size: 1rem; padding: 8px 10px; border-radius: 10px;
 [data-etat="ecoute"] .ic-micro, [data-etat="parle"] .ic-son, [data-etat="reflechit"] .ic-points { display: block; }
 @keyframes pouls { 0% { transform: scale(1); opacity: .55; } 100% { transform: scale(1.45); opacity: 0; } }
 @media (prefers-reduced-motion: reduce) { [data-etat="ecoute"] .voyant::after { animation: none; opacity: .35; } }
+#fini, #aide-ecoute { display: none; }
+[data-etat="ecoute"] #fini { display: block; width: 100%; }
+[data-etat="ecoute"] #aide-ecoute { display: block; }
 .etat-texte { font-size: 1.5rem; font-weight: 800; line-height: 1.25; }
 .question { font-size: 1.3rem; line-height: 1.5; text-wrap: balance; }
 .suivi { font-size: .85rem; color: var(--encre-2); }
@@ -132,10 +135,10 @@ textarea { width: 100%; min-height: 9em; font: .8rem/1.4 ui-monospace, Menlo, Co
   <!-- ACCUEIL -->
   <section id="ecran-accueil" class="cadre-interne" style="display:flex;flex-direction:column;gap:16px">
     <header>
-      <p class="sur-titre">Test pour papa · français · 2 minutes</p>
+      <p class="sur-titre">Test pour papa · français · version 2</p>
       <h1>Sonde vocale</h1>
     </header>
-    <p>La page pose quatre questions à voix haute, puis écoute la réponse toute seule, sans bouton. Un faux tuteur répond avec un temps de réflexion réglable. On mesure ce que la tablette comprend et le silence entre les deux.</p>
+    <p>La page pose quatre questions à voix haute, puis écoute la réponse toute seule. On peut faire des pauses : la page attend un peu de silence avant de conclure, ou on appuie sur « J'ai fini de répondre ». Un faux tuteur répète ce qu'il a compris, après un temps de réflexion réglable. On mesure ce que la tablette comprend et le silence entre les deux.</p>
 
     <div class="carte">
       <h2>Ce que cet appareil permet</h2>
@@ -149,6 +152,13 @@ textarea { width: 100%; min-height: 9em; font: .8rem/1.4 ui-monospace, Menlo, Co
           <option value="2000" selected>2 secondes</option>
           <option value="3000">3 secondes</option>
           <option value="4000">4 secondes</option>
+        </select>
+      </label>
+      <label class="champ" for="attente" style="margin-top:12px"><span>Silence attendu avant de conclure</span>
+        <select id="attente">
+          <option value="1500">1,5 seconde</option>
+          <option value="2500" selected>2,5 secondes</option>
+          <option value="3500">3,5 secondes</option>
         </select>
       </label>
     </div>
@@ -173,6 +183,8 @@ textarea { width: 100%; min-height: 9em; font: .8rem/1.4 ui-monospace, Menlo, Co
     <p class="question" id="question"></p>
     <div class="direct"><b>Ce que la tablette entend</b><span id="direct"></span></div>
     <div class="alerte" id="alerte-echange" hidden></div>
+    <button type="button" class="btn" id="fini">J'ai fini de répondre</button>
+    <p class="petit" id="aide-ecoute">Tu peux faire une pause pour réfléchir : je continue d'écouter.</p>
     <button type="button" class="btn second" id="arreter">Arrêter le test</button>
   </section>
 
@@ -203,6 +215,14 @@ textarea { width: 100%; min-height: 9em; font: .8rem/1.4 ui-monospace, Menlo, Co
           <label class="chip"><input type="radio" name="erreurs" value="souvent"><span>Souvent</span></label>
         </div>
       </fieldset>
+      <fieldset style="margin-top:14px">
+        <legend>Qui a parlé ?</legend>
+        <div class="chips" id="g-qui">
+          <label class="chip"><input type="radio" name="qui" value="Omar"><span>Omar</span></label>
+          <label class="chip"><input type="radio" name="qui" value="Ali"><span>Ali</span></label>
+          <label class="chip"><input type="radio" name="qui" value="un adulte"><span>Un adulte</span></label>
+        </div>
+      </fieldset>
     </div>
 
     <div class="rangee">
@@ -227,15 +247,19 @@ textarea { width: 100%; min-height: 9em; font: .8rem/1.4 ui-monospace, Menlo, Co
   var QUESTIONS = [
     { q: "Dis-moi les quatre articles définis.", attendu: "le la l les" },
     { q: "Donne-moi une phrase avec « mon vélo ».", attendu: "mon velo" },
-    { q: "Où se place le déterminant dans le groupe nominal ?", attendu: "devant nom" },
+    { q: "Où se place le déterminant dans le groupe nominal ?", attendu: "devant/avant nom" },
     { q: "Répète cette phrase : « Le soir, mon cousin regarde cette vidéo avec des amis. »",
       attendu: "le soir mon cousin regarde cette video avec des amis" }
   ];
   var INTRO = "Bonjour ! Je vais te poser quatre questions. Parle quand tu entends le bip.";
-  var REPONSE_TUTEUR = "Merci, j'ai bien entendu ta réponse. Passons à la question suivante.";
+  function reponseTuteur(entendu, dernier) {
+    var m = String(entendu || "").split(/\s+/).slice(0, 14).join(" ");
+    return "J'ai compris : " + m + "." + (dernier ? "" : " Question suivante.");
+  }
+  function libelleFin(c) { return { silence: "silence", bouton: "bouton", limite: "limite", moteur: "moteur" }[c] || String(c || "–"); }
   var FIN_TEXTE = "C'est fini, merci ! Bravo d'être allé jusqu'au bout.";
 
-  var etat = { tours: [], delaiIA: 2000, arret: false, fatale: null, rec: null, voix: null, verrou: null, envoye: false, ctxAudio: null, demarreLe: null };
+  var etat = { tours: [], delaiIA: 2000, attente: 2500, finirTour: null, arret: false, fatale: null, rec: null, voix: null, verrou: null, envoye: false, ctxAudio: null, demarreLe: null };
 
   /* ---------- Utilitaires ---------- */
 
@@ -258,9 +282,16 @@ textarea { width: 100%; min-height: 9em; font: .8rem/1.4 ui-monospace, Menlo, Co
       .replace(/[^a-z]+/g, " ").trim().split(" ").filter(Boolean);
   }
   function mots(attendu, entendu) {
-    var att = normaliser(attendu), pool = normaliser(entendu), ok = 0;
-    att.forEach(function (m) { var k = pool.indexOf(m); if (k >= 0) { ok++; pool.splice(k, 1); } });
-    return { ok: ok, tot: att.length };
+    /* « devant/avant nom » = deux mots attendus ; le premier peut être « devant » ou « avant » */
+    var pool = normaliser(entendu), ok = 0, termes = String(attendu).split(/\s+/).filter(Boolean);
+    termes.forEach(function (t) {
+      var alts = t.split("/").map(function (a) { return normaliser(a).join(""); }).filter(Boolean);
+      for (var a = 0; a < alts.length; a++) {
+        var k = pool.indexOf(alts[a]);
+        if (k >= 0) { ok++; pool.splice(k, 1); break; }
+      }
+    });
+    return { ok: ok, tot: termes.length };
   }
   function moyenne(liste) {
     var v = liste.filter(function (x) { return typeof x === "number" && !isNaN(x); });
@@ -376,9 +407,10 @@ textarea { width: 100%; min-height: 9em; font: .8rem/1.4 ui-monospace, Menlo, Co
 
   function demarrer() {
     etat.tours = QUESTIONS.map(function (q, i) {
-      return { i: i, q: q.q, attendu: q.attendu, entendu: "", confiance: null, mots: null, debutParole: null, delaiReco: null, silence: null, finParole: null, tentatives: 0, erreur: null };
+      return { i: i, q: q.q, attendu: q.attendu, entendu: "", confiance: null, mots: null, debutParole: null, delaiReco: null, silence: null, finParole: null, tentatives: 0, erreur: null, fin: null, attenteFin: null, relances: 0 };
     });
     etat.delaiIA = parseInt($("delai").value, 10) || 2000;
+    etat.attente = parseInt($("attente").value, 10) || 2500;
     etat.arret = false; etat.fatale = null; etat.envoye = false; etat.demarreLe = new Date();
     essayer(function () { if (navigator.wakeLock) navigator.wakeLock.request("screen").then(function (w) { etat.verrou = w; }, function () {}); });
     essayer(function () {   /* débloque le son dans ce geste de l'utilisateur */
@@ -414,31 +446,33 @@ textarea { width: 100%; min-height: 9em; font: .8rem/1.4 ui-monospace, Menlo, Co
     if (etat.arret) return;
     var tour = etat.tours[i];
     tour.tentatives++;
-    var rec;
-    try { rec = new SR(); } catch (e) { fatale("impossible de créer l'écoute : " + e.message); return; }
-    rec.lang = "fr-FR"; rec.interimResults = true; rec.continuous = false; rec.maxAlternatives = 3;
-    var t0 = null, tDebut = null, tFinParole = null, tFinal = null, texte = "", conf = null, err = null, termine = false;
-    var garde = setTimeout(function () { essayer(function () { rec.abort(); }); }, 15000);
+    var attente = etat.attente;
+    var t0 = null, tDebut = null, tParoleFin = null, tDerniere = null, tStop = null, tDebutTour = performance.now();
+    var segments = [], confs = [], confSession = [], courant = "", prov = "";
+    var cause = null, relances = 0, err = null, termine = false, minuteur = null, secoursFin = null;
+    var garde = setTimeout(function () { demanderFin("limite"); }, 30000);
 
-    rec.onstart = function () { t0 = performance.now(); setEtat("ecoute", "À toi ! Parle maintenant"); };
-    rec.onspeechstart = function () { tDebut = performance.now(); };
-    rec.onspeechend = function () { tFinParole = performance.now(); setEtat("reflechit", "Je réfléchis…"); };
-    rec.onresult = function (e) {
-      var provisoire = "";
-      for (var k = e.resultIndex; k < e.results.length; k++) {
-        var r = e.results[k];
-        if (r.isFinal) { texte += r[0].transcript; conf = r[0].confidence; tFinal = performance.now(); }
-        else provisoire += r[0].transcript;
-      }
-      $("direct").textContent = (texte + " " + provisoire).trim();
-    };
-    rec.onerror = function (e) { err = (e && e.error) || "erreur"; };
-    rec.onend = function () {
-      clearTimeout(garde);
+    /* Fin de réponse : silence assez long, bouton « J'ai fini », ou limite de 30 s. */
+    function demanderFin(c) {
+      if (termine || cause) return;
+      cause = c; tStop = performance.now();
+      clearTimeout(minuteur);
+      setEtat("reflechit", "Je réfléchis…");
+      essayer(function () { etat.rec.stop(); });
+      secoursFin = setTimeout(function () { conclureTour(); }, 2500);   /* si le moteur n'envoie jamais « fin » */
+    }
+    etat.finirTour = function () { demanderFin("bouton"); };
+
+    function conclureTour() {
       if (termine) return; termine = true;
+      clearTimeout(garde); clearTimeout(minuteur); clearTimeout(secoursFin);
+      etat.finirTour = null;
+      if (courant.trim()) { segments.push(courant.trim()); courant = ""; }
+      if (!segments.length && prov.trim()) segments.push(prov.trim());
       if (etat.arret) return;
       if (err && err !== "no-speech" && err !== "aborted") { fatale(err); return; }
-      if (!texte.trim()) {
+      var texte = segments.join(" ").replace(/\s+/g, " ").trim();
+      if (!texte) {
         if (tour.tentatives < 2) {
           setEtat("parle", "Je répète…");
           parler("Je n'ai rien entendu. Redis-le.", null, function () { ecouterApresBip(i); });
@@ -448,16 +482,59 @@ textarea { width: 100%; min-height: 9em; font: .8rem/1.4 ui-monospace, Menlo, Co
         }
         return;
       }
-      tour.entendu = texte.trim();
-      tour.confiance = conf;
-      tour.mots = mots(tour.attendu, tour.entendu);
+      var fp = (tParoleFin && tDebut && tParoleFin >= tDebut) ? tParoleFin : (tDerniere || tStop || performance.now());
+      tour.entendu = texte;
+      tour.confiance = moyenne(confs);
+      tour.mots = mots(tour.attendu, texte);
       tour.debutParole = (tDebut && t0) ? tDebut - t0 : null;
-      tour.delaiReco = (tFinal && tFinParole) ? Math.max(0, tFinal - tFinParole) : null;
-      tour.finParole = tFinParole || tFinal || performance.now();
+      tour.fin = cause || "moteur";
+      tour.attenteFin = tStop ? Math.max(0, tStop - fp) : null;
+      tour.delaiReco = tStop ? Math.max(0, performance.now() - tStop) : null;
+      tour.relances = relances;
+      tour.finParole = fp;
       repondre(i);
-    };
-    etat.rec = rec;
-    try { rec.start(); } catch (e) { fatale(e.message); }
+    }
+
+    function lancer() {
+      var rec;
+      try { rec = new SR(); } catch (e) { fatale("impossible de créer l'écoute : " + e.message); return; }
+      rec.lang = "fr-FR"; rec.interimResults = true; rec.continuous = true; rec.maxAlternatives = 1;
+      rec.onstart = function () { if (rec !== etat.rec) return; if (t0 === null) { t0 = performance.now(); setEtat("ecoute", "À toi ! Parle maintenant"); } };
+      rec.onspeechstart = function () { if (rec !== etat.rec) return; if (tDebut === null) tDebut = performance.now(); };
+      rec.onspeechend = function () { if (rec !== etat.rec) return; tParoleFin = performance.now(); };
+      rec.onresult = function (e) {
+        if (rec !== etat.rec) return;
+        var fin = [], p = [];
+        confSession = [];
+        for (var k = 0; k < e.results.length; k++) {
+          var r = e.results[k];
+          if (r.isFinal) { fin.push(String(r[0].transcript).trim()); confSession.push(r[0].confidence); }
+          else p.push(String(r[0].transcript).trim());
+        }
+        courant = fin.join(" "); prov = p.join(" ");
+        $("direct").textContent = segments.concat([courant, prov]).join(" ").replace(/\s+/g, " ").trim();
+        if (!cause && (courant || prov)) {
+          tDerniere = performance.now();
+          clearTimeout(minuteur);
+          minuteur = setTimeout(function () { demanderFin("silence"); }, attente);
+        }
+      };
+      rec.onerror = function (e) { if (rec !== etat.rec) return; err = (e && e.error) || "erreur"; };
+      rec.onend = function () {
+        if (termine || rec !== etat.rec) return;
+        confs = confs.concat(confSession.filter(function (c) { return typeof c === "number" && c > 0; }));
+        if (courant.trim()) segments.push(courant.trim());
+        courant = ""; prov = ""; confSession = [];
+        var fatal = err && err !== "no-speech" && err !== "aborted";
+        if (!fatal && !cause && !etat.arret && segments.length && relances < 4 && performance.now() - tDebutTour < 28000) {
+          relances++; err = null; lancer(); return;   /* le moteur s'est arrêté seul pendant une pause : on le relance */
+        }
+        conclureTour();
+      };
+      etat.rec = rec;
+      try { rec.start(); } catch (e) { fatale(e.message); }
+    }
+    lancer();
   }
 
   function repondre(i) {
@@ -467,7 +544,7 @@ textarea { width: 100%; min-height: 9em; font: .8rem/1.4 ui-monospace, Menlo, Co
     setTimeout(function () {
       if (etat.arret) return;
       setEtat("parle", "Je parle…");
-      parler(REPONSE_TUTEUR,
+      parler(reponseTuteur(tour.entendu, i === QUESTIONS.length - 1),
         function () { tour.silence = performance.now() - tour.finParole; },
         function () { poser(i + 1); });
     }, etat.delaiIA);
@@ -512,6 +589,8 @@ textarea { width: 100%; min-height: 9em; font: .8rem/1.4 ui-monospace, Menlo, Co
     var okM = 0, totM = 0;
     etat.tours.forEach(function (x) { if (x.mots) { okM += x.mots.ok; totM += x.mots.tot; } });
     var repetes = etat.tours.filter(function (x) { return x.tentatives > 1; }).length;
+    var relTot = 0, parBouton = 0;
+    etat.tours.forEach(function (x) { relTot += (x.relances || 0); if (x.fin === "bouton") parBouton++; });
 
     var r = $("resume"); r.textContent = "";
     function chiffre(v, l) {
@@ -520,24 +599,26 @@ textarea { width: 100%; min-height: 9em; font: .8rem/1.4 ui-monospace, Menlo, Co
       var b = document.createElement("div"); b.className = "l"; b.textContent = l;
       d.appendChild(a); d.appendChild(b); r.appendChild(d);
     }
-    chiffre(secondes(sil), "silence moyen ressenti (fin de ta phrase → début de la voix)");
+    chiffre(secondes(sil), "silence moyen ressenti (dernier mot → début de la voix, temps simulé de l'IA compris)");
     chiffre(totM ? Math.round(100 * okM / totM) + " %" : "–", "mots attendus bien compris (" + okM + "/" + totM + ")");
     chiffre(conf == null ? "–" : Math.round(conf * 100) + " %", "confiance annoncée par la reconnaissance");
     chiffre(t.length + "/" + QUESTIONS.length, "questions où une réponse a été entendue");
+    chiffre(String(relTot), "écoutes relancées (le moteur s'était arrêté pendant une pause)");
+    chiffre(parBouton + "/" + t.length, "réponses terminées avec le bouton");
 
     var tab = $("tableau"); tab.textContent = "";
     var tete = document.createElement("tr");
-    ["#", "Entendu", "Mots", "Confiance", "Début de parole", "Texte après fin", "Silence ressenti"].forEach(function (h, k) {
+    ["#", "Entendu", "Mots", "Confiance", "Début de parole", "Attente de fin", "Silence ressenti"].forEach(function (h, k) {
       var c = document.createElement("th"); c.textContent = h; if (k >= 2) c.className = "num"; tete.appendChild(c);
     });
     tab.appendChild(tete);
     etat.tours.forEach(function (x) {
       var tr = document.createElement("tr");
       var cells = [String(x.i + 1),
-        x.entendu ? "« " + x.entendu + " »" : (x.erreur || (x.tentatives ? "–" : "non posée")),
+        x.entendu ? "« " + x.entendu + " »" + (x.relances ? " · écoute relancée " + x.relances + "×" : "") : (x.erreur || (x.tentatives ? "–" : "non posée")),
         x.mots ? x.mots.ok + "/" + x.mots.tot : "–",
         x.confiance == null ? "–" : Math.round(x.confiance * 100) + " %",
-        secondes(x.debutParole), secondes(x.delaiReco), secondes(x.silence)];
+        secondes(x.debutParole), x.attenteFin == null ? "–" : secondes(x.attenteFin) + " (" + libelleFin(x.fin) + ")", secondes(x.silence)];
       cells.forEach(function (v, k) { var c = document.createElement("td"); c.textContent = v; if (k >= 2) c.className = "num"; tr.appendChild(c); });
       tab.appendChild(tr);
     });
@@ -549,16 +630,17 @@ textarea { width: 100%; min-height: 9em; font: .8rem/1.4 ui-monospace, Menlo, Co
   function rapport() {
     var l = [];
     function coche(n) { var e = document.querySelector('input[name="' + n + '"]:checked'); return e ? e.value : "non précisé"; }
-    l.push("Sonde vocale — " + (etat.demarreLe ? etat.demarreLe.toISOString() : new Date().toISOString()));
+    l.push("Sonde vocale v2 — " + (etat.demarreLe ? etat.demarreLe.toISOString() : new Date().toISOString()));
     l.push("");
     l.push("Appareil");
     diagLignes.forEach(function (d) { l.push("  " + d.nom + " : " + d.val); });
     l.push("  Agent : " + navigator.userAgent);
     l.push("  Écran : " + window.innerWidth + "x" + window.innerHeight);
     l.push("  Temps de réflexion IA simulé : " + (etat.delaiIA / 1000) + " s");
+    l.push("  Silence attendu avant de conclure : " + (etat.attente / 1000) + " s");
     if (etat.fatale) { l.push(""); l.push("Arrêt : " + etat.fatale); }
     l.push("");
-    l.push("Tours (début de parole = bip → début de la voix de l'enfant ; texte après fin = fin de parole → texte final ; silence ressenti = fin de parole → début de la réponse du tuteur)");
+    l.push("Tours (début de parole = bip → début de la voix ; attente de fin = dernier mot → arrêt de l'écoute, par silence ou par bouton ; finalisation = arrêt → texte final ; silence ressenti = dernier mot → début de la réponse du tuteur, temps simulé de l'IA compris)");
     etat.tours.forEach(function (x) {
       l.push("  " + (x.i + 1) + ". " + x.q);
       if (!x.tentatives) { l.push("     non posée"); return; }
@@ -566,7 +648,7 @@ textarea { width: 100%; min-height: 9em; font: .8rem/1.4 ui-monospace, Menlo, Co
         " · mots " + (x.mots ? x.mots.ok + "/" + x.mots.tot : "–") +
         " · confiance " + (x.confiance == null ? "–" : Math.round(x.confiance * 100) + " %") +
         " · tentatives " + x.tentatives);
-      l.push("     début de parole " + secondes(x.debutParole) + " · texte après fin " + secondes(x.delaiReco) + " · silence ressenti " + secondes(x.silence));
+      l.push("     début de parole " + secondes(x.debutParole) + " · fin : " + libelleFin(x.fin) + ", attente " + secondes(x.attenteFin) + " · finalisation " + secondes(x.delaiReco) + " · écoutes relancées " + (x.relances || 0) + " · silence ressenti " + secondes(x.silence));
     });
     var sil = moyenne(etat.tours.map(function (x) { return x.silence; }));
     l.push("");
@@ -575,6 +657,7 @@ textarea { width: 100%; min-height: 9em; font: .8rem/1.4 ui-monospace, Menlo, Co
     l.push("Avis du parent");
     l.push("  Échange naturel : " + coche("naturel"));
     l.push("  Erreurs ou répétitions : " + coche("erreurs"));
+    l.push("  Qui a parlé : " + coche("qui"));
     return l.join("\n");
   }
 
@@ -596,7 +679,7 @@ textarea { width: 100%; min-height: 9em; font: .8rem/1.4 ui-monospace, Menlo, Co
     var z = $("envoi");
     var f = new FormData();
     f.append("access_key", CLE_ENVOI);
-    f.append("subject", "[TEST] sonde vocale");
+    f.append("subject", "[TEST] sonde vocale v2");
     f.append("from_name", "Sonde vocale");
     f.append("message", rapport());
     z.className = "envoi"; z.textContent = "Envoi du résultat…";
@@ -617,7 +700,8 @@ textarea { width: 100%; min-height: 9em; font: .8rem/1.4 ui-monospace, Menlo, Co
 
   $("demarrer").addEventListener("click", demarrer);
   $("arreter").addEventListener("click", arreter);
-  $("diag-seul").addEventListener("click", function () { etat.tours = []; etat.delaiIA = parseInt($("delai").value, 10) || 2000; resultat(); });
+  $("fini").addEventListener("click", function () { if (etat.finirTour) etat.finirTour(); });
+  $("diag-seul").addEventListener("click", function () { etat.tours = []; etat.delaiIA = parseInt($("delai").value, 10) || 2000; etat.attente = parseInt($("attente").value, 10) || 2500; resultat(); });
   $("envoyer").addEventListener("click", envoyer);
   $("copier").addEventListener("click", copier);
   $("refaire").addEventListener("click", function () { $("envoyer").disabled = false; $("envoi").textContent = ""; $("copier").textContent = "Copier le résultat"; $("texte-rapport").hidden = true; ouvrir("accueil"); });
