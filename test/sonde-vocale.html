@@ -1,0 +1,630 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex">
+<title>Sonde vocale</title>
+<style>
+/* Une colonne, un seul écran à la fois : accueil (diagnostic), échange parlé, résultat.
+   Même magenta que le français. Grand voyant d'état au centre pour l'enfant. */
+:root {
+  --fond: #faf8fb;
+  --carte: #ffffff;
+  --encre: #1f1a22;
+  --encre-2: #5b5360;
+  --trait: #e6e0e9;
+  --accent: #a21caf;
+  --accent-bg: #fdf4ff;
+  --sur-accent: #ffffff;
+  --ok: #15803d;     --ok-bg: #f0fdf4;
+  --ko: #b91c1c;     --ko-bg: #fef2f2;
+  --att: #b45309;    --att-bg: #fffbeb;
+  --parle: #1d4ed8;  --parle-bg: #eff6ff;
+  --police: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --fond: #171318; --carte: #221b26; --encre: #f3eef5; --encre-2: #bdb2c3; --trait: #3b3141;
+    --accent: #e879f9; --accent-bg: #2c1233; --sur-accent: #2b0a30;
+    --ok: #4ade80; --ok-bg: #12261a; --ko: #f87171; --ko-bg: #2c1515;
+    --att: #fbbf24; --att-bg: #2a2110; --parle: #7aa2ff; --parle-bg: #14203a;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --fond: #171318; --carte: #221b26; --encre: #f3eef5; --encre-2: #bdb2c3; --trait: #3b3141;
+  --accent: #e879f9; --accent-bg: #2c1233; --sur-accent: #2b0a30;
+  --ok: #4ade80; --ok-bg: #12261a; --ko: #f87171; --ko-bg: #2c1515;
+  --att: #fbbf24; --att-bg: #2a2110; --parle: #7aa2ff; --parle-bg: #14203a;
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body { margin: 0; background: var(--fond); color: var(--encre); font-family: var(--police); font-size: 18px; line-height: 1.6; }
+.cadre {
+  max-width: 600px; margin: 0 auto;
+  padding-block: 20px 56px;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  display: flex; flex-direction: column; gap: 16px;
+}
+[hidden] { display: none !important; }
+h1 { margin: 0; font-size: 1.35rem; line-height: 1.25; text-wrap: balance; }
+h2 { margin: 0 0 8px; font-size: 1.05rem; }
+p { margin: 0; }
+.sur-titre { margin: 0 0 2px; font-size: .72rem; letter-spacing: .09em; text-transform: uppercase; color: var(--accent); font-weight: 700; }
+.petit { font-size: .85rem; color: var(--encre-2); line-height: 1.5; }
+.carte { background: var(--carte); border: 1px solid var(--trait); border-radius: 16px; padding: 16px; }
+
+.diag { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 8px; }
+.diag li { display: flex; gap: 10px; align-items: baseline; justify-content: space-between; font-size: .95rem; }
+.diag .nom { color: var(--encre-2); flex: 1 1 auto; min-width: 0; }
+.diag .val { text-align: right; flex: 0 1 auto; max-width: 58%; overflow-wrap: break-word; font-weight: 600; }
+.val.ok { color: var(--ok); } .val.ko { color: var(--ko); } .val.att { color: var(--att); }
+
+label.champ { display: flex; gap: 12px; align-items: center; justify-content: space-between; flex-wrap: wrap; font-size: .95rem; }
+select { font: inherit; font-size: 1rem; padding: 8px 10px; border-radius: 10px; border: 1px solid var(--trait); background: var(--carte); color: var(--encre); min-height: 44px; }
+
+.btn {
+  font: inherit; font-weight: 700; font-size: 1.05rem; cursor: pointer;
+  min-height: 52px; padding: 12px 18px; border-radius: 14px;
+  border: 2px solid var(--accent); background: var(--accent); color: var(--sur-accent);
+}
+.btn.second { background: transparent; color: var(--accent); }
+.btn[disabled] { opacity: .5; cursor: default; }
+.btn:focus-visible, select:focus-visible, .chip input:focus-visible + span { outline: 3px solid var(--parle); outline-offset: 2px; }
+.rangee { display: flex; gap: 10px; flex-wrap: wrap; }
+.rangee .btn { flex: 1 1 150px; }
+
+/* Voyant d'état */
+.scene { text-align: center; display: flex; flex-direction: column; gap: 12px; align-items: center; }
+.voyant {
+  position: relative; width: 140px; height: 140px; border-radius: 50%;
+  display: grid; place-items: center;
+  border: 4px solid var(--trait); background: var(--carte); color: var(--encre-2);
+}
+.voyant svg { width: 60px; height: 60px; display: none; }
+.voyant::after { content: ""; position: absolute; inset: -4px; border-radius: 50%; border: 4px solid currentColor; opacity: 0; }
+[data-etat="ecoute"] .voyant { border-color: var(--ok); background: var(--ok-bg); color: var(--ok); }
+[data-etat="ecoute"] .voyant::after { animation: pouls 1.4s ease-out infinite; }
+[data-etat="parle"] .voyant { border-color: var(--parle); background: var(--parle-bg); color: var(--parle); }
+[data-etat="reflechit"] .voyant { border-color: var(--att); background: var(--att-bg); color: var(--att); }
+[data-etat="ecoute"] .ic-micro, [data-etat="parle"] .ic-son, [data-etat="reflechit"] .ic-points { display: block; }
+@keyframes pouls { 0% { transform: scale(1); opacity: .55; } 100% { transform: scale(1.45); opacity: 0; } }
+@media (prefers-reduced-motion: reduce) { [data-etat="ecoute"] .voyant::after { animation: none; opacity: .35; } }
+.etat-texte { font-size: 1.5rem; font-weight: 800; line-height: 1.25; }
+.question { font-size: 1.3rem; line-height: 1.5; text-wrap: balance; }
+.suivi { font-size: .85rem; color: var(--encre-2); }
+.direct { width: 100%; min-height: 3.2em; text-align: left; padding: 10px 12px; border-radius: 12px; border: 1px dashed var(--trait); color: var(--encre-2); font-size: 1rem; }
+.direct b { display: block; font-size: .72rem; letter-spacing: .08em; text-transform: uppercase; font-weight: 700; }
+.alerte { padding: 12px 14px; border-radius: 12px; background: var(--ko-bg); color: var(--ko); font-weight: 600; font-size: .95rem; }
+.note { padding: 12px 14px; border-radius: 12px; background: var(--att-bg); color: var(--att); font-size: .9rem; }
+
+/* Résultat */
+.tableau { overflow-x: auto; }
+table { border-collapse: collapse; width: 100%; font-size: .85rem; min-width: 600px; }
+td:nth-child(2) { min-width: 12em; }
+th, td { text-align: left; padding: 6px 8px; border-bottom: 1px solid var(--trait); vertical-align: top; }
+th { color: var(--encre-2); font-weight: 600; font-size: .75rem; }
+td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.resume { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; }
+.chiffre { border: 1px solid var(--trait); border-radius: 12px; padding: 10px 12px; background: var(--carte); }
+.chiffre .v { font-size: 1.4rem; font-weight: 800; font-variant-numeric: tabular-nums; line-height: 1.2; }
+.chiffre .l { font-size: .78rem; color: var(--encre-2); }
+fieldset { border: 0; padding: 0; margin: 0; }
+legend { padding: 0; font-weight: 700; font-size: .95rem; margin-bottom: 6px; }
+.chips { display: flex; gap: 8px; flex-wrap: wrap; }
+.chip { position: relative; }
+.chip input { position: absolute; opacity: 0; inset: 0; }
+.chip span { display: block; padding: 10px 14px; border-radius: 999px; border: 2px solid var(--trait); background: var(--carte); font-size: .95rem; min-height: 44px; }
+.chip input:checked + span { border-color: var(--accent); background: var(--accent-bg); color: var(--accent); font-weight: 700; }
+textarea { width: 100%; min-height: 9em; font: .8rem/1.4 ui-monospace, Menlo, Consolas, monospace; padding: 10px; border-radius: 12px; border: 1px solid var(--trait); background: var(--carte); color: var(--encre); }
+.envoi { font-weight: 700; font-size: .95rem; }
+.envoi.ok { color: var(--ok); } .envoi.ko { color: var(--ko); }
+</style>
+</head>
+<body>
+<main class="cadre" id="app" data-etat="repos">
+
+  <!-- ACCUEIL -->
+  <section id="ecran-accueil" class="cadre-interne" style="display:flex;flex-direction:column;gap:16px">
+    <header>
+      <p class="sur-titre">Test pour papa · français · 2 minutes</p>
+      <h1>Sonde vocale</h1>
+    </header>
+    <p>La page pose quatre questions à voix haute, puis écoute la réponse toute seule, sans bouton. Un faux tuteur répond avec un temps de réflexion réglable. On mesure ce que la tablette comprend et le silence entre les deux.</p>
+
+    <div class="carte">
+      <h2>Ce que cet appareil permet</h2>
+      <ul class="diag" id="diag"></ul>
+    </div>
+
+    <div class="carte">
+      <label class="champ" for="delai"><span>Temps de réflexion simulé de l'IA</span>
+        <select id="delai">
+          <option value="1000">1 seconde</option>
+          <option value="2000" selected>2 secondes</option>
+          <option value="3000">3 secondes</option>
+          <option value="4000">4 secondes</option>
+        </select>
+      </label>
+    </div>
+
+    <div class="alerte" id="alerte-accueil" hidden></div>
+    <p class="note">Pour un test réaliste, laisse Omar répondre lui-même, d'une voix normale. Sur Chrome, la reconnaissance vocale envoie la voix à un service de Google. La page n'enregistre rien. Seul le résultat part par courriel, et seulement si tu appuies sur « Envoyer ».</p>
+    <div class="rangee">
+      <button type="button" class="btn" id="demarrer">Commencer</button>
+      <button type="button" class="btn second" id="diag-seul">Voir le résultat sans test</button>
+    </div>
+  </section>
+
+  <!-- ÉCHANGE -->
+  <section id="ecran-echange" class="scene" hidden aria-live="polite">
+    <p class="suivi" id="suivi"></p>
+    <div class="voyant" aria-hidden="true">
+      <svg class="ic-micro" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg>
+      <svg class="ic-son" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9v6h4l5 4V5L8 9H4z"/><path d="M16.5 8.5a5 5 0 0 1 0 7M19 6a8.5 8.5 0 0 1 0 12"/></svg>
+      <svg class="ic-points" viewBox="0 0 24 24" fill="currentColor"><circle cx="5" cy="12" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="19" cy="12" r="2"/></svg>
+    </div>
+    <p class="etat-texte" id="etat-texte">Prépare-toi…</p>
+    <p class="question" id="question"></p>
+    <div class="direct"><b>Ce que la tablette entend</b><span id="direct"></span></div>
+    <div class="alerte" id="alerte-echange" hidden></div>
+    <button type="button" class="btn second" id="arreter">Arrêter le test</button>
+  </section>
+
+  <!-- RÉSULTAT -->
+  <section id="ecran-fin" hidden style="display:flex;flex-direction:column;gap:16px">
+    <header>
+      <p class="sur-titre">Résultat</p>
+      <h1>Ce que la sonde a mesuré</h1>
+    </header>
+    <div class="alerte" id="alerte-fin" hidden></div>
+    <div class="resume" id="resume"></div>
+    <div class="carte tableau"><table id="tableau"></table></div>
+
+    <div class="carte">
+      <fieldset>
+        <legend>L'échange t'a semblé naturel ?</legend>
+        <div class="chips" id="g-naturel">
+          <label class="chip"><input type="radio" name="naturel" value="oui"><span>Oui</span></label>
+          <label class="chip"><input type="radio" name="naturel" value="moyen"><span>À peu près</span></label>
+          <label class="chip"><input type="radio" name="naturel" value="non"><span>Non</span></label>
+        </div>
+      </fieldset>
+      <fieldset style="margin-top:14px">
+        <legend>La tablette s'est trompée ou n'a pas entendu</legend>
+        <div class="chips" id="g-erreurs">
+          <label class="chip"><input type="radio" name="erreurs" value="jamais"><span>Jamais</span></label>
+          <label class="chip"><input type="radio" name="erreurs" value="parfois"><span>Parfois</span></label>
+          <label class="chip"><input type="radio" name="erreurs" value="souvent"><span>Souvent</span></label>
+        </div>
+      </fieldset>
+    </div>
+
+    <div class="rangee">
+      <button type="button" class="btn" id="envoyer">Envoyer le résultat</button>
+      <button type="button" class="btn second" id="copier">Copier le résultat</button>
+      <button type="button" class="btn second" id="refaire">Refaire le test</button>
+    </div>
+    <p class="envoi" id="envoi" role="status"></p>
+    <textarea id="texte-rapport" readonly aria-label="Résultat complet" hidden></textarea>
+  </section>
+</main>
+
+<script>
+(function () {
+  "use strict";
+
+  var CLE_ENVOI = "259de897-beba-4c71-95c8-dcde527b79c1";   /* même formulaire que le test d'ouverture */
+  var $ = function (id) { return document.getElementById(id); };
+  var SR = window.SpeechRecognition || window.webkitSpeechRecognition || null;
+  var TTS = ("speechSynthesis" in window) && typeof window.SpeechSynthesisUtterance === "function";
+
+  var QUESTIONS = [
+    { q: "Dis-moi les quatre articles définis.", attendu: "le la l les" },
+    { q: "Donne-moi une phrase avec « mon vélo ».", attendu: "mon velo" },
+    { q: "Où se place le déterminant dans le groupe nominal ?", attendu: "devant nom" },
+    { q: "Répète cette phrase : « Le soir, mon cousin regarde cette vidéo avec des amis. »",
+      attendu: "le soir mon cousin regarde cette video avec des amis" }
+  ];
+  var INTRO = "Bonjour ! Je vais te poser quatre questions. Parle quand tu entends le bip.";
+  var REPONSE_TUTEUR = "Merci, j'ai bien entendu ta réponse. Passons à la question suivante.";
+  var FIN_TEXTE = "C'est fini, merci ! Bravo d'être allé jusqu'au bout.";
+
+  var etat = { tours: [], delaiIA: 2000, arret: false, fatale: null, rec: null, voix: null, verrou: null, envoye: false, ctxAudio: null, demarreLe: null };
+
+  /* ---------- Utilitaires ---------- */
+
+  function ouvrir(nom) {
+    ["accueil", "echange", "fin"].forEach(function (n) {
+      var e = $("ecran-" + n);
+      e.hidden = (n !== nom);
+      if (n === "accueil" || n === "fin") e.style.display = (n === nom) ? "flex" : "none";
+    });
+    window.scrollTo(0, 0);
+  }
+  function setEtat(e, texte) {
+    $("app").setAttribute("data-etat", e);
+    if (texte) $("etat-texte").textContent = texte;
+  }
+  function essayer(fn, defaut) { try { return fn(); } catch (e) { return defaut; } }
+  function secondes(ms) { return (ms == null || isNaN(ms)) ? "–" : (ms / 1000).toFixed(1).replace(".", ",") + " s"; }
+  function normaliser(s) {
+    return String(s || "").toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "")
+      .replace(/[^a-z]+/g, " ").trim().split(" ").filter(Boolean);
+  }
+  function mots(attendu, entendu) {
+    var att = normaliser(attendu), pool = normaliser(entendu), ok = 0;
+    att.forEach(function (m) { var k = pool.indexOf(m); if (k >= 0) { ok++; pool.splice(k, 1); } });
+    return { ok: ok, tot: att.length };
+  }
+  function moyenne(liste) {
+    var v = liste.filter(function (x) { return typeof x === "number" && !isNaN(x); });
+    return v.length ? v.reduce(function (a, b) { return a + b; }, 0) / v.length : null;
+  }
+  function navigateur() {
+    var ua = navigator.userAgent;
+    if (/SamsungBrowser/i.test(ua)) return "Samsung Internet";
+    if (/; wv\)|\bwv\b/i.test(ua)) return "vue intégrée (WebView)";
+    if (/FBAN|FBAV|Instagram|WhatsApp|GSA\//i.test(ua)) return "navigateur d'une application";
+    if (/Edg\//i.test(ua)) return "Edge";
+    if (/Firefox/i.test(ua)) return "Firefox";
+    if (/Chrome\//i.test(ua)) return "Chrome";
+    if (/Safari/i.test(ua)) return "Safari";
+    return "inconnu";
+  }
+
+  /* ---------- Diagnostic d'accueil ---------- */
+
+  var diagLignes = [];
+  function ligne(nom, val, classe) {
+    diagLignes.push({ nom: nom, val: val, classe: classe });
+    var li = document.createElement("li");
+    var a = document.createElement("span"); a.className = "nom"; a.textContent = nom;
+    var b = document.createElement("span"); b.className = "val " + classe; b.textContent = val;
+    li.appendChild(a); li.appendChild(b);
+    $("diag").appendChild(li);
+    return b;
+  }
+  function choisirVoix() {
+    if (!TTS) return;
+    var vs = essayer(function () { return window.speechSynthesis.getVoices() || []; }, []);
+    var fr = vs.filter(function (v) { return /^fr/i.test(v.lang); });
+    var pref = fr.filter(function (v) { return /fr[-_]FR/i.test(v.lang); })[0] || fr[0] || null;
+    etat.voix = pref;
+    return pref;
+  }
+  function diagnostic() {
+    ligne("Navigateur", navigateur(), navigateur() === "Chrome" || navigateur() === "Samsung Internet" ? "ok" : "att");
+    ligne("Écoute directe (reconnaissance vocale)", SR ? "disponible" : "indisponible", SR ? "ok" : "ko");
+    var direct = (window.top === window);
+    ligne("Page ouverte en plein écran", direct ? "oui" : "non (page encadrée)", direct ? "ok" : "att");
+    ligne("Connexion", navigator.onLine === false ? "hors ligne" : "en ligne", navigator.onLine === false ? "ko" : "ok");
+    var vm = ligne("Micro (autorisation)", "inconnue", "att");
+    essayer(function () {
+      navigator.permissions.query({ name: "microphone" }).then(function (p) {
+        var t = { granted: ["déjà accordée", "ok"], prompt: ["sera demandée", "att"], denied: ["refusée", "ko"] }[p.state] || [p.state, "att"];
+        vm.textContent = t[0]; vm.className = "val " + t[1];
+        diagLignes.forEach(function (l) { if (l.nom === "Micro (autorisation)") { l.val = t[0]; l.classe = t[1]; } });
+      }, function () {});
+    });
+    var vv = ligne("Voix de lecture en français", TTS ? "recherche…" : "indisponible", TTS ? "att" : "ko");
+    function majVoix() {
+      var v = choisirVoix();
+      if (!TTS) return;
+      vv.textContent = v ? v.name + " (" + v.lang + ")" : "aucune voix française trouvée";
+      vv.className = "val " + (v ? "ok" : "att");
+      diagLignes.forEach(function (l) { if (l.nom === "Voix de lecture en français") { l.val = vv.textContent; l.classe = vv.className.replace("val ", ""); } });
+    }
+    majVoix();
+    if (TTS) {
+      essayer(function () { window.speechSynthesis.addEventListener("voiceschanged", majVoix); });
+      setTimeout(majVoix, 600);
+    }
+    if (!SR) {
+      var a = $("alerte-accueil");
+      a.hidden = false;
+      a.textContent = "Cet appareil ou ce navigateur ne propose pas l'écoute directe. Essaie avec Chrome. Tu peux quand même envoyer ce diagnostic.";
+      $("demarrer").disabled = true;
+    }
+  }
+
+  /* ---------- Son : bip et voix ---------- */
+
+  function bip(suite) {
+    try {
+      var C = window.AudioContext || window.webkitAudioContext;
+      if (!C) { suite(); return; }
+      if (!etat.ctxAudio) etat.ctxAudio = new C();
+      var ctx = etat.ctxAudio;
+      if (ctx.state === "suspended") ctx.resume();
+      var o = ctx.createOscillator(), g = ctx.createGain();
+      o.frequency.value = 880; g.gain.value = 0.18;
+      o.connect(g); g.connect(ctx.destination);
+      o.start(); o.stop(ctx.currentTime + 0.14);
+      setTimeout(suite, 300);
+    } catch (e) { suite(); }
+  }
+
+  function parler(texte, auDebut, aLaFin) {
+    if (etat.arret) return;
+    if (!TTS) {
+      if (auDebut) auDebut();
+      setTimeout(function () { if (!etat.arret) aLaFin(); }, 1800);
+      return;
+    }
+    var fini = false, secours;
+    function fin() {
+      if (fini) return; fini = true; clearTimeout(secours);
+      setTimeout(function () { if (!etat.arret) aLaFin(); }, 350);
+    }
+    essayer(function () { window.speechSynthesis.cancel(); });
+    var u = new window.SpeechSynthesisUtterance(texte);
+    u.lang = "fr-FR"; u.rate = 0.95;
+    if (etat.voix) essayer(function () { u.voice = etat.voix; });
+    u.onstart = function () { if (auDebut) { var f = auDebut; auDebut = null; f(); } };
+    u.onend = fin; u.onerror = fin;
+    secours = setTimeout(fin, 2500 + texte.length * 90);   /* certaines voix Android n'envoient jamais « fin » */
+    essayer(function () { window.speechSynthesis.speak(u); }, null);
+  }
+
+  /* ---------- Déroulement ---------- */
+
+  function demarrer() {
+    etat.tours = QUESTIONS.map(function (q, i) {
+      return { i: i, q: q.q, attendu: q.attendu, entendu: "", confiance: null, mots: null, debutParole: null, delaiReco: null, silence: null, finParole: null, tentatives: 0, erreur: null };
+    });
+    etat.delaiIA = parseInt($("delai").value, 10) || 2000;
+    etat.arret = false; etat.fatale = null; etat.envoye = false; etat.demarreLe = new Date();
+    essayer(function () { if (navigator.wakeLock) navigator.wakeLock.request("screen").then(function (w) { etat.verrou = w; }, function () {}); });
+    essayer(function () {   /* débloque le son dans ce geste de l'utilisateur */
+      var C = window.AudioContext || window.webkitAudioContext;
+      if (C && !etat.ctxAudio) etat.ctxAudio = new C();
+      if (etat.ctxAudio && etat.ctxAudio.state === "suspended") etat.ctxAudio.resume();
+    });
+    $("alerte-echange").hidden = true;
+    ouvrir("echange");
+    setEtat("parle", "Je parle…");
+    $("question").textContent = "";
+    $("direct").textContent = "";
+    $("suivi").textContent = "";
+    parler(INTRO, null, function () { poser(0); });
+  }
+
+  function poser(i) {
+    if (etat.arret) return;
+    if (i >= QUESTIONS.length) { conclure(); return; }
+    $("suivi").textContent = "Question " + (i + 1) + " sur " + QUESTIONS.length;
+    $("question").textContent = QUESTIONS[i].q;
+    $("direct").textContent = "";
+    setEtat("parle", "Je parle…");
+    parler(QUESTIONS[i].q, null, function () { ecouterApresBip(i); });
+  }
+
+  function ecouterApresBip(i) {
+    if (etat.arret) return;
+    bip(function () { ecouter(i); });
+  }
+
+  function ecouter(i) {
+    if (etat.arret) return;
+    var tour = etat.tours[i];
+    tour.tentatives++;
+    var rec;
+    try { rec = new SR(); } catch (e) { fatale("impossible de créer l'écoute : " + e.message); return; }
+    rec.lang = "fr-FR"; rec.interimResults = true; rec.continuous = false; rec.maxAlternatives = 3;
+    var t0 = null, tDebut = null, tFinParole = null, tFinal = null, texte = "", conf = null, err = null, termine = false;
+    var garde = setTimeout(function () { essayer(function () { rec.abort(); }); }, 15000);
+
+    rec.onstart = function () { t0 = performance.now(); setEtat("ecoute", "À toi ! Parle maintenant"); };
+    rec.onspeechstart = function () { tDebut = performance.now(); };
+    rec.onspeechend = function () { tFinParole = performance.now(); setEtat("reflechit", "Je réfléchis…"); };
+    rec.onresult = function (e) {
+      var provisoire = "";
+      for (var k = e.resultIndex; k < e.results.length; k++) {
+        var r = e.results[k];
+        if (r.isFinal) { texte += r[0].transcript; conf = r[0].confidence; tFinal = performance.now(); }
+        else provisoire += r[0].transcript;
+      }
+      $("direct").textContent = (texte + " " + provisoire).trim();
+    };
+    rec.onerror = function (e) { err = (e && e.error) || "erreur"; };
+    rec.onend = function () {
+      clearTimeout(garde);
+      if (termine) return; termine = true;
+      if (etat.arret) return;
+      if (err && err !== "no-speech" && err !== "aborted") { fatale(err); return; }
+      if (!texte.trim()) {
+        if (tour.tentatives < 2) {
+          setEtat("parle", "Je répète…");
+          parler("Je n'ai rien entendu. Redis-le.", null, function () { ecouterApresBip(i); });
+        } else {
+          tour.erreur = "rien entendu";
+          poser(i + 1);
+        }
+        return;
+      }
+      tour.entendu = texte.trim();
+      tour.confiance = conf;
+      tour.mots = mots(tour.attendu, tour.entendu);
+      tour.debutParole = (tDebut && t0) ? tDebut - t0 : null;
+      tour.delaiReco = (tFinal && tFinParole) ? Math.max(0, tFinal - tFinParole) : null;
+      tour.finParole = tFinParole || tFinal || performance.now();
+      repondre(i);
+    };
+    etat.rec = rec;
+    try { rec.start(); } catch (e) { fatale(e.message); }
+  }
+
+  function repondre(i) {
+    if (etat.arret) return;
+    var tour = etat.tours[i];
+    setEtat("reflechit", "Je réfléchis…");
+    setTimeout(function () {
+      if (etat.arret) return;
+      setEtat("parle", "Je parle…");
+      parler(REPONSE_TUTEUR,
+        function () { tour.silence = performance.now() - tour.finParole; },
+        function () { poser(i + 1); });
+    }, etat.delaiIA);
+  }
+
+  function conclure() {
+    setEtat("parle", "C'est fini !");
+    $("question").textContent = "";
+    parler(FIN_TEXTE, null, function () { resultat(); });
+  }
+
+  function fatale(code) {
+    var textes = {
+      "not-allowed": "Le micro est refusé ou bloqué pour cette page. Autorise le micro, ou ouvre le lien dans Chrome.",
+      "service-not-allowed": "Le service de reconnaissance vocale est bloqué sur cet appareil ou dans cette page.",
+      "audio-capture": "Aucun micro détecté.",
+      "network": "Le service de reconnaissance vocale est injoignable (réseau).",
+      "language-not-supported": "Le français n'est pas pris en charge par la reconnaissance vocale de cet appareil."
+    };
+    etat.fatale = code + (textes[code] ? " : " + textes[code] : "");
+    etat.arret = true;
+    essayer(function () { window.speechSynthesis.cancel(); });
+    var a = $("alerte-echange"); a.hidden = false; a.textContent = textes[code] || ("Erreur d'écoute : " + code);
+    setTimeout(resultat, 1500);
+  }
+
+  function arreter() {
+    etat.arret = true;
+    essayer(function () { etat.rec && etat.rec.abort(); });
+    essayer(function () { window.speechSynthesis.cancel(); });
+    resultat();
+  }
+
+  /* ---------- Résultat ---------- */
+
+  function resultat() {
+    etat.arret = true;
+    essayer(function () { etat.verrou && etat.verrou.release(); });
+    var t = etat.tours.filter(function (x) { return x.entendu || x.erreur; });
+    var sil = moyenne(etat.tours.map(function (x) { return x.silence; }));
+    var conf = moyenne(etat.tours.map(function (x) { return x.confiance; }));
+    var okM = 0, totM = 0;
+    etat.tours.forEach(function (x) { if (x.mots) { okM += x.mots.ok; totM += x.mots.tot; } });
+    var repetes = etat.tours.filter(function (x) { return x.tentatives > 1; }).length;
+
+    var r = $("resume"); r.textContent = "";
+    function chiffre(v, l) {
+      var d = document.createElement("div"); d.className = "chiffre";
+      var a = document.createElement("div"); a.className = "v"; a.textContent = v;
+      var b = document.createElement("div"); b.className = "l"; b.textContent = l;
+      d.appendChild(a); d.appendChild(b); r.appendChild(d);
+    }
+    chiffre(secondes(sil), "silence moyen ressenti (fin de ta phrase → début de la voix)");
+    chiffre(totM ? Math.round(100 * okM / totM) + " %" : "–", "mots attendus bien compris (" + okM + "/" + totM + ")");
+    chiffre(conf == null ? "–" : Math.round(conf * 100) + " %", "confiance annoncée par la reconnaissance");
+    chiffre(t.length + "/" + QUESTIONS.length, "questions où une réponse a été entendue");
+
+    var tab = $("tableau"); tab.textContent = "";
+    var tete = document.createElement("tr");
+    ["#", "Entendu", "Mots", "Confiance", "Début de parole", "Texte après fin", "Silence ressenti"].forEach(function (h, k) {
+      var c = document.createElement("th"); c.textContent = h; if (k >= 2) c.className = "num"; tete.appendChild(c);
+    });
+    tab.appendChild(tete);
+    etat.tours.forEach(function (x) {
+      var tr = document.createElement("tr");
+      var cells = [String(x.i + 1),
+        x.entendu ? "« " + x.entendu + " »" : (x.erreur || (x.tentatives ? "–" : "non posée")),
+        x.mots ? x.mots.ok + "/" + x.mots.tot : "–",
+        x.confiance == null ? "–" : Math.round(x.confiance * 100) + " %",
+        secondes(x.debutParole), secondes(x.delaiReco), secondes(x.silence)];
+      cells.forEach(function (v, k) { var c = document.createElement("td"); c.textContent = v; if (k >= 2) c.className = "num"; tr.appendChild(c); });
+      tab.appendChild(tr);
+    });
+    var af = $("alerte-fin");
+    if (etat.fatale) { af.hidden = false; af.textContent = "Le test s'est arrêté : " + etat.fatale; } else { af.hidden = true; }
+    ouvrir("fin");
+  }
+
+  function rapport() {
+    var l = [];
+    function coche(n) { var e = document.querySelector('input[name="' + n + '"]:checked'); return e ? e.value : "non précisé"; }
+    l.push("Sonde vocale — " + (etat.demarreLe ? etat.demarreLe.toISOString() : new Date().toISOString()));
+    l.push("");
+    l.push("Appareil");
+    diagLignes.forEach(function (d) { l.push("  " + d.nom + " : " + d.val); });
+    l.push("  Agent : " + navigator.userAgent);
+    l.push("  Écran : " + window.innerWidth + "x" + window.innerHeight);
+    l.push("  Temps de réflexion IA simulé : " + (etat.delaiIA / 1000) + " s");
+    if (etat.fatale) { l.push(""); l.push("Arrêt : " + etat.fatale); }
+    l.push("");
+    l.push("Tours (début de parole = bip → début de la voix de l'enfant ; texte après fin = fin de parole → texte final ; silence ressenti = fin de parole → début de la réponse du tuteur)");
+    etat.tours.forEach(function (x) {
+      l.push("  " + (x.i + 1) + ". " + x.q);
+      if (!x.tentatives) { l.push("     non posée"); return; }
+      l.push("     entendu : " + (x.entendu ? "« " + x.entendu + " »" : (x.erreur || "–")) +
+        " · mots " + (x.mots ? x.mots.ok + "/" + x.mots.tot : "–") +
+        " · confiance " + (x.confiance == null ? "–" : Math.round(x.confiance * 100) + " %") +
+        " · tentatives " + x.tentatives);
+      l.push("     début de parole " + secondes(x.debutParole) + " · texte après fin " + secondes(x.delaiReco) + " · silence ressenti " + secondes(x.silence));
+    });
+    var sil = moyenne(etat.tours.map(function (x) { return x.silence; }));
+    l.push("");
+    l.push("Silence moyen ressenti : " + secondes(sil));
+    l.push("");
+    l.push("Avis du parent");
+    l.push("  Échange naturel : " + coche("naturel"));
+    l.push("  Erreurs ou répétitions : " + coche("erreurs"));
+    return l.join("\n");
+  }
+
+  function copier() {
+    var texte = rapport();
+    var ta = $("texte-rapport"); ta.value = texte;
+    function secours() {
+      ta.hidden = false; ta.focus(); ta.select();
+      var ok = false; try { ok = document.execCommand("copy"); } catch (e) {}
+      $("copier").textContent = ok ? "Copié" : "Copie à la main ci-dessous";
+    }
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(texte).then(function () { $("copier").textContent = "Copié"; }, secours);
+    } else { secours(); }
+  }
+
+  function envoyer() {
+    if (etat.envoye) return;
+    var z = $("envoi");
+    var f = new FormData();
+    f.append("access_key", CLE_ENVOI);
+    f.append("subject", "[TEST] sonde vocale");
+    f.append("from_name", "Sonde vocale");
+    f.append("message", rapport());
+    z.className = "envoi"; z.textContent = "Envoi du résultat…";
+    $("envoyer").disabled = true;
+    fetch("https://api.web3forms.com/submit", { method: "POST", body: f })
+      .then(function (r) { return r.json(); })
+      .then(function (d) {
+        if (d && d.success) { etat.envoye = true; z.className = "envoi ok"; z.textContent = "Résultat envoyé."; }
+        else { $("envoyer").disabled = false; z.className = "envoi ko"; z.textContent = "Envoi refusé. Utilise « Copier le résultat »."; }
+      })
+      .catch(function () {
+        $("envoyer").disabled = false;
+        z.className = "envoi ko"; z.textContent = "Envoi impossible depuis cette ouverture. Utilise « Copier le résultat ».";
+      });
+  }
+
+  /* ---------- Câblage ---------- */
+
+  $("demarrer").addEventListener("click", demarrer);
+  $("arreter").addEventListener("click", arreter);
+  $("diag-seul").addEventListener("click", function () { etat.tours = []; etat.delaiIA = parseInt($("delai").value, 10) || 2000; resultat(); });
+  $("envoyer").addEventListener("click", envoyer);
+  $("copier").addEventListener("click", copier);
+  $("refaire").addEventListener("click", function () { $("envoyer").disabled = false; $("envoi").textContent = ""; $("copier").textContent = "Copier le résultat"; $("texte-rapport").hidden = true; ouvrir("accueil"); });
+
+  diagnostic();
+  ouvrir("accueil");
+})();
+</script>
+</body>
+</html>
