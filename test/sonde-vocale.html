@@ -135,7 +135,7 @@ textarea { width: 100%; min-height: 9em; font: .8rem/1.4 ui-monospace, Menlo, Co
   <!-- ACCUEIL -->
   <section id="ecran-accueil" class="cadre-interne" style="display:flex;flex-direction:column;gap:16px">
     <header>
-      <p class="sur-titre">Test pour papa · français · version 2</p>
+      <p class="sur-titre">Test pour papa · français · version 3</p>
       <h1>Sonde vocale</h1>
     </header>
     <p>La page pose quatre questions à voix haute, puis écoute la réponse toute seule. On peut faire des pauses : la page attend un peu de silence avant de conclure, ou on appuie sur « J'ai fini de répondre ». Un faux tuteur répète ce qu'il a compris, après un temps de réflexion réglable. On mesure ce que la tablette comprend et le silence entre les deux.</p>
@@ -293,6 +293,20 @@ textarea { width: 100%; min-height: 9em; font: .8rem/1.4 ui-monospace, Menlo, Co
     });
     return { ok: ok, tot: termes.length };
   }
+  function bas(s) { return String(s || "").toLowerCase().replace(/\s+/g, " ").trim(); }
+  function fusionner(liste) {
+    /* Certains moteurs renvoient la même phrase en versions de plus en plus longues : on ne garde que la plus complète. */
+    var out = [];
+    liste.forEach(function (t) {
+      t = String(t || "").trim();
+      if (!t) return;
+      var d = out.length ? out[out.length - 1] : null;
+      if (d !== null && bas(t).indexOf(bas(d)) === 0) out[out.length - 1] = t;
+      else if (d !== null && bas(d).indexOf(bas(t)) === 0) { /* version plus courte d'une phrase déjà notée */ }
+      else out.push(t);
+    });
+    return out.join(" ").replace(/\s+/g, " ").trim();
+  }
   function moyenne(liste) {
     var v = liste.filter(function (x) { return typeof x === "number" && !isNaN(x); });
     return v.length ? v.reduce(function (a, b) { return a + b; }, 0) / v.length : null;
@@ -424,7 +438,23 @@ textarea { width: 100%; min-height: 9em; font: .8rem/1.4 ui-monospace, Menlo, Co
     $("question").textContent = "";
     $("direct").textContent = "";
     $("suivi").textContent = "";
-    parler(INTRO, null, function () { poser(0); });
+    demanderMicro(function () { parler(INTRO, null, function () { poser(0); }); });
+  }
+
+  function demanderMicro(suite) {
+    /* Évite que la fenêtre d'autorisation s'ouvre pendant la première question et fasse perdre la réponse. */
+    var md = navigator.mediaDevices;
+    if (!md || !md.getUserMedia) { suite(); return; }
+    setEtat("parle", "J'attends l'autorisation du micro…");
+    md.getUserMedia({ audio: true }).then(function (flux) {
+      essayer(function () { flux.getTracks().forEach(function (t) { t.stop(); }); });
+      if (!etat.arret) suite();
+    }, function (e) {
+      var nom = (e && e.name) || "";
+      if (nom === "NotAllowedError" || nom === "SecurityError") fatale("not-allowed");
+      else if (nom === "NotFoundError") fatale("audio-capture");
+      else suite();
+    });
   }
 
   function poser(i) {
@@ -471,7 +501,7 @@ textarea { width: 100%; min-height: 9em; font: .8rem/1.4 ui-monospace, Menlo, Co
       if (!segments.length && prov.trim()) segments.push(prov.trim());
       if (etat.arret) return;
       if (err && err !== "no-speech" && err !== "aborted") { fatale(err); return; }
-      var texte = segments.join(" ").replace(/\s+/g, " ").trim();
+      var texte = fusionner(segments);
       if (!texte) {
         if (tour.tentatives < 2) {
           setEtat("parle", "Je répète…");
@@ -504,15 +534,15 @@ textarea { width: 100%; min-height: 9em; font: .8rem/1.4 ui-monospace, Menlo, Co
       rec.onspeechend = function () { if (rec !== etat.rec) return; tParoleFin = performance.now(); };
       rec.onresult = function (e) {
         if (rec !== etat.rec) return;
-        var fin = [], p = [];
+        var tous = [];
         confSession = [];
         for (var k = 0; k < e.results.length; k++) {
           var r = e.results[k];
-          if (r.isFinal) { fin.push(String(r[0].transcript).trim()); confSession.push(r[0].confidence); }
-          else p.push(String(r[0].transcript).trim());
+          tous.push(r[0].transcript);
+          if (r.isFinal) confSession.push(r[0].confidence);
         }
-        courant = fin.join(" "); prov = p.join(" ");
-        $("direct").textContent = segments.concat([courant, prov]).join(" ").replace(/\s+/g, " ").trim();
+        courant = fusionner(tous); prov = "";
+        $("direct").textContent = fusionner(segments.concat([courant]));
         if (!cause && (courant || prov)) {
           tDerniere = performance.now();
           clearTimeout(minuteur);
@@ -630,12 +660,13 @@ textarea { width: 100%; min-height: 9em; font: .8rem/1.4 ui-monospace, Menlo, Co
   function rapport() {
     var l = [];
     function coche(n) { var e = document.querySelector('input[name="' + n + '"]:checked'); return e ? e.value : "non précisé"; }
-    l.push("Sonde vocale v2 — " + (etat.demarreLe ? etat.demarreLe.toISOString() : new Date().toISOString()));
+    l.push("Sonde vocale v3 — " + (etat.demarreLe ? etat.demarreLe.toISOString() : new Date().toISOString()));
     l.push("");
     l.push("Appareil");
     diagLignes.forEach(function (d) { l.push("  " + d.nom + " : " + d.val); });
     l.push("  Agent : " + navigator.userAgent);
     l.push("  Écran : " + window.innerWidth + "x" + window.innerHeight);
+    l.push("  Écran tactile : " + (navigator.maxTouchPoints > 0 ? "oui (" + navigator.maxTouchPoints + " points)" : "non"));
     l.push("  Temps de réflexion IA simulé : " + (etat.delaiIA / 1000) + " s");
     l.push("  Silence attendu avant de conclure : " + (etat.attente / 1000) + " s");
     if (etat.fatale) { l.push(""); l.push("Arrêt : " + etat.fatale); }
@@ -679,7 +710,7 @@ textarea { width: 100%; min-height: 9em; font: .8rem/1.4 ui-monospace, Menlo, Co
     var z = $("envoi");
     var f = new FormData();
     f.append("access_key", CLE_ENVOI);
-    f.append("subject", "[TEST] sonde vocale v2");
+    f.append("subject", "[TEST] sonde vocale v3");
     f.append("from_name", "Sonde vocale");
     f.append("message", rapport());
     z.className = "envoi"; z.textContent = "Envoi du résultat…";
