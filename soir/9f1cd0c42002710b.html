@@ -1,0 +1,177 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<meta name="referrer" content="no-referrer">
+<title>Ce soir</title>
+<style>
+:root { --encre: #1c1917; --encre-2: #57534e; --trait: #e7e5e4; --fond: #fafaf9; --carte: #fff;
+  --accent: #4338ca; --accent-bg: #eef2ff; --ok: #15803d; --ok-bg: #f0fdf4; --ko: #b45309; --ko-bg: #fffbeb; }
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--fond); color: var(--encre); font: 17px/1.5 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
+.page { max-width: 34rem; margin: 0 auto; padding: 18px 16px 40px; }
+h1 { font-size: 1.35rem; margin: 0 0 4px; }
+.sous { color: var(--encre-2); margin: 0 0 18px; font-size: .95rem; }
+h2 { font-size: 1.05rem; margin: 24px 0 10px; color: var(--accent); }
+.carte { background: var(--carte); border: 1px solid var(--trait); border-radius: 14px; padding: 14px; margin: 0 0 12px; }
+.carte.su { border-color: var(--ok); background: var(--ok-bg); }
+.carte.pas-su { border-color: var(--ko); background: var(--ko-bg); }
+.mat { display: inline-block; font-size: .75rem; font-weight: 700; letter-spacing: .03em; text-transform: uppercase; color: var(--accent); background: var(--accent-bg); border-radius: 999px; padding: 1px 9px; margin-bottom: 6px; }
+.q { font-weight: 600; margin: 0 0 10px; }
+.r { margin: 0 0 12px; padding: 10px 12px; border-radius: 10px; background: var(--accent-bg); }
+.r[hidden] { display: none; }
+.lignes { display: flex; gap: 8px; flex-wrap: wrap; }
+button { font: inherit; border-radius: 999px; padding: 10px 16px; min-height: 44px; border: 1px solid var(--trait); background: var(--carte); color: var(--encre); cursor: pointer; }
+button.voir { border-color: var(--accent); color: var(--accent); font-weight: 600; }
+button.oui[aria-pressed="true"] { background: var(--ok); border-color: var(--ok); color: #fff; font-weight: 700; }
+button.non[aria-pressed="true"] { background: var(--ko); border-color: var(--ko); color: #fff; font-weight: 700; }
+button.envoyer { width: 100%; background: var(--accent); border-color: var(--accent); color: #fff; font-weight: 700; font-size: 1.05rem; }
+button:disabled { opacity: .5; cursor: not-allowed; }
+ul.feuille { margin: 0; padding-left: 1.2rem; }
+ul.feuille li { margin: 0 0 8px; }
+.etat { margin: 12px 0 0; padding: 12px; border-radius: 10px; background: var(--trait); font-weight: 600; }
+.etat.ok { background: var(--ok-bg); color: var(--ok); }
+.etat.ko { background: #fee2e2; color: #7f1d1d; }
+.aide { color: var(--encre-2); font-size: .9rem; }
+</style>
+</head>
+<body>
+<div class="page" id="page">
+  <p class="aide" id="attente">Ouverture&#8230;</p>
+</div>
+<script>window.SOIR_CHIFFRE = "gxz0JVUGU25qU7AmqGO3Mb2oGf5IaD5Eien+4/V2Ftg7PjS8dHpGDMLwxTTRNcyaBMle9lPUQOpuWZgp482BjyISWu4MKsmq6UKH5mCEqT05hWz4ZqoGq71Wtf2FviWr8LkgCnJRbAVl9/Bh0xJW7OHWIKDriUKqNdlgXyS/+SBr7V5/7RX0sLgGmbs+Jfk29Xd/4kx5j3FxvBOV4YphqDtF7OnoPORzV+WGf5/6MVEJIf/v/Eg+hdbmW4xmB9BqaztfsHrZWLFFt+oC3BRmo7BH97ZMuMb2aPVTLZuHiWZcYSEyJagES14wOo3CXUBK5leoPwHE+lTl0PrjhQvuy/EGiyIjFxbnzrEUmo/O70Z3xGWnW1bzaRbrUwOeyT3k6RNVqg0ZEiXLBbQdgJoiojp7wYaoUWHQx5PolQqMZBjFAeNQ7LvFB14/zlawZvEyK0Qs/0RKKzI6EYxJWjsPVDY+4S3H7xyKPGxpWpn6P4Sd3Sy1bHWYYMuKew2X/CX/IaMuLufg+qymUPb37eZK+NcA4tbSBqlve18DQRo9vDMUt7cIjF7URkOuPabEluViZgtUTuwHT1dC6plvgegkQWH+qs39upsKTsnrQ+MMq8DnfnudgpLCaxuKn1tk09vIR3XO1QgGQtsNX5ijvmlIf+Vsw4ZNbz/DRu6UhaDeG4hHW/y+A8G9WElfjTtb6/7tDR8JlZbr63QBbJJNsQTqTxEY3mNI68uK45xdmiV9N+ZkgDHk5up3QDb4d19rm9B+ee1zUcltBWCqPRNBFbkyjpudXNqcfsnjwb5Y12oV0Pc0gIRDowdpoBS6XCX13Ajbi9lNhjTKf7GD8y1CMUEejgVAhWrP8HeniV9dW9rv3GVSvNMXu4TchdEOFSDkWPpOOnubb2dsAFlFx3He9tp7uVyHffu4CdruE9bPMswqvqywIxzgtX9xLql+k3/QE19TfOpN9YrJekoCLhrXmJGrjxB7ybBPfJP0OrvZcoT8rOmKF6/QIh4MXa8FdDgn1GMrtiSUkYykANsTzmkf/3NY8QLixMPCj2vwOUQofEJK8cWpJ1mtIYfNioACK2cujHGffeXV/EtT/bi6xa1Ek4tCo0WxgvwhGYJqfFZMiogtUC+WrLn2l7hFdLyatCrMm9mU7v2KrmMPWRGylVV6v2CQH/SqSZezxKr7ru4nXkXoRtOsUDDSbd18TNfsyAgFN6rCO7LCU9y4rvYq3gKOOOb1PanwN4yWCeKzWVKYHkMvAvsoKifVRhooGQ8trIhiC/Uq/R1QLgq/66P/eLpH5DyZZ0lOr4ILQ0n3rdaAIgOCiC78+t+Ri7oYuUqwHuFIUG04X0OUn80hIlsHhsnwdxaCedcJXESd5+P00KYZlxoAf52joJcHxaxJarGaYaDxLHIkeiK+CuBPg8AdrAjHucg0OiJDSIscuVSoy6Q0mG6/eLx5LHVHvUSYOvS5LnEcMrqPth7B1x5h3HqKwdYl0ZbRRTTEIKzml/adFyHl7H+8JKTg/I2d/WIKC21OszqzmUhe3CDjKu2CPRtvPRHwLu8hc8aeFYpZ5LkuE1qRx/B55h03HGDfgOADJuipIWjrd71eNJHXkv/cVp+7qteHY0ap+vBHqpSOzNE/WhL6MVlzYdurA02EwzZFonULxQ3c/+UYg5nFDH5OXopUE6RmYaKfnry1DfkMlCIsAF5k33w6vMxTGe8JlWtSWFVRvK1cL3wTMgDQz+4ZMGsif5FbwY6UeMktla+6Yyp7nHyFcT6cDb6X60GOIMXWez7prpavwp2U0X+7wid0+1zuFKO1FqWNa/174NevPMjglDqFhjfJ6ZtDdVM0pzipqC9P";</script>
+<script>
+(function () {
+  "use strict";
+  var CLE_ENVOI = "259de897-beba-4c71-95c8-dcde527b79c1";
+  var page = document.getElementById("page");
+  function el(tag, cls, txt) { var e = document.createElement(tag); if (cls) e.className = cls; if (txt != null) e.textContent = txt; return e; }
+  function html(tag, cls, h) { var e = el(tag, cls); e.innerHTML = h; return e; }
+  function texte(h) { var d = document.createElement("div"); d.innerHTML = h; return d.textContent.replace(/\s+/g, " ").trim(); }
+  function octets(b64) {
+    b64 = b64.replace(/-/g, "+").replace(/_/g, "/");
+    while (b64.length % 4) b64 += "=";
+    var s = atob(b64), t = new Uint8Array(s.length);
+    for (var i = 0; i < s.length; i++) t[i] = s.charCodeAt(i);
+    return t;
+  }
+  function echec() {
+    page.innerHTML = "";
+    page.appendChild(el("h1", null, "Ce soir"));
+    page.appendChild(el("p", "aide", "Cette page s'ouvre depuis le tableau de bord, avec son lien complet."));
+  }
+  var m = /[#&]k=([A-Za-z0-9_-]+)/.exec(location.hash);
+  if (!m || !window.crypto || !crypto.subtle) { echec(); return; }
+  var blob = octets(window.SOIR_CHIFFRE);
+  crypto.subtle.importKey("raw", octets(m[1]), { name: "AES-GCM" }, false, ["decrypt"])
+    .then(function (k) { return crypto.subtle.decrypt({ name: "AES-GCM", iv: blob.slice(0, 12) }, k, blob.slice(12)); })
+    .then(function (buf) { afficher(JSON.parse(new TextDecoder().decode(buf))); })
+    .catch(echec);
+
+  function afficher(S) {
+    var CLE = "rev-soir:" + S.identifiant;
+    var st = { rep: {}, envoye: null };
+    try { var lu = JSON.parse(localStorage.getItem(CLE) || "null"); if (lu && lu.rep) st = lu; } catch (e) {}
+    function garder() { try { localStorage.setItem(CLE, JSON.stringify(st)); } catch (e) {} }
+    var items = [];
+    page.innerHTML = "";
+    document.title = "Ce soir \u2014 " + S.enfant;
+    page.appendChild(el("h1", null, "Ce soir avec " + S.enfant));
+    page.appendChild(el("p", "sous", S.titre + " \u00b7 5 minutes, sans cahier ni \u00e9cran pour lui. Pose la question, laisse-le chercher, puis montre la r\u00e9ponse."));
+
+    function bloc(cle, mat, q, r, labels) {
+      var c = el("div", "carte");
+      if (mat) c.appendChild(el("span", "mat", mat));
+      c.appendChild(html("p", "q", q));
+      var rep = html("div", "r", r); rep.hidden = true;
+      var voir = el("button", "voir", labels[0]); voir.type = "button";
+      var oui = el("button", "oui", labels[1]); oui.type = "button";
+      var non = el("button", "non", labels[2]); non.type = "button";
+      var ligne = el("div", "lignes"); ligne.appendChild(oui); ligne.appendChild(non); ligne.hidden = true;
+      function peindre() {
+        var v = st.rep[cle];
+        oui.setAttribute("aria-pressed", v === true ? "true" : "false");
+        non.setAttribute("aria-pressed", v === false ? "true" : "false");
+        c.className = "carte" + (v === true ? " su" : (v === false ? " pas-su" : ""));
+        if (v !== undefined) { rep.hidden = false; ligne.hidden = false; voir.hidden = true; }
+      }
+      voir.addEventListener("click", function () { rep.hidden = false; ligne.hidden = false; voir.hidden = true; });
+      oui.addEventListener("click", function () { st.rep[cle] = true; garder(); peindre(); maj(); });
+      non.addEventListener("click", function () { st.rep[cle] = false; garder(); peindre(); maj(); });
+      c.appendChild(rep); c.appendChild(voir); c.appendChild(ligne);
+      peindre();
+      items.push(cle);
+      return c;
+    }
+
+    page.appendChild(el("h2", null, "Les 3 questions"));
+    S.questions.forEach(function (x, k) { page.appendChild(bloc("q" + k, x.matiere, x.q, x.r, ["Voir la r\u00e9ponse", "Su", "Pas su"])); });
+    page.appendChild(el("h2", null, "Comme en classe (sur sa feuille)"));
+    S.classe.forEach(function (x, k) { page.appendChild(bloc("c" + k, x.matiere, x.enonce, x.corrige, ["Voir le corrig\u00e9", "Juste", "\u00c0 reprendre"])); });
+    if (S.feuille && S.feuille.length) {
+      page.appendChild(el("h2", null, "\u00c0 regarder sur sa feuille"));
+      var ul = el("ul", "feuille");
+      S.feuille.forEach(function (f) { ul.appendChild(html("li", null, f)); });
+      page.appendChild(ul);
+    }
+    var bouton = el("button", "envoyer", "Envoyer le r\u00e9sultat"); bouton.type = "button";
+    var etat = el("p", "etat"); etat.hidden = true;
+    page.appendChild(el("h2", null, "Fini"));
+    page.appendChild(bouton); page.appendChild(etat);
+
+    function compte(pref) {
+      var n = 0, ok = 0;
+      items.forEach(function (c) { if (c.charAt(0) === pref) { n++; if (st.rep[c] === true) ok++; } });
+      return [ok, n];
+    }
+    function maj() {
+      var fini = items.every(function (c) { return st.rep[c] !== undefined; });
+      bouton.disabled = !fini || !!st.envoye;
+      if (st.envoye) { bouton.textContent = "R\u00e9sultat envoy\u00e9"; etat.hidden = false; etat.className = "etat ok"; etat.textContent = "Envoy\u00e9 le " + st.envoye + ". Merci !"; }
+      else if (!fini) bouton.textContent = "Envoyer le r\u00e9sultat (r\u00e9ponds \u00e0 tout)";
+      else bouton.textContent = "Envoyer le r\u00e9sultat";
+    }
+    function bilan() {
+      var q = compte("q"), c = compte("c"), l = [];
+      l.push("Soir : " + S.identifiant);
+      l.push("Jour : " + S.titre);
+      l.push("Questions : " + q[0] + "/" + q[1]);
+      S.questions.forEach(function (x, k) { l.push("  Q" + (k + 1) + ". " + texte(x.q) + (st.rep["q" + k] ? " [su]" : " [pas su]")); });
+      l.push("Comme en classe : " + c[0] + "/" + c[1]);
+      S.classe.forEach(function (x, k) { l.push("  C" + (k + 1) + ". " + texte(x.enonce) + (st.rep["c" + k] ? " [juste]" : " [\u00e0 reprendre]")); });
+      var ps = S.questions.filter(function (x, k) { return !st.rep["q" + k]; }).map(function (x) { return texte(x.q); });
+      var ar = S.classe.filter(function (x, k) { return !st.rep["c" + k]; }).map(function (x) { return texte(x.enonce); });
+      l.push("Pas su : " + (ps.length ? ps.join(" ; ") : "rien"));
+      l.push("\u00c0 reprendre : " + (ar.length ? ar.join(" ; ") : "rien"));
+      l.push("");
+      l.push("pilote V3 \u00b7 page du soir (27 octobre)");
+      return { sujet: "[SOIR] " + S.identifiant + " \u2014 " + q[0] + "/" + q[1] + " \u00b7 classe " + c[0] + "/" + c[1], texte: l.join("\n") };
+    }
+    bouton.addEventListener("click", function () {
+      if (bouton.disabled) return;
+      var b = bilan(), f = new FormData();
+      f.append("access_key", CLE_ENVOI); f.append("subject", b.sujet);
+      f.append("from_name", "Page du soir"); f.append("message", b.texte);
+      bouton.disabled = true; bouton.textContent = "Envoi\u2026";
+      fetch("https://api.web3forms.com/submit", { method: "POST", body: f })
+        .then(function (r) { return r.json(); })
+        .then(function (d) {
+          if (!d || !d.success) throw new Error("refus\u00e9");
+          var t = new Date();
+          st.envoye = String(t.getDate()).padStart(2, "0") + "/" + String(t.getMonth() + 1).padStart(2, "0") + " \u00e0 "
+            + String(t.getHours()).padStart(2, "0") + ":" + String(t.getMinutes()).padStart(2, "0");
+          garder(); maj();
+        })
+        .catch(function () {
+          bouton.disabled = false; bouton.textContent = "R\u00e9essayer l'envoi";
+          etat.hidden = false; etat.className = "etat ko"; etat.textContent = "Envoi impossible. V\u00e9rifie la connexion, puis r\u00e9essaie.";
+        });
+    });
+    maj();
+  }
+})();
+</script>
+</body>
+</html>
