@@ -1,0 +1,150 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<meta name="referrer" content="no-referrer">
+<title>Envoyer &#224; ChatGPT</title>
+<style>
+:root { --encre: #1c1917; --encre-2: #57534e; --trait: #e7e5e4; --fond: #fafaf9; --carte: #fff; --accent: #4338ca; --accent-bg: #eef2ff; --ok: #15803d; --ok-bg: #f0fdf4; }
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--fond); color: var(--encre); font: 17px/1.5 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
+.page { max-width: 34rem; margin: 0 auto; padding: 18px 16px 40px; }
+h1 { font-size: 1.35rem; margin: 0 0 2px; }
+.sous { color: var(--encre-2); margin: 0 0 14px; }
+.modes { display: flex; gap: 6px; margin: 0 0 6px; }
+.modes button { flex: 1 1 0; width: auto; margin: 0; background: var(--carte); color: var(--accent); border: 1px solid var(--accent); font-weight: 600; padding: 10px 8px; }
+.modes button[aria-pressed="true"] { background: var(--accent); color: #fff; }
+.quoi { color: var(--encre-2); font-size: .9rem; margin: 0 0 10px; min-height: 1.4em; }
+textarea { width: 100%; min-height: 45vh; font: inherit; font-size: .92rem; line-height: 1.45; border: 1px solid var(--trait); border-radius: 10px; padding: 10px; background: #fff; color: var(--encre); }
+button, a.bouton { display: flex; align-items: center; justify-content: center; width: 100%; font: inherit; font-weight: 700; border-radius: 999px; padding: 12px 16px; min-height: 48px; border: 1px solid var(--accent); background: var(--accent); color: #fff; cursor: pointer; margin: 10px 0 0; text-decoration: none; text-align: center; }
+button.second { background: var(--carte); color: var(--accent); font-weight: 600; }
+.etat { margin: 10px 0 0; padding: 10px 12px; border-radius: 10px; background: var(--ok-bg); color: var(--ok); font-weight: 600; }
+.carte { background: var(--carte); border: 1px solid var(--trait); border-radius: 14px; padding: 12px 14px; margin: 14px 0 0; }
+.carte p { margin: 0 0 6px; }
+.carte ol { margin: 0; padding-left: 1.3em; }
+.carte li { margin: 0 0 6px; }
+.chemin { font-weight: 600; overflow-wrap: anywhere; }
+.aide { color: var(--encre-2); font-size: .9rem; }
+.carte a { color: var(--accent); }
+</style>
+</head>
+<body>
+<div class="page">
+  <h1>Envoyer &#224; ChatGPT</h1>
+  <div id="contenu"><p class="aide">Cette page s'ouvre depuis le tableau de bord, bouton &#171; ChatGPT &#187; d'une fiche.</p></div>
+</div>
+<script>
+(function () {
+  "use strict";
+  // Tout arrive apr\u00e8s le # (rien n'est envoy\u00e9 au serveur) : titre, deux prompts, lien, nom et dossier du scan.
+  var q = new URLSearchParams(location.hash.slice(1));
+  var D = { t: q.get("t") || "", x: q.get("x") || "", q: q.get("q") || "", s: q.get("s") || "", n: q.get("n") || "", d: q.get("d") || "" };
+  if (!D.x && !D.q) return;
+  var box = document.getElementById("contenu");
+  function el(tag, cls, txt) { var e = document.createElement(tag); if (cls) e.className = cls; if (txt != null) e.textContent = txt; return e; }
+
+  var MODES = [
+    { id: "x", nom: "Page d'exercices", quoi: "ChatGPT cr\u00e9e une page d'exercices interactive, \u00e0 faire \u00e0 l'\u00e9cran." },
+    { id: "q", nom: "S\u00e9ance de questions", quoi: "ChatGPT pose les questions une \u00e0 une et corrige. L'enfant peut r\u00e9pondre \u00e0 l'oral avec le micro." }
+  ].filter(function (m) { return D[m.id]; });
+  // Les modifications sont gard\u00e9es pour chaque mode tant que la page reste ouverte.
+  var texte = { x: D.x, q: D.q };
+  var mode = null;
+
+  box.innerHTML = "";
+  if (D.t) box.appendChild(el("p", "sous", D.t));
+  var barre = el("div", "modes"); barre.setAttribute("role", "group"); barre.setAttribute("aria-label", "Ce que ChatGPT doit faire");
+  var quoi = el("p", "quoi");
+  var zone = el("textarea"); zone.setAttribute("aria-label", "Prompt pour ChatGPT (modifiable)"); zone.spellcheck = false;
+  var boutons = {};
+  MODES.forEach(function (m) {
+    var b = el("button", null, m.nom); b.type = "button";
+    b.addEventListener("click", function () { choisir(m.id); });
+    boutons[m.id] = b; barre.appendChild(b);
+  });
+  function choisir(id) {
+    if (mode) texte[mode] = zone.value;
+    mode = id;
+    MODES.forEach(function (m) { boutons[m.id].setAttribute("aria-pressed", String(m.id === id)); if (m.id === id) quoi.textContent = m.quoi; });
+    zone.value = texte[id];
+    effacerEtat();
+  }
+  if (MODES.length > 1) box.appendChild(barre);
+  box.appendChild(quoi);
+  box.appendChild(zone);
+
+  var ouvrir = el("a", "bouton", "Copier et ouvrir ChatGPT");
+  ouvrir.href = "https://chatgpt.com/"; ouvrir.target = "_blank"; ouvrir.rel = "noopener noreferrer";
+  var copier = el("button", "second", "Copier seulement"); copier.type = "button";
+  var etat = el("p", "etat"); etat.hidden = true;
+  box.appendChild(ouvrir); box.appendChild(copier); box.appendChild(etat);
+
+  var carte = el("div", "carte");
+  carte.appendChild(el("p", null, "Dans ChatGPT :"));
+  var ol = el("ol");
+  var li1 = el("li");
+  li1.appendChild(document.createTextNode("\uff0b \u2192 Fichiers : joins le scan"));
+  if (D.n) {
+    li1.appendChild(document.createTextNode(" "));
+    li1.appendChild(el("span", "chemin", (D.d ? D.d + " \u203a " : "") + D.n));
+  }
+  li1.appendChild(document.createTextNode("."));
+  ol.appendChild(li1);
+  ol.appendChild(el("li", null, "Colle le prompt (appui long, puis Coller), puis envoie."));
+  carte.appendChild(ol);
+  if (D.s && /^https:\/\/drive\.google\.com\//.test(D.s)) {
+    var p = el("p", "aide"); var a = el("a", null, "Voir le scan dans Drive");
+    a.href = D.s; a.target = "_blank"; a.rel = "noopener noreferrer";
+    p.appendChild(a); carte.appendChild(p);
+  }
+  box.appendChild(carte);
+
+  // Texte envoy\u00e9 : la ligne \u00ab Pr\u00e9cision : \u00bb rest\u00e9e vide est retir\u00e9e.
+  function aEnvoyer() { return zone.value.replace(/\n+Pr\u00e9cision :\s*$/, "").trim(); }
+  function effacerEtat() { etat.hidden = true; dejaCopie = ""; ouvrir.textContent = "Copier et ouvrir ChatGPT"; }
+  zone.addEventListener("input", effacerEtat);
+  // Copie synchrone (dans le geste de l'utilisateur, avant l'ouverture de ChatGPT), sans ouvrir le clavier.
+  function copierSync(t) {
+    var tmp = document.createElement("textarea");
+    tmp.value = t; tmp.setAttribute("readonly", "");
+    tmp.style.position = "fixed"; tmp.style.top = "0"; tmp.style.left = "-9999px"; tmp.style.opacity = "0";
+    document.body.appendChild(tmp);
+    tmp.select(); tmp.setSelectionRange(0, t.length);
+    var ok = false;
+    try { ok = document.execCommand("copy"); } catch (e) { ok = false; }
+    document.body.removeChild(tmp);
+    return ok;
+  }
+  function copierAsync(t) {
+    if (navigator.clipboard && window.isSecureContext) return navigator.clipboard.writeText(t);
+    return Promise.reject(new Error("copie"));
+  }
+  var dejaCopie = "";
+  function montrer(msg) { etat.textContent = msg; etat.hidden = false; }
+  function echec() {
+    zone.focus(); zone.select();
+    montrer("Copie impossible : le texte est s\u00e9lectionn\u00e9, appuie longuement dessus, puis Copier.");
+  }
+  ouvrir.addEventListener("click", function (ev) {
+    var t = aEnvoyer();
+    if (dejaCopie === t) return;              // d\u00e9j\u00e0 copi\u00e9 : on ouvre ChatGPT
+    if (copierSync(t)) { dejaCopie = t; montrer("Prompt copi\u00e9 \u2713 Colle-le dans ChatGPT, avec le scan."); return; }
+    ev.preventDefault();                       // la copie n'est pas s\u00fbre : on reste ici
+    copierAsync(t).then(function () {
+      dejaCopie = t; ouvrir.textContent = "Ouvrir ChatGPT";
+      montrer("Prompt copi\u00e9 \u2713 Touche \u00ab Ouvrir ChatGPT \u00bb.");
+    }, echec);
+  });
+  copier.addEventListener("click", function () {
+    var t = aEnvoyer();
+    if (copierSync(t)) { dejaCopie = t; montrer("Prompt copi\u00e9 \u2713"); return; }
+    copierAsync(t).then(function () { dejaCopie = t; montrer("Prompt copi\u00e9 \u2713"); }, echec);
+  });
+
+  choisir(MODES[0].id);
+})();
+</script>
+</body>
+</html>
