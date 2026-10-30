@@ -7,7 +7,7 @@
 <meta name="referrer" content="no-referrer">
 <title>Envoyer &#224; ChatGPT</title>
 <style>
-:root { --encre: #1c1917; --encre-2: #57534e; --trait: #e7e5e4; --fond: #fafaf9; --carte: #fff; --accent: #4338ca; --accent-bg: #eef2ff; --ok: #15803d; --ok-bg: #f0fdf4; }
+:root { --encre: #1c1917; --encre-2: #57534e; --trait: #e7e5e4; --fond: #fafaf9; --carte: #fff; --accent: #4338ca; --accent-bg: #eef2ff; --ok: #15803d; --ok-bg: #f0fdf4; --ko: #9a3412; --ko-bg: #fff7ed; }
 * { box-sizing: border-box; }
 body { margin: 0; background: var(--fond); color: var(--encre); font: 17px/1.5 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
 .page { max-width: 34rem; margin: 0 auto; padding: 18px 16px 40px; }
@@ -17,10 +17,13 @@ h1 { font-size: 1.35rem; margin: 0 0 2px; }
 .modes button { flex: 1 1 0; width: auto; margin: 0; background: var(--carte); color: var(--accent); border: 1px solid var(--accent); font-weight: 600; padding: 10px 8px; }
 .modes button[aria-pressed="true"] { background: var(--accent); color: #fff; }
 .quoi { color: var(--encre-2); font-size: .9rem; margin: 0 0 10px; min-height: 1.4em; }
-textarea { width: 100%; min-height: 45vh; font: inherit; font-size: .92rem; line-height: 1.45; border: 1px solid var(--trait); border-radius: 10px; padding: 10px; background: #fff; color: var(--encre); }
+textarea { width: 100%; min-height: 42vh; font: inherit; font-size: .92rem; line-height: 1.45; border: 1px solid var(--trait); border-radius: 10px; padding: 10px; background: #fff; color: var(--encre); }
 button, a.bouton { display: flex; align-items: center; justify-content: center; width: 100%; font: inherit; font-weight: 700; border-radius: 999px; padding: 12px 16px; min-height: 48px; border: 1px solid var(--accent); background: var(--accent); color: #fff; cursor: pointer; margin: 10px 0 0; text-decoration: none; text-align: center; }
-button.second { background: var(--carte); color: var(--accent); font-weight: 600; }
+button.second, a.bouton.second { background: var(--carte); color: var(--accent); font-weight: 600; }
+button:disabled { opacity: .55; cursor: progress; }
+[hidden] { display: none !important; }
 .etat { margin: 10px 0 0; padding: 10px 12px; border-radius: 10px; background: var(--ok-bg); color: var(--ok); font-weight: 600; }
+.etat.ko { background: var(--ko-bg); color: var(--ko); }
 .carte { background: var(--carte); border: 1px solid var(--trait); border-radius: 14px; padding: 12px 14px; margin: 14px 0 0; }
 .carte p { margin: 0 0 6px; }
 .carte ol { margin: 0; padding-left: 1.3em; }
@@ -38,9 +41,11 @@ button.second { background: var(--carte); color: var(--accent); font-weight: 600
 <script>
 (function () {
   "use strict";
-  // Tout arrive apr\u00e8s le # (rien n'est envoy\u00e9 au serveur) : titre, deux prompts, lien, nom et dossier du scan.
+  // Tout arrive apr\u00e8s le # (rien n'est envoy\u00e9 au serveur) : titre, deux prompts, scan dans Drive (lien, nom,
+  // dossier) et, quand il est pr\u00eat, le scan \u00e0 joindre : jeton du fichier chiffr\u00e9 du site, cl\u00e9, nom du PDF.
   var q = new URLSearchParams(location.hash.slice(1));
-  var D = { t: q.get("t") || "", x: q.get("x") || "", q: q.get("q") || "", s: q.get("s") || "", n: q.get("n") || "", d: q.get("d") || "" };
+  var D = {};
+  ["t", "x", "q", "s", "n", "d", "j", "k", "f"].forEach(function (c) { D[c] = q.get(c) || ""; });
   if (!D.x && !D.q) return;
   var box = document.getElementById("contenu");
   function el(tag, cls, txt) { var e = document.createElement(tag); if (cls) e.className = cls; if (txt != null) e.textContent = txt; return e; }
@@ -49,8 +54,7 @@ button.second { background: var(--carte); color: var(--accent); font-weight: 600
     { id: "x", nom: "Page d'exercices", quoi: "ChatGPT cr\u00e9e une page d'exercices interactive, \u00e0 faire \u00e0 l'\u00e9cran." },
     { id: "q", nom: "S\u00e9ance de questions", quoi: "ChatGPT pose les questions une \u00e0 une et corrige. L'enfant peut r\u00e9pondre \u00e0 l'oral avec le micro." }
   ].filter(function (m) { return D[m.id]; });
-  // Les modifications sont gard\u00e9es pour chaque mode tant que la page reste ouverte.
-  var texte = { x: D.x, q: D.q };
+  var texte = { x: D.x, q: D.q };      // modifications gard\u00e9es pour chaque mode tant que la page reste ouverte
   var mode = null;
 
   box.innerHTML = "";
@@ -58,55 +62,42 @@ button.second { background: var(--carte); color: var(--accent); font-weight: 600
   var barre = el("div", "modes"); barre.setAttribute("role", "group"); barre.setAttribute("aria-label", "Ce que ChatGPT doit faire");
   var quoi = el("p", "quoi");
   var zone = el("textarea"); zone.setAttribute("aria-label", "Prompt pour ChatGPT (modifiable)"); zone.spellcheck = false;
-  var boutons = {};
+  var boutonsMode = {};
   MODES.forEach(function (m) {
     var b = el("button", null, m.nom); b.type = "button";
     b.addEventListener("click", function () { choisir(m.id); });
-    boutons[m.id] = b; barre.appendChild(b);
+    boutonsMode[m.id] = b; barre.appendChild(b);
   });
-  function choisir(id) {
-    if (mode) texte[mode] = zone.value;
-    mode = id;
-    MODES.forEach(function (m) { boutons[m.id].setAttribute("aria-pressed", String(m.id === id)); if (m.id === id) quoi.textContent = m.quoi; });
-    zone.value = texte[id];
-    effacerEtat();
-  }
   if (MODES.length > 1) box.appendChild(barre);
   box.appendChild(quoi);
   box.appendChild(zone);
 
+  // Boutons : \u00ab Envoyer \u00e0 ChatGPT \u00bb (partage : PDF + prompt) quand le scan est pr\u00eat et que le t\u00e9l\u00e9phone sait
+  // partager un fichier ; sinon \u00ab Enregistrer le scan \u00bb puis \u00ab Copier et ouvrir ChatGPT \u00bb.
+  var envoyer = el("button", null, "Pr\u00e9paration du scan\u2026"); envoyer.type = "button"; envoyer.disabled = true;
+  var enregistrer = el("a", "bouton second", "Enregistrer le scan (PDF)"); enregistrer.hidden = true;
   var ouvrir = el("a", "bouton", "Copier et ouvrir ChatGPT");
   ouvrir.href = "https://chatgpt.com/"; ouvrir.target = "_blank"; ouvrir.rel = "noopener noreferrer";
   var copier = el("button", "second", "Copier seulement"); copier.type = "button";
   var etat = el("p", "etat"); etat.hidden = true;
-  box.appendChild(ouvrir); box.appendChild(copier); box.appendChild(etat);
-
+  [envoyer, enregistrer, ouvrir, copier, etat].forEach(function (x) { box.appendChild(x); });
   var carte = el("div", "carte");
-  carte.appendChild(el("p", null, "Dans ChatGPT :"));
-  var ol = el("ol");
-  var li1 = el("li");
-  li1.appendChild(document.createTextNode("\uff0b \u2192 Fichiers : joins le scan"));
-  if (D.n) {
-    li1.appendChild(document.createTextNode(" "));
-    li1.appendChild(el("span", "chemin", (D.d ? D.d + " \u203a " : "") + D.n));
-  }
-  li1.appendChild(document.createTextNode("."));
-  ol.appendChild(li1);
-  ol.appendChild(el("li", null, "Colle le prompt (appui long, puis Coller), puis envoie."));
-  carte.appendChild(ol);
-  if (D.s && /^https:\/\/drive\.google\.com\//.test(D.s)) {
-    var p = el("p", "aide"); var a = el("a", null, "Voir le scan dans Drive");
-    a.href = D.s; a.target = "_blank"; a.rel = "noopener noreferrer";
-    p.appendChild(a); carte.appendChild(p);
-  }
   box.appendChild(carte);
 
-  // Texte envoy\u00e9 : la ligne \u00ab Pr\u00e9cision : \u00bb rest\u00e9e vide est retir\u00e9e.
-  function aEnvoyer() { return zone.value.replace(/\n+Pr\u00e9cision :\s*$/, "").trim(); }
+  function choisir(id) {
+    if (mode) texte[mode] = zone.value;
+    mode = id;
+    MODES.forEach(function (m) { boutonsMode[m.id].setAttribute("aria-pressed", String(m.id === id)); if (m.id === id) quoi.textContent = m.quoi; });
+    zone.value = texte[id];
+    effacerEtat();
+  }
+
+  // ---- copie
+  function aEnvoyer() { return zone.value.replace(/\n+Pr\u00e9cision :\s*$/, "").trim(); }   // \u00ab Pr\u00e9cision : \u00bb vide retir\u00e9e
+  var dejaCopie = "";
   function effacerEtat() { etat.hidden = true; dejaCopie = ""; ouvrir.textContent = "Copier et ouvrir ChatGPT"; }
   zone.addEventListener("input", effacerEtat);
-  // Copie synchrone (dans le geste de l'utilisateur, avant l'ouverture de ChatGPT), sans ouvrir le clavier.
-  function copierSync(t) {
+  function copierSync(t) {            // dans le geste de l'utilisateur, sans ouvrir le clavier
     var tmp = document.createElement("textarea");
     tmp.value = t; tmp.setAttribute("readonly", "");
     tmp.style.position = "fixed"; tmp.style.top = "0"; tmp.style.left = "-9999px"; tmp.style.opacity = "0";
@@ -121,27 +112,112 @@ button.second { background: var(--carte); color: var(--accent); font-weight: 600
     if (navigator.clipboard && window.isSecureContext) return navigator.clipboard.writeText(t);
     return Promise.reject(new Error("copie"));
   }
-  var dejaCopie = "";
-  function montrer(msg) { etat.textContent = msg; etat.hidden = false; }
-  function echec() {
+  function montrer(msg, ko) { etat.textContent = msg; etat.className = "etat" + (ko ? " ko" : ""); etat.hidden = false; }
+  function echecCopie() {
     zone.focus(); zone.select();
-    montrer("Copie impossible : le texte est s\u00e9lectionn\u00e9, appuie longuement dessus, puis Copier.");
+    montrer("Copie impossible : le texte est s\u00e9lectionn\u00e9, appuie longuement dessus, puis Copier.", true);
   }
   ouvrir.addEventListener("click", function (ev) {
     var t = aEnvoyer();
-    if (dejaCopie === t) return;              // d\u00e9j\u00e0 copi\u00e9 : on ouvre ChatGPT
-    if (copierSync(t)) { dejaCopie = t; montrer("Prompt copi\u00e9 \u2713 Colle-le dans ChatGPT, avec le scan."); return; }
-    ev.preventDefault();                       // la copie n'est pas s\u00fbre : on reste ici
-    copierAsync(t).then(function () {
-      dejaCopie = t; ouvrir.textContent = "Ouvrir ChatGPT";
-      montrer("Prompt copi\u00e9 \u2713 Touche \u00ab Ouvrir ChatGPT \u00bb.");
-    }, echec);
+    if (dejaCopie === t) return;                       // d\u00e9j\u00e0 copi\u00e9 : on ouvre ChatGPT
+    if (copierSync(t)) { dejaCopie = t; montrer(fichier ? "Prompt copi\u00e9 \u2713 Dans ChatGPT, joins le PDF enregistr\u00e9, colle, envoie." : "Prompt copi\u00e9 \u2713 Dans ChatGPT, joins le scan, colle, envoie."); return; }
+    ev.preventDefault();                                // copie pas s\u00fbre : on reste ici
+    copierAsync(t).then(function () { dejaCopie = t; ouvrir.textContent = "Ouvrir ChatGPT"; montrer("Prompt copi\u00e9 \u2713 Touche \u00ab Ouvrir ChatGPT \u00bb."); }, echecCopie);
   });
   copier.addEventListener("click", function () {
     var t = aEnvoyer();
     if (copierSync(t)) { dejaCopie = t; montrer("Prompt copi\u00e9 \u2713"); return; }
-    copierAsync(t).then(function () { dejaCopie = t; montrer("Prompt copi\u00e9 \u2713"); }, echec);
+    copierAsync(t).then(function () { dejaCopie = t; montrer("Prompt copi\u00e9 \u2713"); }, echecCopie);
   });
+
+  // ---- le scan \u00e0 joindre
+  var fichier = null;
+  function octets(b64) {
+    b64 = b64.replace(/-/g, "+").replace(/_/g, "/");
+    while (b64.length % 4) b64 += "=";
+    var s = atob(b64), t = new Uint8Array(s.length);
+    for (var i = 0; i < s.length; i++) t[i] = s.charCodeAt(i);
+    return t;
+  }
+  function peutPartager(f) {
+    try { return !!(navigator.share && navigator.canShare && navigator.canShare({ files: [f] })); } catch (e) { return false; }
+  }
+  function etapes(lignes) {
+    carte.innerHTML = "";
+    carte.appendChild(el("p", null, "Dans ChatGPT :"));
+    var ol = el("ol");
+    lignes.forEach(function (l) {
+      var li = el("li");
+      (Array.isArray(l) ? l : [l]).forEach(function (m) { if (typeof m === "string") li.appendChild(document.createTextNode(m)); else li.appendChild(m); });
+      ol.appendChild(li);
+    });
+    carte.appendChild(ol);
+    if (D.s && /^https:\/\/drive\.google\.com\//.test(D.s)) {
+      var p = el("p", "aide"); var a = el("a", null, "Voir le scan complet dans Drive");
+      a.href = D.s; a.target = "_blank"; a.rel = "noopener noreferrer";
+      p.appendChild(a); carte.appendChild(p);
+    }
+  }
+  function cheminDrive() { return D.n ? el("span", "chemin", (D.d ? D.d + " \u203a " : "") + D.n) : null; }
+  function modeManuel(raison) {       // pas de scan pr\u00eat : on le joint depuis Drive
+    envoyer.hidden = true; enregistrer.hidden = true; ouvrir.hidden = false;
+    var l1 = ["\uff0b \u2192 Fichiers : joins le scan"];
+    var c = cheminDrive(); if (c) { l1.push(" "); l1.push(c); }
+    l1.push(".");
+    etapes([l1, "Colle le prompt (appui long, puis Coller), puis envoie."]);
+    if (raison) montrer(raison, true);
+  }
+  function modePartage() {
+    envoyer.hidden = false; envoyer.disabled = false; envoyer.textContent = "Envoyer \u00e0 ChatGPT (prompt + scan)";
+    enregistrer.hidden = true; ouvrir.hidden = true;
+    etapes(["Touche \u00ab Envoyer \u00e0 ChatGPT \u00bb, puis choisis ChatGPT dans la liste : le scan est joint.",
+            "Si le prompt n'est pas d\u00e9j\u00e0 \u00e9crit, colle-le (appui long, puis Coller) : il est copi\u00e9.",
+            "Envoie."]);
+  }
+  function modeEnregistrement() {     // le t\u00e9l\u00e9phone ne sait pas partager un fichier depuis cette page
+    envoyer.hidden = true; enregistrer.hidden = false; ouvrir.hidden = false; ouvrir.classList.remove("second");
+    etapes(["\u00ab Enregistrer le scan (PDF) \u00bb : il va dans tes T\u00e9l\u00e9chargements.",
+            "\u00ab Copier et ouvrir ChatGPT \u00bb.",
+            "Dans ChatGPT : \uff0b \u2192 Fichiers \u2192 T\u00e9l\u00e9chargements \u2192 " + D.f + ", colle le prompt, envoie."]);
+  }
+  envoyer.addEventListener("click", function () {
+    if (!fichier) return;
+    var t = aEnvoyer();
+    var copie = copierSync(t);
+    if (copie) dejaCopie = t;
+    navigator.share({ files: [fichier], text: t, title: D.t || "Le\u00e7on" }).then(function () {
+      montrer(copie ? "Envoy\u00e9 \u2713 Dans ChatGPT, colle le prompt s'il n'y est pas, puis envoie." : "Envoy\u00e9 \u2713 Si le prompt n'est pas dans ChatGPT, reviens le copier ici.");
+    }, function (err) {
+      if (err && err.name === "AbortError") {
+        // ChatGPT absent de la liste ? On garde \u00ab Envoyer \u00bb et on montre l'autre chemin.
+        enregistrer.hidden = false; ouvrir.hidden = false; ouvrir.classList.add("second");
+        montrer("Partage annul\u00e9. ChatGPT n'\u00e9tait pas dans la liste ? Enregistre le scan, puis \u00ab Copier et ouvrir ChatGPT \u00bb et joins-le (\uff0b \u2192 Fichiers \u2192 T\u00e9l\u00e9chargements).", true);
+        return;
+      }
+      modeEnregistrement();
+      montrer("Partage impossible depuis ce navigateur : enregistre le scan, puis joins-le dans ChatGPT.", true);
+    });
+  });
+
+  if (D.j && D.k && D.f && /^[0-9a-f]{16}$/.test(D.j) && window.crypto && crypto.subtle) {
+    envoyer.hidden = false; ouvrir.hidden = true;
+    etapes(["Pr\u00e9paration du scan\u2026"]);
+    fetch("scans/" + D.j + ".bin")
+      .then(function (r) { if (!r.ok) throw new Error("absent"); return r.arrayBuffer(); })
+      .then(function (buf) {
+        var b = new Uint8Array(buf);
+        return crypto.subtle.importKey("raw", octets(D.k), { name: "AES-GCM" }, false, ["decrypt"])
+          .then(function (cle) { return crypto.subtle.decrypt({ name: "AES-GCM", iv: b.slice(0, 12) }, cle, b.slice(12)); });
+      })
+      .then(function (pdf) {
+        fichier = new File([pdf], D.f, { type: "application/pdf" });
+        enregistrer.href = URL.createObjectURL(fichier); enregistrer.download = D.f;
+        if (peutPartager(fichier)) modePartage(); else modeEnregistrement();
+      })
+      .catch(function () { modeManuel("Scan indisponible pour le moment : joins-le depuis Drive."); });
+  } else {
+    modeManuel("");
+  }
 
   choisir(MODES[0].id);
 })();
