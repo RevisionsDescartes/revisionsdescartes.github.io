@@ -256,6 +256,9 @@ input[type="file"] { font: inherit; font-size: 0.95rem; max-width: 100%; }
 .qdate small { display: block; color: var(--warn-fg); background: var(--warn-bg); width: fit-content; padding: 0 0.4rem; border-radius: 0.3rem; }
 .qlist a { font-size: 0.9rem; font-weight: 600; padding: 0.5rem 0; }
 .hint { font-size: 0.82rem; color: var(--muted); margin: 0; }
+.foot { margin: 0.4rem 0 0; font-size: 0.9rem; }
+.howto { margin-top: 0; padding: 0 1rem 0.9rem 2.2rem; }
+input[type="password"] { font: inherit; font-size: 1rem; color: var(--fg); background: var(--surface); border: 1px solid var(--line); border-radius: 0.7rem; padding: 0.65rem 0.75rem; min-height: 2.9rem; width: 100%; }
 html { -webkit-text-size-adjust: 100%; }
 body { margin: 0; }
 </style>
@@ -265,16 +268,14 @@ body { margin: 0; }
 <body>
 <div class="wrap"><main id="view" tabindex="-1"></main></div>
 
-<script type="application/json" id="data">{"types": [{"id": "plats", "label": "Plats"}, {"id": "accomp", "label": "Accompagnements"}, {"id": "petit-dej", "label": "Petit-déjeuner"}, {"id": "salades", "label": "Salades"}, {"id": "soupes", "label": "Soupes"}, {"id": "tajines", "label": "Tajines"}, {"id": "sandwichs", "label": "Sandwichs"}, {"id": "snacks", "label": "Snacks & apéro"}, {"id": "desserts", "label": "Desserts"}, {"id": "aclasser", "label": "À classer"}], "recipes": [{"id": "u-mvz95y4zyqz", "name": "Taktouka : Tajine Oeufs & Tomates", "type": "tajines", "cook": "", "servings": "", "src": "Ajoutée", "date": "2026-11-02", "url": "", "btn": "Ouvrir le lien ↗", "lvl": "user", "ing": [], "probable": [], "ingNote": "", "steps": [], "stepsNote": "", "tips": [], "sum": "", "photo": "", "user": true, "ts": 1793623572755}, {"id": "pancakes-ecrit", "name": "Pancakes à l'avoine", "cook": "Poêle", "src": "Texte", "date": "2026-03-13", "url": "https://www.facebook.com/share/r/18BZzaHJXR/", "type": "petit-dej", "sum": "Flocons d'avoine, œufs, miel, yaourt grec, lait", "lvl": "complete", "ing": ["90 g de flocons d'avoine", "2 œufs (environ 100 à 110 g)", "20 g de miel (1 c. à soupe)", "60 ml de lait (¼ de tasse)", "125 g de yaourt grec (½ tasse)", "2 à 3 g de cannelle (½ c. à café)", "1 pincée de sel", "2 à 3 g de levure chimique (½ c. à café)", "2,5 ml d'extrait de vanille (½ c. à café)", "1 c. à café de beurre ou d'huile de coco, pour la poêle"], "steps": ["Mixer les 90 g de flocons d'avoine pendant 10 à 15 secondes pour obtenir une farine.", "Ajouter les œufs, le miel, le lait, le yaourt, la vanille, la cannelle, le sel et la levure.", "Mixer jusqu'à ce que la pâte soit bien lisse.", "Faire chauffer une poêle graissée à feu moyen.", "Cuire de petites louches de pâte, 2 à 3 minutes par côté."], "tips": ["Laisser reposer la pâte 5 minutes pour des pancakes plus moelleux : les flocons absorbent le liquide.", "Une banane écrasée dans la pâte fonctionne aussi.", "Garnitures possibles : miel, bananes ou fruits rouges, beurre de cacahuète.", "Peser les ingrédients directement dans le bol du mixeur posé sur une balance évite de la vaisselle."], "servings": "Environ 2 personnes", "ingNote": "Recette écrite envoyée dans la discussion, version en grammes et millilitres.", "probable": [], "stepsNote": "", "btn": "Voir le reel d'origine (probable) ↗"}, {"id": "pancakes-yt", "name": "Pancakes avoine-œufs à la poêle", "cook": "Poêle", "src": "YouTube", "date": "2026-04-09", "url": "https://youtu.be/MC-Nqv_mLlY", "type": "petit-dej", "sum": "Flocons d'avoine, œufs", "lvl": "title", "ing": ["Flocons d'avoine", "Œufs"], "ingNote": "D'après le titre de la vidéo (en allemand). Les autres ingrédients ne sont pas connus. Cette version peut différer de la recette écrite ci-dessus.", "steps": [], "tips": [], "probable": [], "servings": "", "stepsNote": "", "btn": "Voir la vidéo ↗"}, {"id": "sandwich-oeuf-fromage", "name": "Sandwich croustillant œuf-fromage (5 min)", "cook": "", "src": "YouTube", "date": "2026-04-21", "url": "https://youtu.be/8WSZDvg1X44", "type": "sandwichs", "sum": "Œufs, fromage", "lvl": "title", "ing": ["Œufs", "Fromage", "Pain"], "ingNote": "D'après le titre et le début de la description (en allemand). Le type de pain et les autres ingrédients ne sont pas connus.", "steps": [], "tips": [], "probable": [], "servings": "", "stepsNote": "", "btn": "Voir la vidéo ↗"}, {"id": "salades-ete", "name": "3 salades-repas équilibrées pour l'été", "cook": "", "src": "YouTube", "date": "2026-06-26", "url": "https://youtu.be/do2u-4H7Ce4", "type": "salades", "sum": "3 salades composées", "lvl": "none", "ing": [], "ingNote": "La vidéo présente 3 salades. Leurs ingrédients ne sont pas relevés ici.", "steps": [], "tips": [], "probable": [], "servings": "", "stepsNote": "", "btn": "Voir la vidéo ↗"}, {"id": "guacamole", "name": "Guacamole sans avocat", "cook": "", "src": "Perplexity", "date": "2024-09-09", "url": "https://www.perplexity.ai/search/recette-de-guacamole-sans-avoc-m_n6xbxpT9qaRzQHXMYpVA#0", "type": "snacks", "sum": "Ingrédients inconnus", "lvl": "none", "ing": [], "ingNote": "Le lien mène à une recherche Perplexity, pas à une vidéo. Elle contient la réponse.", "steps": [], "tips": [], "probable": [], "servings": "", "stepsNote": "", "btn": "Voir la recherche ↗"}, {"id": "tajine-kefta", "name": "Tajine de kefta aux œufs", "cook": "Tajine", "src": "YouTube", "date": "2026-04-06", "url": "https://youtu.be/d69C2Bgr0Kk", "type": "tajines", "sum": "Kefta, œufs", "lvl": "title", "ing": ["Kefta (viande hachée)", "Œufs"], "probable": ["Sauce tomate", "Oignon", "Épices"], "ingNote": "D'après le titre : « Tajine kefta et œufs ». La description annonce une liste d'ingrédients que je n'ai pas pu lire.", "steps": [], "tips": [], "servings": "", "stepsNote": "", "btn": "Voir la vidéo ↗"}, {"id": "tenders", "name": "Tenders de poulet croustillants", "cook": "Air Fryer", "src": "YouTube", "date": "2025-06-17", "url": "https://youtu.be/YPrWtuYedCI", "type": "plats", "sum": "Poulet, chapelure panko", "lvl": "partial", "ing": ["Poulet (tenders)", "Chapelure panko", "Une sauce pour tremper"], "ingNote": "D'après la description de la vidéo. Les quantités ne sont pas connues.", "steps": [], "tips": [], "probable": [], "servings": "", "stepsNote": "", "btn": "Voir la vidéo ↗"}, {"id": "tortilla-oeufs", "name": "Tortilla aux œufs à la poêle", "cook": "Poêle", "src": "YouTube", "date": "2026-04-28", "url": "https://youtu.be/A4lNzrENWQs", "type": "plats", "sum": "Tortilla, œufs", "lvl": "partial", "ing": ["Tortilla", "2 œufs", "Eau"], "ingNote": "D'après la description de la vidéo.", "steps": ["Verser de l'eau dans un bol.", "Tremper une tortilla dans l'eau.", "La poser dans une poêle.", "Casser 2 œufs dessus."], "stepsNote": "Début de la description de la vidéo. La suite est dans la vidéo.", "tips": [], "probable": [], "servings": "", "btn": "Voir la vidéo ↗"}, {"id": "flatbread-viral", "name": "Recette virale à l'Air Fryer (10 min)", "cook": "Air Fryer", "src": "YouTube", "date": "2026-03-29", "url": "https://youtu.be/D8Mx9i7KTyA", "type": "aclasser", "sum": "Flatbread italien…", "lvl": "partial", "ing": ["1 flatbread italien"], "ingNote": "La description commence par cet ingrédient, le reste n'est pas lisible. Le type de plat n'est pas connu.", "steps": [], "tips": [], "probable": [], "servings": "", "stepsNote": "", "btn": "Voir la vidéo ↗"}, {"id": "poulet-soja-miel", "name": "Poulet caramélisé soja-miel", "cook": "Poêle", "src": "Texte", "date": "2026-03-18", "url": "", "type": "plats", "sum": "Poulet, sauce soja, miel, ail, gingembre", "lvl": "complete", "ing": ["500 g de blanc de poulet, en morceaux", "3 c. à soupe de sauce soja", "2 c. à soupe de miel", "1 c. à soupe de vinaigre (ou jus de citron)", "2 gousses d'ail hachées", "1 c. à café de gingembre (facultatif)", "1 c. à soupe d'huile", "1 c. à café de maïzena (facultatif, pour épaissir)", "Graines de sésame", "Poivre"], "steps": ["Marinade : mélanger la sauce soja, le miel, l'ail, le gingembre et le vinaigre. Ajouter le poulet et laisser mariner 15 à 30 minutes (10 minutes suffisent).", "Cuisson : chauffer l'huile dans une poêle et faire revenir le poulet à feu moyen-vif jusqu'à ce qu'il soit bien doré.", "Sauce : verser la marinade dans la poêle et laisser mijoter 5 à 8 minutes, jusqu'à ce que la sauce épaississe et devienne brillante.", "Finition : ajouter les graines de sésame. Ajuster : un peu de miel si c'est trop salé, un peu de sauce soja si c'est trop doux."], "servings": "3 à 4 personnes", "ingNote": "Recette écrite envoyée dans la discussion. Style asiatique.", "tips": [], "probable": [], "stepsNote": "", "btn": ""}, {"id": "hasselback", "name": "Pommes de terre Hasselback", "cook": "Air Fryer", "src": "YouTube", "date": "2025-04-06", "url": "https://youtu.be/77oVGat1jo8", "type": "accomp", "sum": "Pommes de terre…", "lvl": "partial", "ing": ["Petites pommes de terre (6)"], "ingNote": "La vidéo annonce 3 ingrédients principaux. Seules les pommes de terre sont lisibles dans la description.", "steps": [], "tips": [], "probable": [], "servings": "", "stepsNote": "", "btn": "Voir la vidéo ↗"}, {"id": "pain-pdt-fromage", "name": "Pain pomme de terre-fromage, sans four", "cook": "Poêle", "src": "YouTube", "date": "2026-05-06", "url": "https://youtu.be/d3sdpcaMbPk", "type": "snacks", "sum": "Pomme de terre, mozzarella, farine, lait", "lvl": "partial", "ing": ["90 g de farine de force (à pain)", "55 g de lait", "10 g de beurre non salé, fondu", "1 pincée de sel", "1 pomme de terre moyenne", "2 c. à soupe de mayonnaise", "Mozzarella", "Miel"], "ingNote": "Traduit de la description coréenne de la vidéo. Les quantités de mozzarella et de miel ne sont pas indiquées. Recette sans four, sans levure, sans œuf.", "steps": [], "tips": [], "probable": [], "servings": "", "stepsNote": "", "btn": "Voir la vidéo ↗"}, {"id": "mais-souffle", "name": "Maïs soufflé", "cook": "Air Fryer", "src": "YouTube", "date": "2025-12-28", "url": "https://youtube.com/shorts/oKLN7JO0iTY", "type": "snacks", "sum": "Maïs", "lvl": "title", "ing": ["Maïs"], "ingNote": "D'après le titre : « Air fryer pop! ». Aucune autre information.", "steps": [], "tips": [], "probable": [], "servings": "", "stepsNote": "", "btn": "Voir la vidéo ↗"}, {"id": "sandwich-oeuf-mayo", "name": "Sandwich œuf-mayo et concombre", "cook": "", "src": "YouTube", "date": "2026-04-25", "url": "https://youtube.com/shorts/xl3RLl3LM7g", "type": "sandwichs", "sum": "Œufs, mayonnaise, concombre", "lvl": "title", "ing": ["Œufs", "Mayonnaise", "Concombre", "Pain"], "ingNote": "D'après le titre : « Egg mayo & Cucumber Sandwich ».", "steps": [], "tips": [], "probable": [], "servings": "", "stepsNote": "", "btn": "Voir la vidéo ↗"}, {"id": "gateau-yaourt", "name": "Gâteau au yaourt", "cook": "Air Fryer", "src": "YouTube", "date": "2026-05-23", "url": "https://youtu.be/9Rt4rOXlEnc", "type": "desserts", "sum": "Yaourt…", "lvl": "title", "ing": ["Yaourt"], "ingNote": "La vidéo annonce 3 ingrédients. Seul le yaourt ressort du titre. L'auteur propose la recette imprimable via la description YouTube.", "steps": [], "tips": [], "probable": [], "servings": "", "stepsNote": "", "btn": "Voir la vidéo ↗"}, {"id": "noix-caramel", "name": "Noix caramélisées au miel", "cook": "Air Fryer", "src": "YouTube", "date": "2025-03-21", "url": "https://youtu.be/NRoyZyDchCQ", "type": "snacks", "sum": "Noix, miel", "lvl": "partial", "ing": ["200 g de noix", "Eau", "2 c. à soupe de miel"], "ingNote": "La description est coupée après le miel : il manque au moins un ingrédient (1 c. à soupe).", "steps": [], "tips": [], "probable": [], "servings": "", "stepsNote": "", "btn": "Voir la vidéo ↗"}, {"id": "recette-simple", "name": "« Recette simple et… » (titre tronqué)", "cook": "", "src": "Perplexity", "date": "2024-09-22", "url": "https://www.perplexity.ai/search/donne-une-recette-simple-et-de-Aru7yegPR7Srj7Ugey_GfA", "type": "aclasser", "sum": "Ingrédients inconnus", "lvl": "none", "ing": [], "ingNote": "Le titre est coupé dans le lien Perplexity. Ni le plat ni le type ne sont connus.", "steps": [], "tips": [], "probable": [], "servings": "", "stepsNote": "", "btn": "Voir la recherche ↗"}], "pendingYt": [{"date": "2024-07-02", "url": "https://youtube.com/shorts/eKu7M6lC_ic", "note": ""}, {"date": "2025-04-13", "url": "https://youtube.com/shorts/3IPFU1A96oU", "note": "Introuvable, probablement supprimée"}, {"date": "2025-05-24", "url": "https://youtu.be/63_fJ6Nes6I", "note": ""}, {"date": "2026-01-12", "url": "https://youtu.be/obD_g4yNEhc", "note": ""}, {"date": "2026-02-26", "url": "https://youtube.com/shorts/dhDDw-07Sss", "note": ""}, {"date": "2026-04-13", "url": "https://youtube.com/shorts/UpFmRTipY5k", "note": ""}, {"date": "2026-04-25", "url": "https://youtube.com/shorts/2iTVS16CzXM", "note": ""}, {"date": "2026-04-25", "url": "https://youtube.com/shorts/eBsgfQgEACY", "note": ""}, {"date": "2026-06-20", "url": "https://youtu.be/mAOOTlplW9E", "note": ""}], "pendingFb": {"2024": [{"date": "2024-03-01", "url": "https://www.facebook.com/share/r/qij37Yn9ZbawDAt3/"}, {"date": "2024-03-01", "url": "https://www.facebook.com/reel/1408123533154733/"}, {"date": "2024-04-05", "url": "https://www.facebook.com/share/v/2e844H4X7x1Axn7x/"}, {"date": "2024-04-05", "url": "https://www.facebook.com/share/r/mv4V4R6abSfkChtg/"}, {"date": "2024-04-05", "url": "https://www.facebook.com/share/r/MSLKtAbi1XQTpzFF/"}, {"date": "2024-04-05", "url": "https://www.facebook.com/share/r/pG7WvSsjKENQgnra/"}, {"date": "2024-04-05", "url": "https://www.facebook.com/share/r/3NDDmLYufPvnyjYF/"}, {"date": "2024-04-06", "url": "https://www.facebook.com/share/r/FQQ5ZA3VhYVZsFbg/"}, {"date": "2024-04-20", "url": "https://www.facebook.com/share/r/8AWWS9gVWgSHc32R/"}, {"date": "2024-04-20", "url": "https://www.facebook.com/share/r/1o6DUHA6zZ5HXB3B/"}, {"date": "2024-04-24", "url": "https://www.facebook.com/share/r/g4SQQ89DuMrKy1qt/"}, {"date": "2024-07-23", "url": "https://www.facebook.com/share/r/aaZVpPVpS1xDu3VQ/"}, {"date": "2024-07-24", "url": "https://www.facebook.com/share/r/jSr1exfP6rtvUkeZ/"}, {"date": "2024-07-24", "url": "https://www.facebook.com/share/r/9K9Fibv9FAqsTWyD/"}, {"date": "2024-07-27", "url": "https://www.facebook.com/share/r/eQ4TYqzgRp9PvqRr/"}, {"date": "2024-08-01", "url": "https://www.facebook.com/share/r/6Dd7jHwLYBwFytdV/"}, {"date": "2024-08-11", "url": "https://www.facebook.com/share/v/poGxpeF3UJ8ymGHc/"}, {"date": "2024-08-28", "url": "https://www.facebook.com/share/r/THK95Dm2PJZ3EVg6/"}, {"date": "2024-08-28", "url": "https://www.facebook.com/share/r/fj1Xw6Gi2vqugx5K/"}, {"date": "2024-09-12", "url": "https://www.facebook.com/share/r/UkafthKBcueoicoD/"}, {"date": "2024-09-12", "url": "https://www.facebook.com/share/r/i4U8v9gyYGBkQAPU/"}, {"date": "2024-09-15", "url": "https://www.facebook.com/share/r/ev6UgZmHQxj5Fx6Z/"}, {"date": "2024-09-15", "url": "https://www.facebook.com/share/r/Eh5yyUPNkNJnKWiG/"}, {"date": "2024-09-20", "url": "https://www.facebook.com/share/r/YZrQFnus3ZRj72c5/"}, {"date": "2024-09-28", "url": "https://www.facebook.com/share/r/k6wtcBY4kN8RNpPW/"}, {"date": "2024-10-02", "url": "https://www.facebook.com/share/r/4vrzxPjrYeWaD1nH/"}, {"date": "2024-10-04", "url": "https://www.facebook.com/share/r/LdDKdYENiF8PDNWr/"}, {"date": "2024-10-11", "url": "https://www.facebook.com/share/r/Cbr9pXAHEoSaRfUi/"}, {"date": "2024-10-11", "url": "https://www.facebook.com/share/r/iamoxV58MF9fQTri/"}, {"date": "2024-10-11", "url": "https://www.facebook.com/share/r/qcQmQL9Qua1HQVyb/"}, {"date": "2024-10-16", "url": "https://www.facebook.com/share/r/cGFkoZWVtrmVRi3Z/"}, {"date": "2024-10-16", "url": "https://www.facebook.com/share/r/KYtBa48nBHYS7fs9/"}, {"date": "2024-10-16", "url": "https://www.facebook.com/share/r/ekGKRi8116zoZ5hC/"}, {"date": "2024-10-19", "url": "https://www.facebook.com/share/v/c6ACTKZQmy5Ke49e/"}, {"date": "2024-10-26", "url": "https://www.facebook.com/share/r/obfouxzkPx7RdiKC/"}, {"date": "2024-10-28", "url": "https://www.facebook.com/share/v/EPXG5SKmssJJcqDW/"}, {"date": "2024-11-04", "url": "https://www.facebook.com/share/v/JxpvyapVhgruehbs/"}, {"date": "2024-11-13", "url": "https://www.facebook.com/share/r/14ih2ixRko/"}, {"date": "2024-11-13", "url": "https://www.facebook.com/share/r/1AnT8qEcoi/"}, {"date": "2024-11-15", "url": "https://www.facebook.com/share/v/18Fsv3hLZa/"}, {"date": "2024-11-15", "url": "https://www.facebook.com/share/v/19dyEpERQ6/"}, {"date": "2024-11-15", "url": "https://www.facebook.com/share/v/1GmKJwvfg2/"}, {"date": "2024-11-15", "url": "https://www.facebook.com/share/v/18F1UEK288/"}, {"date": "2024-11-15", "url": "https://www.facebook.com/share/r/15etC8YyZK/"}, {"date": "2024-11-15", "url": "https://www.facebook.com/share/r/18tuXFje7a/"}, {"date": "2024-11-22", "url": "https://www.facebook.com/share/v/19WJw8Pywt/"}, {"date": "2024-11-22", "url": "https://www.facebook.com/share/r/1B8PNRBB8H/"}, {"date": "2024-11-22", "url": "https://www.facebook.com/share/r/14XphPVaoq/"}, {"date": "2024-11-27", "url": "https://www.facebook.com/share/r/15Kk9wHdGN/"}, {"date": "2024-11-27", "url": "https://www.facebook.com/share/r/1ANmEjgDiR/"}, {"date": "2024-11-27", "url": "https://www.facebook.com/share/r/1CoWCbV6mb/"}, {"date": "2024-11-27", "url": "https://www.facebook.com/share/r/1B1Py6BrS7/"}, {"date": "2024-11-27", "url": "https://www.facebook.com/share/r/18YN3TS8k4/"}, {"date": "2024-11-27", "url": "https://www.facebook.com/share/r/144GzXf22g/"}, {"date": "2024-11-27", "url": "https://www.facebook.com/share/r/1YX8dMoJiv/"}, {"date": "2024-11-27", "url": "https://www.facebook.com/share/r/1DaLvooVK8/"}, {"date": "2024-11-27", "url": "https://www.facebook.com/share/r/15BqSQgje1/"}, {"date": "2024-11-27", "url": "https://www.facebook.com/share/r/1ApuPRwBEk/"}, {"date": "2024-11-27", "url": "https://www.facebook.com/reel/497049043236092/"}, {"date": "2024-11-27", "url": "https://www.facebook.com/share/v/1DQA7pdYHX/"}, {"date": "2024-11-29", "url": "https://www.facebook.com/share/r/1DXE4kJNtC/"}, {"date": "2024-11-29", "url": "https://www.facebook.com/share/v/1K1obugKen/"}, {"date": "2024-12-07", "url": "https://www.facebook.com/share/v/1AiCVtHNCK/"}, {"date": "2024-12-13", "url": "https://www.facebook.com/share/r/1BE75TcNh5/"}, {"date": "2024-12-13", "url": "https://www.facebook.com/share/r/19c6LPSrKv/"}, {"date": "2024-12-14", "url": "https://www.facebook.com/share/r/15Qq2gV3cj/"}, {"date": "2024-12-14", "url": "https://www.facebook.com/share/r/1G5jue3y4A/"}, {"date": "2024-12-20", "url": "https://www.facebook.com/share/r/14REx7d2E3/"}], "2025": [{"date": "2025-01-05", "url": "https://www.facebook.com/share/v/18tRXRUfV7/"}, {"date": "2025-01-08", "url": "https://www.facebook.com/share/r/15zMA3wkkM/"}, {"date": "2025-01-08", "url": "https://www.facebook.com/share/v/1AsW8pXBxA/"}, {"date": "2025-01-08", "url": "https://www.facebook.com/share/r/1A3utZu2sB/"}, {"date": "2025-01-24", "url": "https://www.facebook.com/reel/3878564385692670/"}, {"date": "2025-01-25", "url": "https://www.facebook.com/share/r/1Gf3Kc7nNJ/"}, {"date": "2025-01-29", "url": "https://www.facebook.com/share/v/19tgAqVVgz/"}, {"date": "2025-02-01", "url": "https://www.facebook.com/share/r/1BzbL5fzdi/"}, {"date": "2025-02-17", "url": "https://www.facebook.com/share/r/15XNT4iL5R/"}, {"date": "2025-03-11", "url": "https://www.facebook.com/share/v/1Dk1S2yMHr/"}, {"date": "2025-03-14", "url": "https://www.facebook.com/share/r/15FKVt7zxC/"}, {"date": "2025-03-28", "url": "https://www.facebook.com/share/v/1NZjUY352N/"}, {"date": "2025-03-28", "url": "https://www.facebook.com/share/v/1AM32TkdmL/"}, {"date": "2025-04-01", "url": "https://www.facebook.com/share/r/18sxL7weRs/"}, {"date": "2025-04-04", "url": "https://www.facebook.com/share/r/1FJceWD7hA/"}, {"date": "2025-04-04", "url": "https://www.facebook.com/share/r/167dKtoNQm/"}, {"date": "2025-04-04", "url": "https://www.facebook.com/share/r/16XVYhSuRo/"}, {"date": "2025-04-04", "url": "https://www.facebook.com/share/r/1DATaWFWke/"}, {"date": "2025-04-04", "url": "https://www.facebook.com/share/r/16GPN3bxqe/"}, {"date": "2025-04-04", "url": "https://www.facebook.com/share/r/1EeaqoJW8R/"}, {"date": "2025-04-04", "url": "https://www.facebook.com/share/r/159vQR7XhA/"}, {"date": "2025-04-04", "url": "https://www.facebook.com/share/r/1C4J6xFZ7r/"}, {"date": "2025-04-23", "url": "https://www.facebook.com/share/v/1XwNmzJrTm/"}, {"date": "2025-04-25", "url": "https://www.facebook.com/share/r/1YJHX5Kh8u/"}, {"date": "2025-04-29", "url": "https://www.facebook.com/share/r/15f8e1RPxt/"}, {"date": "2025-04-29", "url": "https://www.facebook.com/share/r/18fmTPd3aA/"}, {"date": "2025-05-30", "url": "https://www.facebook.com/share/r/1BUSqRaa3U/"}, {"date": "2025-05-30", "url": "https://www.facebook.com/share/r/19CWxBXW3z/"}, {"date": "2025-05-30", "url": "https://www.facebook.com/share/r/12Kt3c6Efa9/"}, {"date": "2025-05-30", "url": "https://www.facebook.com/share/r/1ApjuVUt6y/"}, {"date": "2025-06-12", "url": "https://www.facebook.com/share/r/19CpU2VHXn/"}, {"date": "2025-07-01", "url": "https://www.facebook.com/share/r/16cmie7Asp/"}, {"date": "2025-07-01", "url": "https://www.facebook.com/share/p/1Bsgf1o9oz/"}, {"date": "2025-08-04", "url": "https://www.facebook.com/share/r/179yyzVJyu/"}, {"date": "2025-08-04", "url": "https://www.facebook.com/share/r/19pqm8HYhG/"}, {"date": "2025-08-06", "url": "https://www.facebook.com/share/r/16t79mnWUq/"}, {"date": "2025-08-06", "url": "https://www.facebook.com/share/r/16vMV1F2Hn/"}, {"date": "2025-08-06", "url": "https://www.facebook.com/share/r/16xwg2ZS7L/"}, {"date": "2025-08-14", "url": "https://www.facebook.com/share/r/16QkLbJB8H/"}, {"date": "2025-08-17", "url": "https://www.facebook.com/share/r/179KK8JGcS/"}, {"date": "2025-08-17", "url": "https://www.facebook.com/share/r/19WWikVLRP/"}, {"date": "2025-08-17", "url": "https://www.facebook.com/share/r/1B5zuxJj1m/"}, {"date": "2025-08-17", "url": "https://www.facebook.com/share/r/19xwJU8HJA/"}, {"date": "2025-08-17", "url": "https://www.facebook.com/share/r/16ngsPKGLJ/"}, {"date": "2025-08-25", "url": "https://www.facebook.com/share/r/1JwoRmXzjx/"}, {"date": "2025-08-27", "url": "https://www.facebook.com/share/r/1BcUWh5f4i/"}, {"date": "2025-09-01", "url": "https://www.facebook.com/share/v/1ABfAFzez4/"}, {"date": "2025-09-01", "url": "https://www.facebook.com/share/r/1AvePGb3db/"}, {"date": "2025-09-01", "url": "https://www.facebook.com/share/r/16ttrvAPFr/"}, {"date": "2025-09-02", "url": "https://www.facebook.com/share/r/1KMJbpmVbY/"}, {"date": "2025-09-02", "url": "https://www.facebook.com/share/r/1A8nJKg3Sr/"}, {"date": "2025-09-02", "url": "https://www.facebook.com/share/r/1CJErJ16N1/"}, {"date": "2025-09-02", "url": "https://www.facebook.com/share/r/1YPvftLkuw/"}, {"date": "2025-09-02", "url": "https://www.facebook.com/share/r/1EhChD57RN/"}, {"date": "2025-09-03", "url": "https://www.facebook.com/share/v/19xvqPFWxG/"}, {"date": "2025-09-12", "url": "https://www.facebook.com/share/r/1CnVx2GsGe/"}, {"date": "2025-09-12", "url": "https://www.facebook.com/share/r/1CPQkhVRAk/"}, {"date": "2025-09-12", "url": "https://www.facebook.com/reel/1838104027137176/"}, {"date": "2025-09-17", "url": "https://www.facebook.com/share/r/1CzZKNNig3/"}, {"date": "2025-09-17", "url": "https://www.facebook.com/share/v/1CVHdEJk8d/"}, {"date": "2025-09-17", "url": "https://www.facebook.com/share/r/1DbFNXqH8U/"}, {"date": "2025-09-17", "url": "https://www.facebook.com/share/r/1FvPAjyx52/"}, {"date": "2025-09-17", "url": "https://www.facebook.com/share/r/1aAHSVHmZX/"}, {"date": "2025-09-17", "url": "https://www.facebook.com/share/r/1J9HT8iks6/"}, {"date": "2025-09-19", "url": "https://www.facebook.com/share/r/14Qi5zHuHCP/"}, {"date": "2025-09-24", "url": "https://www.facebook.com/share/r/1G3NZjEKEj/"}, {"date": "2025-10-01", "url": "https://www.facebook.com/share/r/1AHpk6WHcH/"}, {"date": "2025-10-02", "url": "https://www.facebook.com/share/r/169e7uvJxS/"}, {"date": "2025-10-02", "url": "https://www.facebook.com/share/r/19MSBJj9r9/"}, {"date": "2025-10-03", "url": "https://www.facebook.com/share/r/15nF5EaaEZ/"}, {"date": "2025-10-03", "url": "https://www.facebook.com/share/r/1Byw91bfnX/"}, {"date": "2025-10-03", "url": "https://www.facebook.com/share/r/1FCjgfop8g/"}, {"date": "2025-10-03", "url": "https://www.facebook.com/share/r/1CEWQR5wjE/"}, {"date": "2025-10-03", "url": "https://www.facebook.com/share/r/1AngwPD2S2/"}, {"date": "2025-10-10", "url": "https://www.facebook.com/share/v/1AhkNg3JMi/"}, {"date": "2025-10-10", "url": "https://www.facebook.com/share/v/1BfCKRQCBk/"}, {"date": "2025-10-13", "url": "https://www.facebook.com/share/r/1Gpcro26dv/"}, {"date": "2025-10-13", "url": "https://www.facebook.com/share/r/16JJ1MkB94/"}, {"date": "2025-10-13", "url": "https://www.facebook.com/share/r/1BiA6EEpi8/"}, {"date": "2025-10-13", "url": "https://www.facebook.com/share/r/1BMdtCd7PR/"}, {"date": "2025-10-17", "url": "https://www.facebook.com/share/r/17HYpP8AAX/"}, {"date": "2025-10-17", "url": "https://www.facebook.com/share/r/1AMKobGwHi/"}, {"date": "2025-10-17", "url": "https://www.facebook.com/share/r/1FYyHQXMZq/"}, {"date": "2025-10-17", "url": "https://www.facebook.com/share/r/17VnaUD8aZ/"}, {"date": "2025-10-24", "url": "https://www.facebook.com/share/r/1RZQM8RaMj/"}, {"date": "2025-11-04", "url": "https://www.facebook.com/share/v/1BBkY2vUH6/"}, {"date": "2025-11-05", "url": "https://www.facebook.com/share/r/17EH7PpXaY/"}, {"date": "2025-11-05", "url": "https://www.facebook.com/share/r/1Kmd1gizB2/"}, {"date": "2025-12-05", "url": "https://www.facebook.com/share/r/17cyXfNKC5/"}, {"date": "2025-12-05", "url": "https://www.facebook.com/share/r/1BXH4bB2HF/"}, {"date": "2025-12-05", "url": "https://www.facebook.com/share/r/181m6XLPEx/"}, {"date": "2025-12-05", "url": "https://www.facebook.com/share/r/1DNEhwFSCf/"}, {"date": "2025-12-05", "url": "https://www.facebook.com/share/r/1AEcTjFs3G/"}, {"date": "2025-12-05", "url": "https://www.facebook.com/share/r/1DHvqRCyfz/"}, {"date": "2025-12-05", "url": "https://www.facebook.com/share/r/1DPWSJJ5qb/"}, {"date": "2025-12-12", "url": "https://www.facebook.com/share/r/1CwjqSzZ59/"}, {"date": "2025-12-28", "url": "https://www.facebook.com/share/v/1BioyKKiad/"}], "2026": [{"date": "2026-01-07", "url": "https://www.facebook.com/share/v/184mjExssT/"}, {"date": "2026-01-15", "url": "https://www.facebook.com/share/r/17kTQYwZ3M/"}, {"date": "2026-01-17", "url": "https://www.facebook.com/share/r/1C7VXLFSn9/"}, {"date": "2026-01-17", "url": "https://www.facebook.com/share/r/1Bz94ydgEs/"}, {"date": "2026-01-17", "url": "https://www.facebook.com/share/r/1Ahwmnw8Fr/"}, {"date": "2026-01-19", "url": "https://www.facebook.com/share/r/1Z2GHbNRb3/"}, {"date": "2026-01-31", "url": "https://www.facebook.com/share/r/19oQs8urLk/"}, {"date": "2026-01-31", "url": "https://www.facebook.com/share/v/1E2r5ToR1r/"}, {"date": "2026-01-31", "url": "https://www.facebook.com/share/r/1aj1etg9f4/"}, {"date": "2026-02-11", "url": "https://www.facebook.com/share/v/181vQBMJWq/"}, {"date": "2026-02-12", "url": "https://www.facebook.com/share/r/1ANs9WC45V/"}, {"date": "2026-02-12", "url": "https://www.facebook.com/share/r/18NJ3uHPJD/"}, {"date": "2026-02-13", "url": "https://www.facebook.com/share/r/1AA2wYVzkS/"}, {"date": "2026-02-13", "url": "https://www.facebook.com/share/r/17xSyFDXKU/"}, {"date": "2026-02-14", "url": "https://www.facebook.com/share/r/1B2TX7P4Be/"}, {"date": "2026-02-14", "url": "https://www.facebook.com/share/r/14aPqKdMhEF/"}, {"date": "2026-02-15", "url": "https://www.facebook.com/share/r/1AgdfvAjhe/"}, {"date": "2026-02-15", "url": "https://www.facebook.com/share/v/17y4ozGV6C/"}, {"date": "2026-02-28", "url": "https://www.facebook.com/share/r/1Dc6UmLBiW/"}, {"date": "2026-03-05", "url": "https://www.facebook.com/share/r/1B1wnupf6w/"}, {"date": "2026-03-05", "url": "https://www.facebook.com/share/r/17wo4kZJHw/"}, {"date": "2026-03-08", "url": "https://www.facebook.com/share/r/1DWRBRpGJa/"}, {"date": "2026-03-13", "url": "https://www.facebook.com/share/r/1DeB7bzqDx/"}, {"date": "2026-03-14", "url": "https://www.facebook.com/share/r/1Amj7LtqYR/"}, {"date": "2026-03-14", "url": "https://www.facebook.com/share/r/1H2BodeLgn/"}, {"date": "2026-03-17", "url": "https://www.facebook.com/share/r/1AG8ogNxWJ/"}, {"date": "2026-03-17", "url": "https://www.facebook.com/share/r/1CXM1qZ7YF/"}, {"date": "2026-03-17", "url": "https://www.facebook.com/share/r/1BEn634XWY/"}, {"date": "2026-03-17", "url": "https://www.facebook.com/share/v/1NYG971e3m/"}, {"date": "2026-03-25", "url": "https://www.facebook.com/share/r/1HgMGtfd4k/"}, {"date": "2026-03-28", "url": "https://www.facebook.com/share/r/1GmPwVivBZ/"}, {"date": "2026-04-05", "url": "https://www.facebook.com/share/r/1896itiXDV/"}, {"date": "2026-04-05", "url": "https://www.facebook.com/share/r/1HQBUBWVwp/"}, {"date": "2026-04-05", "url": "https://www.facebook.com/share/r/1Gh1ztiL99/"}, {"date": "2026-04-15", "url": "https://www.facebook.com/share/r/14ZgXQkqQK5/"}, {"date": "2026-04-24", "url": "https://www.facebook.com/share/r/1CHWEP5TYG/"}, {"date": "2026-04-24", "url": "https://www.facebook.com/share/r/1BGU6BzMSr/"}, {"date": "2026-04-24", "url": "https://www.facebook.com/share/r/18aeybwbNm/"}, {"date": "2026-04-24", "url": "https://www.facebook.com/share/r/1EGfYtUMdq/"}, {"date": "2026-04-24", "url": "https://www.facebook.com/share/r/18XXgHrCmM/"}, {"date": "2026-04-28", "url": "https://www.facebook.com/share/r/1DCRa9u91S/"}, {"date": "2026-04-28", "url": "https://www.facebook.com/share/r/1AhzFzXPeM/"}, {"date": "2026-05-13", "url": "https://www.facebook.com/share/r/1D6KtsmVDU/"}, {"date": "2026-05-13", "url": "https://www.facebook.com/share/r/14dpRF6o39A/"}, {"date": "2026-05-13", "url": "https://www.facebook.com/share/r/18rsHZNvez/"}, {"date": "2026-05-16", "url": "https://www.facebook.com/share/r/1Swe3F3hVW/"}, {"date": "2026-05-18", "url": "https://www.facebook.com/share/r/1H879Q61ny/"}, {"date": "2026-05-21", "url": "https://www.facebook.com/share/r/1E58nah15m/"}, {"date": "2026-05-21", "url": "https://www.facebook.com/share/r/1BfbieTTPX/"}, {"date": "2026-06-04", "url": "https://www.facebook.com/share/r/1BKT9dJuWX/"}, {"date": "2026-06-12", "url": "https://www.facebook.com/reel/984352087534594/"}, {"date": "2026-06-17", "url": "https://www.facebook.com/share/v/17nawXjMc2/"}, {"date": "2026-06-17", "url": "https://www.facebook.com/share/r/18cde8HZvA/"}, {"date": "2026-06-19", "url": "https://www.facebook.com/share/r/1BAxSZjCPa/"}, {"date": "2026-07-01", "url": "https://www.facebook.com/share/v/17b4KMJ1Ww/"}, {"date": "2026-07-06", "url": "https://www.facebook.com/share/r/18tGqW29Cw/"}]}}</script>
-<script>if('serviceWorker' in navigator){window.addEventListener('load',function(){navigator.serviceWorker.register('sw.js').catch(function(){});});}</script>
+<script type="application/json" id="data">{"types": [{"id": "plats", "label": "Plats"}, {"id": "accomp", "label": "Accompagnements"}, {"id": "petit-dej", "label": "Petit-déjeuner"}, {"id": "salades", "label": "Salades"}, {"id": "soupes", "label": "Soupes"}, {"id": "tajines", "label": "Tajines"}, {"id": "sandwichs", "label": "Sandwichs"}, {"id": "snacks", "label": "Snacks & apéro"}, {"id": "desserts", "label": "Desserts"}, {"id": "aclasser", "label": "À classer"}], "recipes": [{"id": "u-mvz95y4zyqz", "name": "Taktouka : Tajine Oeufs & Tomates", "type": "tajines", "cook": "", "servings": "", "src": "Ajoutée", "date": "2026-11-02", "url": "", "btn": "Ouvrir le lien ↗", "lvl": "user", "ing": [], "probable": [], "ingNote": "", "steps": [], "stepsNote": "", "tips": [], "sum": "", "ts": 1793623572755}, {"id": "pancakes-ecrit", "name": "Pancakes à l'avoine", "type": "petit-dej", "cook": "Poêle", "servings": "Environ 2 personnes", "src": "Texte", "date": "2026-03-13", "url": "https://www.facebook.com/share/r/18BZzaHJXR/", "btn": "Voir le reel d'origine (probable) ↗", "lvl": "complete", "ing": ["90 g de flocons d'avoine", "2 œufs (environ 100 à 110 g)", "20 g de miel (1 c. à soupe)", "60 ml de lait (¼ de tasse)", "125 g de yaourt grec (½ tasse)", "2 à 3 g de cannelle (½ c. à café)", "1 pincée de sel", "2 à 3 g de levure chimique (½ c. à café)", "2,5 ml d'extrait de vanille (½ c. à café)", "1 c. à café de beurre ou d'huile de coco, pour la poêle"], "probable": [], "ingNote": "Recette écrite envoyée dans la discussion, version en grammes et millilitres.", "steps": ["Mixer les 90 g de flocons d'avoine pendant 10 à 15 secondes pour obtenir une farine.", "Ajouter les œufs, le miel, le lait, le yaourt, la vanille, la cannelle, le sel et la levure.", "Mixer jusqu'à ce que la pâte soit bien lisse.", "Faire chauffer une poêle graissée à feu moyen.", "Cuire de petites louches de pâte, 2 à 3 minutes par côté."], "stepsNote": "", "tips": ["Laisser reposer la pâte 5 minutes pour des pancakes plus moelleux : les flocons absorbent le liquide.", "Une banane écrasée dans la pâte fonctionne aussi.", "Garnitures possibles : miel, bananes ou fruits rouges, beurre de cacahuète.", "Peser les ingrédients directement dans le bol du mixeur posé sur une balance évite de la vaisselle."], "sum": "Flocons d'avoine, œufs, miel, yaourt grec, lait", "ts": 0}, {"id": "pancakes-yt", "name": "Pancakes avoine-œufs à la poêle", "type": "petit-dej", "cook": "Poêle", "servings": "", "src": "YouTube", "date": "2026-04-09", "url": "https://youtu.be/MC-Nqv_mLlY", "btn": "Voir la vidéo ↗", "lvl": "title", "ing": ["Flocons d'avoine", "Œufs"], "probable": [], "ingNote": "D'après le titre de la vidéo (en allemand). Les autres ingrédients ne sont pas connus. Cette version peut différer de la recette écrite ci-dessus.", "steps": [], "stepsNote": "", "tips": [], "sum": "Flocons d'avoine, œufs", "ts": 0}, {"id": "sandwich-oeuf-fromage", "name": "Sandwich croustillant œuf-fromage (5 min)", "type": "sandwichs", "cook": "", "servings": "", "src": "YouTube", "date": "2026-04-21", "url": "https://youtu.be/8WSZDvg1X44", "btn": "Voir la vidéo ↗", "lvl": "title", "ing": ["Œufs", "Fromage", "Pain"], "probable": [], "ingNote": "D'après le titre et le début de la description (en allemand). Le type de pain et les autres ingrédients ne sont pas connus.", "steps": [], "stepsNote": "", "tips": [], "sum": "Œufs, fromage", "ts": 0}, {"id": "salades-ete", "name": "3 salades-repas équilibrées pour l'été", "type": "salades", "cook": "", "servings": "", "src": "YouTube", "date": "2026-06-26", "url": "https://youtu.be/do2u-4H7Ce4", "btn": "Voir la vidéo ↗", "lvl": "none", "ing": [], "probable": [], "ingNote": "La vidéo présente 3 salades. Leurs ingrédients ne sont pas relevés ici.", "steps": [], "stepsNote": "", "tips": [], "sum": "3 salades composées", "ts": 0}, {"id": "guacamole", "name": "Guacamole sans avocat", "type": "snacks", "cook": "", "servings": "", "src": "Perplexity", "date": "2024-09-09", "url": "https://www.perplexity.ai/search/recette-de-guacamole-sans-avoc-m_n6xbxpT9qaRzQHXMYpVA#0", "btn": "Voir la recherche ↗", "lvl": "none", "ing": [], "probable": [], "ingNote": "Le lien mène à une recherche Perplexity, pas à une vidéo. Elle contient la réponse.", "steps": [], "stepsNote": "", "tips": [], "sum": "Ingrédients inconnus", "ts": 0}, {"id": "tajine-kefta", "name": "Tajine de kefta aux œufs", "type": "tajines", "cook": "Tajine", "servings": "", "src": "YouTube", "date": "2026-04-06", "url": "https://youtu.be/d69C2Bgr0Kk", "btn": "Voir la vidéo ↗", "lvl": "title", "ing": ["Kefta (viande hachée)", "Œufs"], "probable": ["Sauce tomate", "Oignon", "Épices"], "ingNote": "D'après le titre : « Tajine kefta et œufs ». La description annonce une liste d'ingrédients que je n'ai pas pu lire.", "steps": [], "stepsNote": "", "tips": [], "sum": "Kefta, œufs", "ts": 0}, {"id": "tenders", "name": "Tenders de poulet croustillants", "type": "plats", "cook": "Air Fryer", "servings": "", "src": "YouTube", "date": "2025-06-17", "url": "https://youtu.be/YPrWtuYedCI", "btn": "Voir la vidéo ↗", "lvl": "partial", "ing": ["Poulet (tenders)", "Chapelure panko", "Une sauce pour tremper"], "probable": [], "ingNote": "D'après la description de la vidéo. Les quantités ne sont pas connues.", "steps": [], "stepsNote": "", "tips": [], "sum": "Poulet, chapelure panko", "ts": 0}, {"id": "tortilla-oeufs", "name": "Tortilla aux œufs à la poêle", "type": "plats", "cook": "Poêle", "servings": "", "src": "YouTube", "date": "2026-04-28", "url": "https://youtu.be/A4lNzrENWQs", "btn": "Voir la vidéo ↗", "lvl": "partial", "ing": ["Tortilla", "2 œufs", "Eau"], "probable": [], "ingNote": "D'après la description de la vidéo.", "steps": ["Verser de l'eau dans un bol.", "Tremper une tortilla dans l'eau.", "La poser dans une poêle.", "Casser 2 œufs dessus."], "stepsNote": "Début de la description de la vidéo. La suite est dans la vidéo.", "tips": [], "sum": "Tortilla, œufs", "ts": 0}, {"id": "flatbread-viral", "name": "Recette virale à l'Air Fryer (10 min)", "type": "aclasser", "cook": "Air Fryer", "servings": "", "src": "YouTube", "date": "2026-03-29", "url": "https://youtu.be/D8Mx9i7KTyA", "btn": "Voir la vidéo ↗", "lvl": "partial", "ing": ["1 flatbread italien"], "probable": [], "ingNote": "La description commence par cet ingrédient, le reste n'est pas lisible. Le type de plat n'est pas connu.", "steps": [], "stepsNote": "", "tips": [], "sum": "Flatbread italien…", "ts": 0}, {"id": "poulet-soja-miel", "name": "Poulet caramélisé soja-miel", "type": "plats", "cook": "Poêle", "servings": "3 à 4 personnes", "src": "Texte", "date": "2026-03-18", "url": "", "btn": "", "lvl": "complete", "ing": ["500 g de blanc de poulet, en morceaux", "3 c. à soupe de sauce soja", "2 c. à soupe de miel", "1 c. à soupe de vinaigre (ou jus de citron)", "2 gousses d'ail hachées", "1 c. à café de gingembre (facultatif)", "1 c. à soupe d'huile", "1 c. à café de maïzena (facultatif, pour épaissir)", "Graines de sésame", "Poivre"], "probable": [], "ingNote": "Recette écrite envoyée dans la discussion. Style asiatique.", "steps": ["Marinade : mélanger la sauce soja, le miel, l'ail, le gingembre et le vinaigre. Ajouter le poulet et laisser mariner 15 à 30 minutes (10 minutes suffisent).", "Cuisson : chauffer l'huile dans une poêle et faire revenir le poulet à feu moyen-vif jusqu'à ce qu'il soit bien doré.", "Sauce : verser la marinade dans la poêle et laisser mijoter 5 à 8 minutes, jusqu'à ce que la sauce épaississe et devienne brillante.", "Finition : ajouter les graines de sésame. Ajuster : un peu de miel si c'est trop salé, un peu de sauce soja si c'est trop doux."], "stepsNote": "", "tips": [], "sum": "Poulet, sauce soja, miel, ail, gingembre", "ts": 0}, {"id": "hasselback", "name": "Pommes de terre Hasselback", "type": "accomp", "cook": "Air Fryer", "servings": "", "src": "YouTube", "date": "2025-04-06", "url": "https://youtu.be/77oVGat1jo8", "btn": "Voir la vidéo ↗", "lvl": "partial", "ing": ["Petites pommes de terre (6)"], "probable": [], "ingNote": "La vidéo annonce 3 ingrédients principaux. Seules les pommes de terre sont lisibles dans la description.", "steps": [], "stepsNote": "", "tips": [], "sum": "Pommes de terre…", "ts": 0}, {"id": "pain-pdt-fromage", "name": "Pain pomme de terre-fromage, sans four", "type": "snacks", "cook": "Poêle", "servings": "", "src": "YouTube", "date": "2026-05-06", "url": "https://youtu.be/d3sdpcaMbPk", "btn": "Voir la vidéo ↗", "lvl": "partial", "ing": ["90 g de farine de force (à pain)", "55 g de lait", "10 g de beurre non salé, fondu", "1 pincée de sel", "1 pomme de terre moyenne", "2 c. à soupe de mayonnaise", "Mozzarella", "Miel"], "probable": [], "ingNote": "Traduit de la description coréenne de la vidéo. Les quantités de mozzarella et de miel ne sont pas indiquées. Recette sans four, sans levure, sans œuf.", "steps": [], "stepsNote": "", "tips": [], "sum": "Pomme de terre, mozzarella, farine, lait", "ts": 0}, {"id": "mais-souffle", "name": "Maïs soufflé", "type": "snacks", "cook": "Air Fryer", "servings": "", "src": "YouTube", "date": "2025-12-28", "url": "https://youtube.com/shorts/oKLN7JO0iTY", "btn": "Voir la vidéo ↗", "lvl": "title", "ing": ["Maïs"], "probable": [], "ingNote": "D'après le titre : « Air fryer pop! ». Aucune autre information.", "steps": [], "stepsNote": "", "tips": [], "sum": "Maïs", "ts": 0}, {"id": "sandwich-oeuf-mayo", "name": "Sandwich œuf-mayo et concombre", "type": "sandwichs", "cook": "", "servings": "", "src": "YouTube", "date": "2026-04-25", "url": "https://youtube.com/shorts/xl3RLl3LM7g", "btn": "Voir la vidéo ↗", "lvl": "title", "ing": ["Œufs", "Mayonnaise", "Concombre", "Pain"], "probable": [], "ingNote": "D'après le titre : « Egg mayo & Cucumber Sandwich ».", "steps": [], "stepsNote": "", "tips": [], "sum": "Œufs, mayonnaise, concombre", "ts": 0}, {"id": "gateau-yaourt", "name": "Gâteau au yaourt", "type": "desserts", "cook": "Air Fryer", "servings": "", "src": "YouTube", "date": "2026-05-23", "url": "https://youtu.be/9Rt4rOXlEnc", "btn": "Voir la vidéo ↗", "lvl": "title", "ing": ["Yaourt"], "probable": [], "ingNote": "La vidéo annonce 3 ingrédients. Seul le yaourt ressort du titre. L'auteur propose la recette imprimable via la description YouTube.", "steps": [], "stepsNote": "", "tips": [], "sum": "Yaourt…", "ts": 0}, {"id": "noix-caramel", "name": "Noix caramélisées au miel", "type": "snacks", "cook": "Air Fryer", "servings": "", "src": "YouTube", "date": "2025-03-21", "url": "https://youtu.be/NRoyZyDchCQ", "btn": "Voir la vidéo ↗", "lvl": "partial", "ing": ["200 g de noix", "Eau", "2 c. à soupe de miel"], "probable": [], "ingNote": "La description est coupée après le miel : il manque au moins un ingrédient (1 c. à soupe).", "steps": [], "stepsNote": "", "tips": [], "sum": "Noix, miel", "ts": 0}, {"id": "recette-simple", "name": "« Recette simple et… » (titre tronqué)", "type": "aclasser", "cook": "", "servings": "", "src": "Perplexity", "date": "2024-09-22", "url": "https://www.perplexity.ai/search/donne-une-recette-simple-et-de-Aru7yegPR7Srj7Ugey_GfA", "btn": "Voir la recherche ↗", "lvl": "none", "ing": [], "probable": [], "ingNote": "Le titre est coupé dans le lien Perplexity. Ni le plat ni le type ne sont connus.", "steps": [], "stepsNote": "", "tips": [], "sum": "Ingrédients inconnus", "ts": 0}], "pendingYt": [{"date": "2024-07-02", "url": "https://youtube.com/shorts/eKu7M6lC_ic", "note": ""}, {"date": "2025-04-13", "url": "https://youtube.com/shorts/3IPFU1A96oU", "note": "Introuvable, probablement supprimée"}, {"date": "2025-05-24", "url": "https://youtu.be/63_fJ6Nes6I", "note": ""}, {"date": "2026-01-12", "url": "https://youtu.be/obD_g4yNEhc", "note": ""}, {"date": "2026-02-26", "url": "https://youtube.com/shorts/dhDDw-07Sss", "note": ""}, {"date": "2026-04-13", "url": "https://youtube.com/shorts/UpFmRTipY5k", "note": ""}, {"date": "2026-04-25", "url": "https://youtube.com/shorts/2iTVS16CzXM", "note": ""}, {"date": "2026-04-25", "url": "https://youtube.com/shorts/eBsgfQgEACY", "note": ""}, {"date": "2026-06-20", "url": "https://youtu.be/mAOOTlplW9E", "note": ""}], "pendingFb": {"2024": [{"date": "2024-03-01", "url": "https://www.facebook.com/share/r/qij37Yn9ZbawDAt3/"}, {"date": "2024-03-01", "url": "https://www.facebook.com/reel/1408123533154733/"}, {"date": "2024-04-05", "url": "https://www.facebook.com/share/v/2e844H4X7x1Axn7x/"}, {"date": "2024-04-05", "url": "https://www.facebook.com/share/r/mv4V4R6abSfkChtg/"}, {"date": "2024-04-05", "url": "https://www.facebook.com/share/r/MSLKtAbi1XQTpzFF/"}, {"date": "2024-04-05", "url": "https://www.facebook.com/share/r/pG7WvSsjKENQgnra/"}, {"date": "2024-04-05", "url": "https://www.facebook.com/share/r/3NDDmLYufPvnyjYF/"}, {"date": "2024-04-06", "url": "https://www.facebook.com/share/r/FQQ5ZA3VhYVZsFbg/"}, {"date": "2024-04-20", "url": "https://www.facebook.com/share/r/8AWWS9gVWgSHc32R/"}, {"date": "2024-04-20", "url": "https://www.facebook.com/share/r/1o6DUHA6zZ5HXB3B/"}, {"date": "2024-04-24", "url": "https://www.facebook.com/share/r/g4SQQ89DuMrKy1qt/"}, {"date": "2024-07-23", "url": "https://www.facebook.com/share/r/aaZVpPVpS1xDu3VQ/"}, {"date": "2024-07-24", "url": "https://www.facebook.com/share/r/jSr1exfP6rtvUkeZ/"}, {"date": "2024-07-24", "url": "https://www.facebook.com/share/r/9K9Fibv9FAqsTWyD/"}, {"date": "2024-07-27", "url": "https://www.facebook.com/share/r/eQ4TYqzgRp9PvqRr/"}, {"date": "2024-08-01", "url": "https://www.facebook.com/share/r/6Dd7jHwLYBwFytdV/"}, {"date": "2024-08-11", "url": "https://www.facebook.com/share/v/poGxpeF3UJ8ymGHc/"}, {"date": "2024-08-28", "url": "https://www.facebook.com/share/r/THK95Dm2PJZ3EVg6/"}, {"date": "2024-08-28", "url": "https://www.facebook.com/share/r/fj1Xw6Gi2vqugx5K/"}, {"date": "2024-09-12", "url": "https://www.facebook.com/share/r/UkafthKBcueoicoD/"}, {"date": "2024-09-12", "url": "https://www.facebook.com/share/r/i4U8v9gyYGBkQAPU/"}, {"date": "2024-09-15", "url": "https://www.facebook.com/share/r/ev6UgZmHQxj5Fx6Z/"}, {"date": "2024-09-15", "url": "https://www.facebook.com/share/r/Eh5yyUPNkNJnKWiG/"}, {"date": "2024-09-20", "url": "https://www.facebook.com/share/r/YZrQFnus3ZRj72c5/"}, {"date": "2024-09-28", "url": "https://www.facebook.com/share/r/k6wtcBY4kN8RNpPW/"}, {"date": "2024-10-02", "url": "https://www.facebook.com/share/r/4vrzxPjrYeWaD1nH/"}, {"date": "2024-10-04", "url": "https://www.facebook.com/share/r/LdDKdYENiF8PDNWr/"}, {"date": "2024-10-11", "url": "https://www.facebook.com/share/r/Cbr9pXAHEoSaRfUi/"}, {"date": "2024-10-11", "url": "https://www.facebook.com/share/r/iamoxV58MF9fQTri/"}, {"date": "2024-10-11", "url": "https://www.facebook.com/share/r/qcQmQL9Qua1HQVyb/"}, {"date": "2024-10-16", "url": "https://www.facebook.com/share/r/cGFkoZWVtrmVRi3Z/"}, {"date": "2024-10-16", "url": "https://www.facebook.com/share/r/KYtBa48nBHYS7fs9/"}, {"date": "2024-10-16", "url": "https://www.facebook.com/share/r/ekGKRi8116zoZ5hC/"}, {"date": "2024-10-19", "url": "https://www.facebook.com/share/v/c6ACTKZQmy5Ke49e/"}, {"date": "2024-10-26", "url": "https://www.facebook.com/share/r/obfouxzkPx7RdiKC/"}, {"date": "2024-10-28", "url": "https://www.facebook.com/share/v/EPXG5SKmssJJcqDW/"}, {"date": "2024-11-04", "url": "https://www.facebook.com/share/v/JxpvyapVhgruehbs/"}, {"date": "2024-11-13", "url": "https://www.facebook.com/share/r/14ih2ixRko/"}, {"date": "2024-11-13", "url": "https://www.facebook.com/share/r/1AnT8qEcoi/"}, {"date": "2024-11-15", "url": "https://www.facebook.com/share/v/18Fsv3hLZa/"}, {"date": "2024-11-15", "url": "https://www.facebook.com/share/v/19dyEpERQ6/"}, {"date": "2024-11-15", "url": "https://www.facebook.com/share/v/1GmKJwvfg2/"}, {"date": "2024-11-15", "url": "https://www.facebook.com/share/v/18F1UEK288/"}, {"date": "2024-11-15", "url": "https://www.facebook.com/share/r/15etC8YyZK/"}, {"date": "2024-11-15", "url": "https://www.facebook.com/share/r/18tuXFje7a/"}, {"date": "2024-11-22", "url": "https://www.facebook.com/share/v/19WJw8Pywt/"}, {"date": "2024-11-22", "url": "https://www.facebook.com/share/r/1B8PNRBB8H/"}, {"date": "2024-11-22", "url": "https://www.facebook.com/share/r/14XphPVaoq/"}, {"date": "2024-11-27", "url": "https://www.facebook.com/share/r/15Kk9wHdGN/"}, {"date": "2024-11-27", "url": "https://www.facebook.com/share/r/1ANmEjgDiR/"}, {"date": "2024-11-27", "url": "https://www.facebook.com/share/r/1CoWCbV6mb/"}, {"date": "2024-11-27", "url": "https://www.facebook.com/share/r/1B1Py6BrS7/"}, {"date": "2024-11-27", "url": "https://www.facebook.com/share/r/18YN3TS8k4/"}, {"date": "2024-11-27", "url": "https://www.facebook.com/share/r/144GzXf22g/"}, {"date": "2024-11-27", "url": "https://www.facebook.com/share/r/1YX8dMoJiv/"}, {"date": "2024-11-27", "url": "https://www.facebook.com/share/r/1DaLvooVK8/"}, {"date": "2024-11-27", "url": "https://www.facebook.com/share/r/15BqSQgje1/"}, {"date": "2024-11-27", "url": "https://www.facebook.com/share/r/1ApuPRwBEk/"}, {"date": "2024-11-27", "url": "https://www.facebook.com/reel/497049043236092/"}, {"date": "2024-11-27", "url": "https://www.facebook.com/share/v/1DQA7pdYHX/"}, {"date": "2024-11-29", "url": "https://www.facebook.com/share/r/1DXE4kJNtC/"}, {"date": "2024-11-29", "url": "https://www.facebook.com/share/v/1K1obugKen/"}, {"date": "2024-12-07", "url": "https://www.facebook.com/share/v/1AiCVtHNCK/"}, {"date": "2024-12-13", "url": "https://www.facebook.com/share/r/1BE75TcNh5/"}, {"date": "2024-12-13", "url": "https://www.facebook.com/share/r/19c6LPSrKv/"}, {"date": "2024-12-14", "url": "https://www.facebook.com/share/r/15Qq2gV3cj/"}, {"date": "2024-12-14", "url": "https://www.facebook.com/share/r/1G5jue3y4A/"}, {"date": "2024-12-20", "url": "https://www.facebook.com/share/r/14REx7d2E3/"}], "2025": [{"date": "2025-01-05", "url": "https://www.facebook.com/share/v/18tRXRUfV7/"}, {"date": "2025-01-08", "url": "https://www.facebook.com/share/r/15zMA3wkkM/"}, {"date": "2025-01-08", "url": "https://www.facebook.com/share/v/1AsW8pXBxA/"}, {"date": "2025-01-08", "url": "https://www.facebook.com/share/r/1A3utZu2sB/"}, {"date": "2025-01-24", "url": "https://www.facebook.com/reel/3878564385692670/"}, {"date": "2025-01-25", "url": "https://www.facebook.com/share/r/1Gf3Kc7nNJ/"}, {"date": "2025-01-29", "url": "https://www.facebook.com/share/v/19tgAqVVgz/"}, {"date": "2025-02-01", "url": "https://www.facebook.com/share/r/1BzbL5fzdi/"}, {"date": "2025-02-17", "url": "https://www.facebook.com/share/r/15XNT4iL5R/"}, {"date": "2025-03-11", "url": "https://www.facebook.com/share/v/1Dk1S2yMHr/"}, {"date": "2025-03-14", "url": "https://www.facebook.com/share/r/15FKVt7zxC/"}, {"date": "2025-03-28", "url": "https://www.facebook.com/share/v/1NZjUY352N/"}, {"date": "2025-03-28", "url": "https://www.facebook.com/share/v/1AM32TkdmL/"}, {"date": "2025-04-01", "url": "https://www.facebook.com/share/r/18sxL7weRs/"}, {"date": "2025-04-04", "url": "https://www.facebook.com/share/r/1FJceWD7hA/"}, {"date": "2025-04-04", "url": "https://www.facebook.com/share/r/167dKtoNQm/"}, {"date": "2025-04-04", "url": "https://www.facebook.com/share/r/16XVYhSuRo/"}, {"date": "2025-04-04", "url": "https://www.facebook.com/share/r/1DATaWFWke/"}, {"date": "2025-04-04", "url": "https://www.facebook.com/share/r/16GPN3bxqe/"}, {"date": "2025-04-04", "url": "https://www.facebook.com/share/r/1EeaqoJW8R/"}, {"date": "2025-04-04", "url": "https://www.facebook.com/share/r/159vQR7XhA/"}, {"date": "2025-04-04", "url": "https://www.facebook.com/share/r/1C4J6xFZ7r/"}, {"date": "2025-04-23", "url": "https://www.facebook.com/share/v/1XwNmzJrTm/"}, {"date": "2025-04-25", "url": "https://www.facebook.com/share/r/1YJHX5Kh8u/"}, {"date": "2025-04-29", "url": "https://www.facebook.com/share/r/15f8e1RPxt/"}, {"date": "2025-04-29", "url": "https://www.facebook.com/share/r/18fmTPd3aA/"}, {"date": "2025-05-30", "url": "https://www.facebook.com/share/r/1BUSqRaa3U/"}, {"date": "2025-05-30", "url": "https://www.facebook.com/share/r/19CWxBXW3z/"}, {"date": "2025-05-30", "url": "https://www.facebook.com/share/r/12Kt3c6Efa9/"}, {"date": "2025-05-30", "url": "https://www.facebook.com/share/r/1ApjuVUt6y/"}, {"date": "2025-06-12", "url": "https://www.facebook.com/share/r/19CpU2VHXn/"}, {"date": "2025-07-01", "url": "https://www.facebook.com/share/r/16cmie7Asp/"}, {"date": "2025-07-01", "url": "https://www.facebook.com/share/p/1Bsgf1o9oz/"}, {"date": "2025-08-04", "url": "https://www.facebook.com/share/r/179yyzVJyu/"}, {"date": "2025-08-04", "url": "https://www.facebook.com/share/r/19pqm8HYhG/"}, {"date": "2025-08-06", "url": "https://www.facebook.com/share/r/16t79mnWUq/"}, {"date": "2025-08-06", "url": "https://www.facebook.com/share/r/16vMV1F2Hn/"}, {"date": "2025-08-06", "url": "https://www.facebook.com/share/r/16xwg2ZS7L/"}, {"date": "2025-08-14", "url": "https://www.facebook.com/share/r/16QkLbJB8H/"}, {"date": "2025-08-17", "url": "https://www.facebook.com/share/r/179KK8JGcS/"}, {"date": "2025-08-17", "url": "https://www.facebook.com/share/r/19WWikVLRP/"}, {"date": "2025-08-17", "url": "https://www.facebook.com/share/r/1B5zuxJj1m/"}, {"date": "2025-08-17", "url": "https://www.facebook.com/share/r/19xwJU8HJA/"}, {"date": "2025-08-17", "url": "https://www.facebook.com/share/r/16ngsPKGLJ/"}, {"date": "2025-08-25", "url": "https://www.facebook.com/share/r/1JwoRmXzjx/"}, {"date": "2025-08-27", "url": "https://www.facebook.com/share/r/1BcUWh5f4i/"}, {"date": "2025-09-01", "url": "https://www.facebook.com/share/v/1ABfAFzez4/"}, {"date": "2025-09-01", "url": "https://www.facebook.com/share/r/1AvePGb3db/"}, {"date": "2025-09-01", "url": "https://www.facebook.com/share/r/16ttrvAPFr/"}, {"date": "2025-09-02", "url": "https://www.facebook.com/share/r/1KMJbpmVbY/"}, {"date": "2025-09-02", "url": "https://www.facebook.com/share/r/1A8nJKg3Sr/"}, {"date": "2025-09-02", "url": "https://www.facebook.com/share/r/1CJErJ16N1/"}, {"date": "2025-09-02", "url": "https://www.facebook.com/share/r/1YPvftLkuw/"}, {"date": "2025-09-02", "url": "https://www.facebook.com/share/r/1EhChD57RN/"}, {"date": "2025-09-03", "url": "https://www.facebook.com/share/v/19xvqPFWxG/"}, {"date": "2025-09-12", "url": "https://www.facebook.com/share/r/1CnVx2GsGe/"}, {"date": "2025-09-12", "url": "https://www.facebook.com/share/r/1CPQkhVRAk/"}, {"date": "2025-09-12", "url": "https://www.facebook.com/reel/1838104027137176/"}, {"date": "2025-09-17", "url": "https://www.facebook.com/share/r/1CzZKNNig3/"}, {"date": "2025-09-17", "url": "https://www.facebook.com/share/v/1CVHdEJk8d/"}, {"date": "2025-09-17", "url": "https://www.facebook.com/share/r/1DbFNXqH8U/"}, {"date": "2025-09-17", "url": "https://www.facebook.com/share/r/1FvPAjyx52/"}, {"date": "2025-09-17", "url": "https://www.facebook.com/share/r/1aAHSVHmZX/"}, {"date": "2025-09-17", "url": "https://www.facebook.com/share/r/1J9HT8iks6/"}, {"date": "2025-09-19", "url": "https://www.facebook.com/share/r/14Qi5zHuHCP/"}, {"date": "2025-09-24", "url": "https://www.facebook.com/share/r/1G3NZjEKEj/"}, {"date": "2025-10-01", "url": "https://www.facebook.com/share/r/1AHpk6WHcH/"}, {"date": "2025-10-02", "url": "https://www.facebook.com/share/r/169e7uvJxS/"}, {"date": "2025-10-02", "url": "https://www.facebook.com/share/r/19MSBJj9r9/"}, {"date": "2025-10-03", "url": "https://www.facebook.com/share/r/15nF5EaaEZ/"}, {"date": "2025-10-03", "url": "https://www.facebook.com/share/r/1Byw91bfnX/"}, {"date": "2025-10-03", "url": "https://www.facebook.com/share/r/1FCjgfop8g/"}, {"date": "2025-10-03", "url": "https://www.facebook.com/share/r/1CEWQR5wjE/"}, {"date": "2025-10-03", "url": "https://www.facebook.com/share/r/1AngwPD2S2/"}, {"date": "2025-10-10", "url": "https://www.facebook.com/share/v/1AhkNg3JMi/"}, {"date": "2025-10-10", "url": "https://www.facebook.com/share/v/1BfCKRQCBk/"}, {"date": "2025-10-13", "url": "https://www.facebook.com/share/r/1Gpcro26dv/"}, {"date": "2025-10-13", "url": "https://www.facebook.com/share/r/16JJ1MkB94/"}, {"date": "2025-10-13", "url": "https://www.facebook.com/share/r/1BiA6EEpi8/"}, {"date": "2025-10-13", "url": "https://www.facebook.com/share/r/1BMdtCd7PR/"}, {"date": "2025-10-17", "url": "https://www.facebook.com/share/r/17HYpP8AAX/"}, {"date": "2025-10-17", "url": "https://www.facebook.com/share/r/1AMKobGwHi/"}, {"date": "2025-10-17", "url": "https://www.facebook.com/share/r/1FYyHQXMZq/"}, {"date": "2025-10-17", "url": "https://www.facebook.com/share/r/17VnaUD8aZ/"}, {"date": "2025-10-24", "url": "https://www.facebook.com/share/r/1RZQM8RaMj/"}, {"date": "2025-11-04", "url": "https://www.facebook.com/share/v/1BBkY2vUH6/"}, {"date": "2025-11-05", "url": "https://www.facebook.com/share/r/17EH7PpXaY/"}, {"date": "2025-11-05", "url": "https://www.facebook.com/share/r/1Kmd1gizB2/"}, {"date": "2025-12-05", "url": "https://www.facebook.com/share/r/17cyXfNKC5/"}, {"date": "2025-12-05", "url": "https://www.facebook.com/share/r/1BXH4bB2HF/"}, {"date": "2025-12-05", "url": "https://www.facebook.com/share/r/181m6XLPEx/"}, {"date": "2025-12-05", "url": "https://www.facebook.com/share/r/1DNEhwFSCf/"}, {"date": "2025-12-05", "url": "https://www.facebook.com/share/r/1AEcTjFs3G/"}, {"date": "2025-12-05", "url": "https://www.facebook.com/share/r/1DHvqRCyfz/"}, {"date": "2025-12-05", "url": "https://www.facebook.com/share/r/1DPWSJJ5qb/"}, {"date": "2025-12-12", "url": "https://www.facebook.com/share/r/1CwjqSzZ59/"}, {"date": "2025-12-28", "url": "https://www.facebook.com/share/v/1BioyKKiad/"}], "2026": [{"date": "2026-01-07", "url": "https://www.facebook.com/share/v/184mjExssT/"}, {"date": "2026-01-15", "url": "https://www.facebook.com/share/r/17kTQYwZ3M/"}, {"date": "2026-01-17", "url": "https://www.facebook.com/share/r/1C7VXLFSn9/"}, {"date": "2026-01-17", "url": "https://www.facebook.com/share/r/1Bz94ydgEs/"}, {"date": "2026-01-17", "url": "https://www.facebook.com/share/r/1Ahwmnw8Fr/"}, {"date": "2026-01-19", "url": "https://www.facebook.com/share/r/1Z2GHbNRb3/"}, {"date": "2026-01-31", "url": "https://www.facebook.com/share/r/19oQs8urLk/"}, {"date": "2026-01-31", "url": "https://www.facebook.com/share/v/1E2r5ToR1r/"}, {"date": "2026-01-31", "url": "https://www.facebook.com/share/r/1aj1etg9f4/"}, {"date": "2026-02-11", "url": "https://www.facebook.com/share/v/181vQBMJWq/"}, {"date": "2026-02-12", "url": "https://www.facebook.com/share/r/1ANs9WC45V/"}, {"date": "2026-02-12", "url": "https://www.facebook.com/share/r/18NJ3uHPJD/"}, {"date": "2026-02-13", "url": "https://www.facebook.com/share/r/1AA2wYVzkS/"}, {"date": "2026-02-13", "url": "https://www.facebook.com/share/r/17xSyFDXKU/"}, {"date": "2026-02-14", "url": "https://www.facebook.com/share/r/1B2TX7P4Be/"}, {"date": "2026-02-14", "url": "https://www.facebook.com/share/r/14aPqKdMhEF/"}, {"date": "2026-02-15", "url": "https://www.facebook.com/share/r/1AgdfvAjhe/"}, {"date": "2026-02-15", "url": "https://www.facebook.com/share/v/17y4ozGV6C/"}, {"date": "2026-02-28", "url": "https://www.facebook.com/share/r/1Dc6UmLBiW/"}, {"date": "2026-03-05", "url": "https://www.facebook.com/share/r/1B1wnupf6w/"}, {"date": "2026-03-05", "url": "https://www.facebook.com/share/r/17wo4kZJHw/"}, {"date": "2026-03-08", "url": "https://www.facebook.com/share/r/1DWRBRpGJa/"}, {"date": "2026-03-13", "url": "https://www.facebook.com/share/r/1DeB7bzqDx/"}, {"date": "2026-03-14", "url": "https://www.facebook.com/share/r/1Amj7LtqYR/"}, {"date": "2026-03-14", "url": "https://www.facebook.com/share/r/1H2BodeLgn/"}, {"date": "2026-03-17", "url": "https://www.facebook.com/share/r/1AG8ogNxWJ/"}, {"date": "2026-03-17", "url": "https://www.facebook.com/share/r/1CXM1qZ7YF/"}, {"date": "2026-03-17", "url": "https://www.facebook.com/share/r/1BEn634XWY/"}, {"date": "2026-03-17", "url": "https://www.facebook.com/share/v/1NYG971e3m/"}, {"date": "2026-03-25", "url": "https://www.facebook.com/share/r/1HgMGtfd4k/"}, {"date": "2026-03-28", "url": "https://www.facebook.com/share/r/1GmPwVivBZ/"}, {"date": "2026-04-05", "url": "https://www.facebook.com/share/r/1896itiXDV/"}, {"date": "2026-04-05", "url": "https://www.facebook.com/share/r/1HQBUBWVwp/"}, {"date": "2026-04-05", "url": "https://www.facebook.com/share/r/1Gh1ztiL99/"}, {"date": "2026-04-15", "url": "https://www.facebook.com/share/r/14ZgXQkqQK5/"}, {"date": "2026-04-24", "url": "https://www.facebook.com/share/r/1CHWEP5TYG/"}, {"date": "2026-04-24", "url": "https://www.facebook.com/share/r/1BGU6BzMSr/"}, {"date": "2026-04-24", "url": "https://www.facebook.com/share/r/18aeybwbNm/"}, {"date": "2026-04-24", "url": "https://www.facebook.com/share/r/1EGfYtUMdq/"}, {"date": "2026-04-24", "url": "https://www.facebook.com/share/r/18XXgHrCmM/"}, {"date": "2026-04-28", "url": "https://www.facebook.com/share/r/1DCRa9u91S/"}, {"date": "2026-04-28", "url": "https://www.facebook.com/share/r/1AhzFzXPeM/"}, {"date": "2026-05-13", "url": "https://www.facebook.com/share/r/1D6KtsmVDU/"}, {"date": "2026-05-13", "url": "https://www.facebook.com/share/r/14dpRF6o39A/"}, {"date": "2026-05-13", "url": "https://www.facebook.com/share/r/18rsHZNvez/"}, {"date": "2026-05-16", "url": "https://www.facebook.com/share/r/1Swe3F3hVW/"}, {"date": "2026-05-18", "url": "https://www.facebook.com/share/r/1H879Q61ny/"}, {"date": "2026-05-21", "url": "https://www.facebook.com/share/r/1E58nah15m/"}, {"date": "2026-05-21", "url": "https://www.facebook.com/share/r/1BfbieTTPX/"}, {"date": "2026-06-04", "url": "https://www.facebook.com/share/r/1BKT9dJuWX/"}, {"date": "2026-06-12", "url": "https://www.facebook.com/reel/984352087534594/"}, {"date": "2026-06-17", "url": "https://www.facebook.com/share/v/17nawXjMc2/"}, {"date": "2026-06-17", "url": "https://www.facebook.com/share/r/18cde8HZvA/"}, {"date": "2026-06-19", "url": "https://www.facebook.com/share/r/1BAxSZjCPa/"}, {"date": "2026-07-01", "url": "https://www.facebook.com/share/v/17b4KMJ1Ww/"}, {"date": "2026-07-06", "url": "https://www.facebook.com/share/r/18tGqW29Cw/"}]}}</script>
 <script>
 (function () {
   var D = JSON.parse(document.getElementById('data').textContent);
   var T = D.types;
-  var BASE = D.recipes;
   var R = [], byId = Object.create(null), tById = Object.create(null);
-  var U = Object.create(null);          // recettes ajoutées (base partagée)
   T.forEach(function (t) { tById[t.id] = t; });
+  var RESERVED = { 'accueil': 1, 'a-identifier': 1, 'ajouter': 1, 'modifier': 1, 'reglages': 1 };
   var view = document.getElementById('view');
   var firstRoute = true;
   var formActive = false;
@@ -337,77 +338,148 @@ body { margin: 0; }
   }
   function tcls(typeId) { return 't-' + (tById[typeId] ? typeId : 'aclasser'); }
 
-  /* ---- Recettes ajoutées : validation (la base est partagée, donc non fiable) ---- */
-  function cleanList(a, max) {
+  /* ---- Stockage local (réglages, copie hors ligne) ---- */
+  function lsGet(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }
+  function lsSet(k, v) { try { localStorage.setItem(k, v); } catch (e) {} }
+  var DEFAULT_REPO = 'RevisionsDescartes/carnet-recettes', FILE = 'recettes.json', BRANCH = 'main';
+  var REPO_RE = /^[A-Za-z0-9_.-]+\/[A-Za-z0-9_.-]+$/;
+  var cfg = { repo: DEFAULT_REPO, token: '' };
+  try {
+    var c0 = JSON.parse(lsGet('carnet:cfg') || '{}');
+    if (typeof c0.repo === 'string' && REPO_RE.test(c0.repo)) cfg.repo = c0.repo;
+    if (typeof c0.token === 'string') cfg.token = c0.token.trim();
+  } catch (e) {}
+  function saveCfg() { lsSet('carnet:cfg', JSON.stringify(cfg)); }
+  function canEdit() { return !!cfg.token; }
+  var sync = 'idle';   // idle | ok | offline | missing
+
+  /* ---- Recettes : validation (les données viennent d'un dépôt public, donc non fiables) ---- */
+  function str(x, n) { return typeof x === 'string' ? x.trim().slice(0, n) : ''; }
+  function cleanList(a, max, n) {
     if (!Array.isArray(a)) return [];
-    return a.filter(function (x) { return typeof x === 'string' && x.trim(); }).slice(0, max).map(function (x) { return x.trim().slice(0, 400); });
+    return a.filter(function (x) { return typeof x === 'string' && x.trim(); }).slice(0, max).map(function (x) { return x.trim().slice(0, n); });
   }
   function cleanUrl(u) {
     if (typeof u !== 'string' || !u) return '';
     try { var x = new URL(u); return (x.protocol === 'https:' || x.protocol === 'http:') ? x.href : ''; } catch (e) { return ''; }
   }
-  function normalize(id, d) {
-    if (!/^u-[a-z0-9-]{3,60}$/.test(id) || !d || typeof d.name !== 'string' || !d.name.trim()) return null;
-    var ing = cleanList(d.ing, 60);
+  function normalize(o) {
+    if (!o || typeof o !== 'object') return null;
+    var id = typeof o.id === 'string' ? o.id : '';
+    if (!/^[a-z0-9][a-z0-9-]{1,59}$/.test(id) || RESERVED[id] || tById[id]) return null;
+    var name = str(o.name, 120); if (!name) return null;
+    var ing = cleanList(o.ing, 60, 400);
     return {
-      id: id, name: d.name.trim().slice(0, 120), type: tById[d.type] ? d.type : 'aclasser',
-      cook: typeof d.cook === 'string' ? d.cook.slice(0, 60) : '',
-      servings: typeof d.servings === 'string' ? d.servings.slice(0, 60) : '',
-      src: 'Ajoutée', date: typeof d.created === 'string' ? d.created.slice(0, 10) : '',
-      url: cleanUrl(d.url), btn: 'Ouvrir le lien ↗', lvl: 'user',
-      ing: ing, probable: [], ingNote: '', steps: cleanList(d.steps, 60), stepsNote: '', tips: [],
-      sum: ing.slice(0, 4).join(', '),
-      photo: (typeof d.photo === 'string' && /^[0-9a-f]{32}$/.test(d.photo)) ? d.photo : '',
-      user: true, ts: typeof d.ts === 'number' ? d.ts : 0
+      id: id, name: name, type: tById[o.type] ? o.type : 'aclasser',
+      cook: str(o.cook, 60), servings: str(o.servings, 60),
+      src: str(o.src, 40) || 'Ajoutée', date: (typeof o.date === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(o.date)) ? o.date : '',
+      url: cleanUrl(o.url), btn: str(o.btn, 60) || 'Ouvrir le lien ↗', lvl: LEVELS[o.lvl] ? o.lvl : 'user',
+      ing: ing, probable: cleanList(o.probable, 20, 100), ingNote: str(o.ingNote, 600),
+      steps: cleanList(o.steps, 60, 600), stepsNote: str(o.stepsNote, 600), tips: cleanList(o.tips, 20, 400),
+      sum: str(o.sum, 200) || ing.slice(0, 4).join(', '), ts: typeof o.ts === 'number' ? o.ts : 0
     };
   }
-  function rebuild() {
-    var mine = Object.keys(U).map(function (k) { return U[k]; }).sort(function (a, b) { return b.ts - a.ts; });
-    R = mine.concat(BASE);
-    byId = Object.create(null);
+  function parseRecipes(data) {
+    var seen = Object.create(null), out = [];
+    ((data && Array.isArray(data.recipes)) ? data.recipes : []).forEach(function (o) {
+      var r = normalize(o); if (r && !seen[r.id]) { seen[r.id] = 1; out.push(r); }
+    });
+    return out;
+  }
+  function useList(list) {
+    R = list; byId = Object.create(null);
     R.forEach(function (r) { byId[r.id] = r; });
   }
+  function setRecipes(list) { useList(list); lsSet('carnet:data', JSON.stringify(list)); }
 
-  /* ---- Connexion à la base partagée et aux photos ---- */
-  var addState = 'off';     // off | pending | on
-  var dbState = 'idle';     // idle | loading | ok | slow | error
-  var dbNs = null, assets = null, userNs = null, canWrite = true;
-  var dbP = Promise.resolve(null);
-  var hasClaude = !!(window.claude && typeof window.claude.use === 'function');
-  function canAdd() { return addState !== 'off' && canWrite; }
+  var seed = parseRecipes({ recipes: D.recipes });
+  var cached = null;
+  try { var cj = JSON.parse(lsGet('carnet:data') || 'null'); if (Array.isArray(cj)) cached = parseRecipes({ recipes: cj }); } catch (e) {}
+  useList(cached && cached.length ? cached : seed);
 
-  function boot() {
-    if (!hasClaude) return;
-    addState = 'pending'; dbState = 'loading';
-    dbP = window.claude.use('db').catch(function () { return null; });
-    dbP.then(function (d) {
-      dbNs = d;
-      if (!d) { addState = 'off'; dbState = 'idle'; refresh(); return; }
-      addState = 'on';
-      var timer = setTimeout(function () { if (dbState === 'loading') { dbState = 'slow'; refresh(); } }, 10000);
-      d.collection('recettes').onSnapshot(function (snap) {
-        var next = Object.create(null);
-        snap.docs.forEach(function (doc) { var r = normalize(doc.id, doc.data()); if (r) next[doc.id] = r; });
-        U = next;
-        if (!snap.metadata.fromCache) { clearTimeout(timer); dbState = 'ok'; } else if (dbState === 'slow') { dbState = 'loading'; }
-        rebuild();
-        refresh();
-      }, function () { clearTimeout(timer); dbState = 'error'; refresh(); });
+  /* ---- Dépôt de données (API GitHub) ---- */
+  function b64dec(s) {
+    var bin = atob(s.replace(/\s/g, '')), bytes = new Uint8Array(bin.length);
+    for (var i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
+    return new TextDecoder().decode(bytes);
+  }
+  function b64enc(s) {
+    var bytes = new TextEncoder().encode(s), bin = '';
+    for (var i = 0; i < bytes.length; i++) bin += String.fromCharCode(bytes[i]);
+    return btoa(bin);
+  }
+  function api(path, opts) {
+    opts = opts || {};
+    var h = { 'Accept': 'application/vnd.github+json' };
+    if (cfg.token) h['Authorization'] = 'Bearer ' + cfg.token;
+    if (opts.body) h['Content-Type'] = 'application/json';
+    return fetch('https://api.github.com' + path, { method: opts.method || 'GET', headers: h, body: opts.body, cache: 'no-store' })
+      .then(function (r) {
+        return r.json().catch(function () { return {}; }).then(function (j) {
+          if (!r.ok) { var e = new Error((j && j.message) || ('HTTP ' + r.status)); e.status = r.status; throw e; }
+          return j;
+        });
+      });
+  }
+  function fetchRemote() {
+    return api('/repos/' + cfg.repo + '/contents/' + FILE + '?ref=' + BRANCH).then(function (j) {
+      var data;
+      try { data = JSON.parse(b64dec(j.content)); } catch (e) { throw new Error('format'); }
+      return { sha: j.sha, recipes: parseRecipes(data) };
     });
-    window.claude.use('assets').then(function (a) { assets = a || null; }, function () { assets = null; });
-    window.claude.use('user').then(function (u) {
-      userNs = u;
-      if (u && typeof u.can === 'function') {
-        u.can('data.write').then(function (ok) { if (ok === false) { canWrite = false; refresh(); } }, function () {});
-      }
-    }, function () {});
+  }
+  var lastSync = 0;
+  function refreshData(force) {
+    if (!force && Date.now() - lastSync < 60000) return Promise.resolve();
+    lastSync = Date.now();
+    return fetchRemote().then(function (rm) {
+      var changed = JSON.stringify(rm.recipes) !== JSON.stringify(R) || sync !== 'ok';
+      sync = 'ok'; setRecipes(rm.recipes);
+      if (changed) rerender();
+    }, function (e) {
+      var s = e && e.status === 404 ? 'missing' : 'offline';
+      if (s !== sync) { sync = s; rerender(); }
+    });
+  }
+  function applyOp(list, op) {
+    var out = list.slice(), i = -1;
+    out.forEach(function (r, k) { if (r.id === op.id) i = k; });
+    if (op.del) { if (i >= 0) out.splice(i, 1); return out; }
+    var rec = normalize(op.rec); if (!rec) throw new Error('invalide');
+    if (i >= 0) out[i] = rec; else out.unshift(rec);
+    return out;
+  }
+  /* Écrit une modification : relit toujours la dernière version avant d'appliquer, et réessaie si un autre appareil a écrit entre-temps. */
+  function commit(op, message) {
+    function attempt(n) {
+      return fetchRemote().catch(function (e) {
+        if (e && e.status === 404) return { sha: undefined, recipes: R };
+        throw e;
+      }).then(function (rm) {
+        var list = applyOp(rm.recipes, op);
+        var body = { message: message.slice(0, 120), content: b64enc(JSON.stringify({ recipes: list }, null, 1) + '\n'), branch: BRANCH };
+        if (rm.sha) body.sha = rm.sha;
+        return api('/repos/' + cfg.repo + '/contents/' + FILE, { method: 'PUT', body: JSON.stringify(body) }).then(function () { return list; }, function (e) {
+          if ((e.status === 409 || e.status === 422) && n < 2) return attempt(n + 1);
+          throw e;
+        });
+      });
+    }
+    return attempt(0).then(function (list) { sync = 'ok'; setRecipes(list); return list; });
+  }
+  function writeError(e) {
+    var s = e && e.status;
+    if (s === 401) return 'Jeton refusé ou expiré. Vérifiez-le dans les réglages.';
+    if (s === 403 || s === 404) return 'Ce jeton ne peut pas écrire dans le dépôt du carnet (ou le dépôt est introuvable). Vérifiez les réglages.';
+    if (s === 409 || s === 422) return 'Le carnet a été modifié ailleurs en même temps. Rechargez la page puis recommencez.';
+    if (!s) return 'Pas de connexion : la modification n’a pas été enregistrée.';
+    return 'L’enregistrement a échoué (' + s + '). Réessayez.';
   }
 
-  function refresh() { if (formActive || (location.hash || '') === '#a-identifier') return; route(true); }
   function addButton(href, label) { return link(href, 'btn', label); }
-  function dbHint() {
-    if (dbState === 'error') return el('p', 'hint', 'Les recettes ajoutées n’ont pas pu être chargées.');
-    if (dbState === 'slow') return el('p', 'hint', 'Les recettes ajoutées se chargent lentement. Elles apparaîtront dès que possible.');
+  function syncHint() {
+    if (sync === 'offline') return el('p', 'hint', 'Hors connexion : dernière version enregistrée sur cet appareil.');
+    if (sync === 'missing') return el('p', 'hint', 'Dépôt de données introuvable : recettes intégrées à l’appli affichées.');
     return null;
   }
 
@@ -415,8 +487,8 @@ body { margin: 0; }
   function home() {
     view.appendChild(el('h1', null, 'Carnet de recettes'));
     view.appendChild(el('p', 'sub', plural(R.length, 'recette', 'recettes') + ' · choisissez un type de plat'));
-    if (canAdd()) view.appendChild(addButton('#ajouter', '+ Ajouter une recette'));
-    var hint = dbHint(); if (hint) view.appendChild(hint);
+    if (canEdit()) view.appendChild(addButton('#ajouter', '+ Ajouter une recette'));
+    var hint = syncHint(); if (hint) view.appendChild(hint);
     var grid = el('div', 'tiles');
     T.forEach(function (t) {
       var n = recipesOf(t.id).length;
@@ -438,6 +510,9 @@ body { margin: 0; }
     q.appendChild(qt);
     grid.appendChild(q);
     view.appendChild(grid);
+    var foot = el('p', 'foot');
+    foot.appendChild(link('#reglages', null, 'Réglages · ' + (canEdit() ? 'modification activée' : 'lecture seule')));
+    view.appendChild(foot);
   }
 
   /* Niveau 2 : plats d'un type */
@@ -452,8 +527,8 @@ body { margin: 0; }
     bt.appendChild(el('p', 'sub', items.length ? plural(items.length, 'recette', 'recettes') : 'Aucune recette pour l’instant'));
     ban.appendChild(bt);
     view.appendChild(ban);
-    if (canAdd()) view.appendChild(addButton('#ajouter/' + t.id, '+ Ajouter à ' + t.label));
-    var hint = dbHint(); if (hint) view.appendChild(hint);
+    if (canEdit()) view.appendChild(addButton('#ajouter/' + t.id, '+ Ajouter à ' + t.label));
+    var hint = syncHint(); if (hint) view.appendChild(hint);
     if (!items.length) {
       var box = el('div', 'emptybox');
       box.appendChild(el('p', null, t.id === 'soupes'
@@ -467,12 +542,7 @@ body { margin: 0; }
     items.forEach(function (r) {
       var li = el('li');
       var a = link('#' + r.id, 'dish');
-      var th = el('span', 'thumb');
-      if (r.photo) {
-        var im = el('img'); im.alt = ''; im.loading = 'lazy'; im.src = '/_blob/' + r.photo;
-        im.onerror = function () { th.textContent = ''; th.appendChild(icon(r.type)); };
-        th.appendChild(im);
-      } else th.appendChild(icon(r.type));
+      var th = el('span', 'thumb'); th.appendChild(icon(r.type));
       a.appendChild(th);
       var tx = el('span', 'dtxt');
       tx.appendChild(el('span', 'dn', r.name));
@@ -486,27 +556,17 @@ body { margin: 0; }
   }
 
   /* Niveau 3 : fiche d'un plat */
-  function hero(r) {
-    var h = el('div', 'hero');
-    if (r.photo) {
-      h.className = 'hero hasphoto';
-      var im = el('img', 'photo'); im.alt = 'Photo : ' + r.name; im.src = '/_blob/' + r.photo;
-      im.onerror = function () { h.className = 'hero'; h.textContent = ''; h.appendChild(icon(r.type)); };
-      h.appendChild(im);
-    } else h.appendChild(icon(r.type));
-    return h;
-  }
   function recipeScreen(r) {
     var t = tById[r.type];
     view.className = 'themed ' + tcls(r.type);
     view.appendChild(back('#' + t.id, t.label));
-    view.appendChild(hero(r));
+    var h = el('div', 'hero'); h.appendChild(icon(r.type)); view.appendChild(h);
     view.appendChild(el('h1', null, r.name));
     var m = el('div', 'meta');
     m.appendChild(el('span', 'tag src', r.src));
     if (r.cook) m.appendChild(el('span', 'tag', r.cook));
     var dt = fmt(r.date);
-    if (dt) m.appendChild(el('span', 'date', (r.user ? 'Ajoutée le ' : 'Partagée le ') + dt));
+    if (dt) m.appendChild(el('span', 'date', (r.src === 'Ajoutée' ? 'Ajoutée le ' : 'Partagée le ') + dt));
     view.appendChild(m);
     if (r.servings) view.appendChild(el('p', 'serv', 'Pour ' + r.servings.charAt(0).toLowerCase() + r.servings.slice(1)));
 
@@ -518,7 +578,7 @@ body { margin: 0; }
     s1.appendChild(head);
     if (r.ing.length) {
       var ul = el('ul', 'ings'); r.ing.forEach(function (x) { ul.appendChild(el('li', null, x)); }); s1.appendChild(ul);
-    } else if (r.user) s1.appendChild(el('p', 'note', 'Aucun ingrédient renseigné.'));
+    } else if (r.lvl === 'user') s1.appendChild(el('p', 'note', 'Aucun ingrédient renseigné.'));
     if (r.probable && r.probable.length) {
       s1.appendChild(el('p', 'probable', 'Probablement aussi, sans confirmation : ' + r.probable.join(', ').toLowerCase() + '.'));
     }
@@ -541,7 +601,7 @@ body { margin: 0; }
     }
     if (r.url) s2.appendChild(ext(r.url, 'btn', r.btn || 'Ouvrir ↗'));
     view.appendChild(s2);
-    if (r.user && canAdd()) {
+    if (canEdit()) {
       var rb = el('div', 'rowbtns');
       rb.appendChild(link('#modifier/' + r.id, 'btn ghost', 'Modifier cette recette'));
       view.appendChild(rb);
@@ -551,36 +611,20 @@ body { margin: 0; }
   /* Ajouter / modifier */
   function lines(s, max, strip) {
     return s.split(/\r?\n/).map(function (x) { x = x.trim(); return strip ? x.replace(/^(\d+\s*[.)]\s*|[-•*]\s+)/, '') : x; })
-      .filter(Boolean).slice(0, max).map(function (x) { return x.slice(0, 400); });
+      .filter(Boolean).slice(0, max).map(function (x) { return x.slice(0, 600); });
   }
-  function shrink(file) {
-    return new Promise(function (resolve, reject) {
-      var fr = new FileReader();
-      fr.onerror = function () { reject(new Error('lecture')); };
-      fr.onload = function () {
-        var im = new Image();
-        im.onerror = function () { reject(new Error('image')); };
-        im.onload = function () {
-          var s = Math.min(1, 1000 / Math.max(im.width, im.height));
-          var c = document.createElement('canvas');
-          c.width = Math.max(1, Math.round(im.width * s)); c.height = Math.max(1, Math.round(im.height * s));
-          c.getContext('2d').drawImage(im, 0, 0, c.width, c.height);
-          var dataUrl = c.toDataURL('image/jpeg', 0.82);
-          c.toBlob(function (b) { b ? resolve({ blob: b, dataUrl: dataUrl }) : reject(new Error('blob')); }, 'image/jpeg', 0.82);
-        };
-        im.src = fr.result;
-      };
-      fr.readAsDataURL(file);
-    });
+  function newId() { return 'r-' + Date.now().toString(36) + Math.random().toString(36).slice(2, 5); }
+  function field(id, label, control, help) {
+    var d = el('div', 'field');
+    var l = el('label', 'lbl', label); l.htmlFor = id;
+    d.appendChild(l); d.appendChild(control);
+    if (help) d.appendChild(el('p', 'help', help));
+    return d;
   }
-  function newId() { return 'u-' + Date.now().toString(36) + Math.random().toString(36).slice(2, 5); }
-  function saveError(e) {
-    var c = e && e.code;
-    if (c === 'quota_exceeded') return 'Le carnet est plein : supprimez une recette avant d’en ajouter.';
-    if (c === 'invalid_argument') return 'Vous n’avez pas le droit d’enregistrer ici (accès en lecture seule).';
-    if (c === 'revoked' || c === 'not_granted') return 'L’accès à l’enregistrement a été retiré. Rechargez la page.';
-    return 'L’enregistrement a échoué. Vérifiez la connexion et réessayez.';
+  function textInput(id, value, max, ph) {
+    var i = el('input'); i.type = 'text'; i.id = id; i.maxLength = max; if (ph) i.placeholder = ph; if (value) i.value = value; return i;
   }
+  function textArea(id, value, ph) { var t = el('textarea'); t.id = id; if (ph) t.placeholder = ph; if (value) t.value = value; return t; }
 
   function formScreen(rec, preset) {
     formActive = true;
@@ -588,21 +632,17 @@ body { margin: 0; }
     var sel = rec ? rec.type : (preset && tById[preset] ? preset : '');
     view.appendChild(back(editing ? '#' + rec.id : (sel ? '#' + sel : '#accueil'), editing ? 'Retour à la recette' : (sel ? tById[sel].label : 'Types de plats')));
     view.appendChild(el('h1', null, editing ? 'Modifier la recette' : 'Nouvelle recette'));
-    if (!canAdd()) {
+    if (!canEdit()) {
       var nb = el('div', 'emptybox');
-      nb.appendChild(el('p', null, hasClaude ? 'L’ajout de recettes n’est pas disponible pour ce compte ou dans cette vue.' : 'L’ajout de recettes n’est pas disponible dans cet aperçu.'));
+      nb.appendChild(el('p', null, 'La modification n’est pas activée sur cet appareil.'));
+      nb.appendChild(link('#reglages', null, 'Ouvrir les réglages'));
       view.appendChild(nb);
       return;
     }
-
     var f = el('form', 'form'); f.noValidate = true;
 
-    var fn = el('div', 'field');
-    var ln = el('label', 'lbl', 'Nom du plat'); ln.htmlFor = 'f-name';
-    var inName = el('input'); inName.type = 'text'; inName.id = 'f-name'; inName.maxLength = 120; inName.autocomplete = 'off';
-    inName.placeholder = 'Ex. : Poulet rôti au citron';
-    if (rec) inName.value = rec.name;
-    fn.appendChild(ln); fn.appendChild(inName); f.appendChild(fn);
+    var inName = textInput('f-name', rec && rec.name, 120, 'Ex. : Poulet rôti au citron'); inName.autocomplete = 'off';
+    f.appendChild(field('f-name', 'Nom du plat', inName));
 
     var ft = el('fieldset', 'field');
     ft.appendChild(el('legend', 'lbl', 'Type de plat'));
@@ -615,61 +655,19 @@ body { margin: 0; }
     });
     ft.appendChild(grid); f.appendChild(ft);
 
-    var fc = el('div', 'field');
-    var lc = el('label', 'lbl', 'Cuisson ou méthode (facultatif)'); lc.htmlFor = 'f-cook';
-    var inCook = el('input'); inCook.type = 'text'; inCook.id = 'f-cook'; inCook.maxLength = 60; inCook.placeholder = 'Ex. : Four, poêle, sans cuisson';
-    if (rec) inCook.value = rec.cook;
-    fc.appendChild(lc); fc.appendChild(inCook); f.appendChild(fc);
-
-    var fs = el('div', 'field');
-    var ls = el('label', 'lbl', 'Nombre de personnes (facultatif)'); ls.htmlFor = 'f-serv';
-    var inServ = el('input'); inServ.type = 'text'; inServ.id = 'f-serv'; inServ.maxLength = 60; inServ.placeholder = 'Ex. : 4 personnes';
-    if (rec) inServ.value = rec.servings;
-    fs.appendChild(ls); fs.appendChild(inServ); f.appendChild(fs);
-
-    var fi = el('div', 'field');
-    var li = el('label', 'lbl', 'Ingrédients'); li.htmlFor = 'f-ing';
-    var taIng = el('textarea'); taIng.id = 'f-ing'; taIng.placeholder = '2 œufs\n150 g de farine\n1 pincée de sel';
-    if (rec) taIng.value = rec.ing.join('\n');
-    fi.appendChild(li); fi.appendChild(taIng); fi.appendChild(el('p', 'help', 'Un ingrédient par ligne.')); f.appendChild(fi);
-
-    var fe = el('div', 'field');
-    var le = el('label', 'lbl', 'Étapes de la recette'); le.htmlFor = 'f-steps';
-    var taSteps = el('textarea'); taSteps.id = 'f-steps'; taSteps.placeholder = 'Mélanger les ingrédients secs.\nAjouter les œufs.\nCuire 20 minutes à 180 °C.';
-    if (rec) taSteps.value = rec.steps.join('\n');
-    fe.appendChild(le); fe.appendChild(taSteps); fe.appendChild(el('p', 'help', 'Une étape par ligne. Les numéros sont ajoutés automatiquement.')); f.appendChild(fe);
-
-    var fu = el('div', 'field');
-    var lu = el('label', 'lbl', 'Lien de la recette (facultatif)'); lu.htmlFor = 'f-url';
-    var inUrl = el('input'); inUrl.type = 'url'; inUrl.id = 'f-url'; inUrl.placeholder = 'https://…'; inUrl.autocapitalize = 'off'; inUrl.setAttribute('inputmode', 'url');
-    if (rec) inUrl.value = rec.url;
-    fu.appendChild(lu); fu.appendChild(inUrl); f.appendChild(fu);
-
-    var picked = null, removed = false, prev = null;
-    if (assets) {
-      var fp = el('div', 'field');
-      var lp = el('label', 'lbl', 'Photo (facultatif)'); lp.htmlFor = 'f-photo';
-      var inFile = el('input'); inFile.type = 'file'; inFile.id = 'f-photo'; inFile.accept = 'image/*';
-      prev = el('div', 'pprev');
-      fp.appendChild(lp); fp.appendChild(inFile); fp.appendChild(prev); f.appendChild(fp);
-      var renderPrev = function () {
-        prev.textContent = '';
-        var src = picked ? picked.dataUrl : (rec && rec.photo && !removed ? '/_blob/' + rec.photo : '');
-        if (!src) return;
-        var im = el('img'); im.alt = 'Aperçu de la photo'; im.src = src; prev.appendChild(im);
-        var rm = el('button', 'btn ghost', 'Retirer la photo'); rm.type = 'button';
-        rm.onclick = function () { picked = null; removed = true; inFile.value = ''; renderPrev(); };
-        prev.appendChild(rm);
-      };
-      inFile.onchange = function () {
-        var file = inFile.files && inFile.files[0];
-        if (!file) return;
-        err.textContent = '';
-        shrink(file).then(function (p) { picked = p; removed = false; renderPrev(); },
-          function () { picked = null; err.textContent = 'Cette image ne peut pas être lue. Essayez une photo JPEG ou PNG.'; renderPrev(); });
-      };
-      renderPrev();
-    }
+    var inCook = textInput('f-cook', rec && rec.cook, 60, 'Ex. : Four, poêle, sans cuisson');
+    f.appendChild(field('f-cook', 'Cuisson ou méthode (facultatif)', inCook));
+    var inServ = textInput('f-serv', rec && rec.servings, 60, 'Ex. : 4 personnes');
+    f.appendChild(field('f-serv', 'Nombre de personnes (facultatif)', inServ));
+    var taIng = textArea('f-ing', rec && rec.ing.join('\n'), '2 œufs\n150 g de farine\n1 pincée de sel');
+    f.appendChild(field('f-ing', 'Ingrédients', taIng, 'Un ingrédient par ligne.'));
+    var taSteps = textArea('f-steps', rec && rec.steps.join('\n'), 'Mélanger les ingrédients secs.\nAjouter les œufs.\nCuire 20 minutes à 180 °C.');
+    f.appendChild(field('f-steps', 'Étapes de la recette', taSteps, 'Une étape par ligne. Les numéros sont ajoutés automatiquement.'));
+    var taTips = textArea('f-tips', rec && rec.tips.join('\n'), 'Laisser reposer la pâte 5 minutes.');
+    taTips.style.minHeight = '5rem';
+    f.appendChild(field('f-tips', 'Astuces (facultatif)', taTips, 'Une astuce par ligne.'));
+    var inUrl = textInput('f-url', rec && rec.url, 500, 'https://…'); inUrl.type = 'url'; inUrl.autocapitalize = 'off'; inUrl.setAttribute('inputmode', 'url');
+    f.appendChild(field('f-url', 'Lien de la recette (facultatif)', inUrl));
 
     var err = el('p', 'err'); err.setAttribute('role', 'alert');
     var status = el('p', 'status'); status.setAttribute('aria-live', 'polite');
@@ -692,14 +690,10 @@ body { margin: 0; }
         var no = el('button', 'btn ghost', 'Non, garder'); no.type = 'button';
         no.onclick = function () { dz.textContent = ''; dz.appendChild(del); del.focus(); };
         yes.onclick = function () {
-          yes.disabled = true; err.textContent = '';
-          dbP.then(function (d) {
-            if (!d) throw { code: 'unavailable' };
-            return d.collection('recettes').doc(rec.id).delete();
-          }).then(function () {
-            if (rec.photo && assets) { try { assets.delete(rec.photo).catch(function () {}); } catch (e) {} }
-            delete U[rec.id]; rebuild(); location.hash = '#' + rec.type;
-          }, function (e) { yes.disabled = false; err.textContent = saveError(e); });
+          yes.disabled = true; no.disabled = true; err.textContent = ''; status.textContent = 'Suppression…';
+          commit({ id: rec.id, del: true }, 'Supprime : ' + rec.name).then(function () {
+            location.hash = '#' + rec.type;
+          }, function (e) { yes.disabled = false; no.disabled = false; status.textContent = ''; err.textContent = writeError(e); });
         };
         row.appendChild(yes); row.appendChild(no); box.appendChild(row); dz.appendChild(box); yes.focus();
       };
@@ -720,40 +714,97 @@ body { margin: 0; }
         url = cleanUrl(tryUrl);
         if (!url) { err.textContent = 'Ce lien n’est pas valide. Il doit commencer par http ou https.'; inUrl.focus(); return; }
       }
-      var ing = lines(taIng.value, 60, false), steps = lines(taSteps.value, 60, true);
+      var ing = lines(taIng.value, 60, false), steps = lines(taSteps.value, 60, true), tips = lines(taTips.value, 20, false);
       var id = rec ? rec.id : newId();
-      var oldPhoto = rec ? rec.photo : '';
-      var photo = removed ? '' : oldPhoto;
+      var ingChanged = rec && ing.join('\n') !== rec.ing.join('\n');
+      var stepsChanged = rec && steps.join('\n') !== rec.steps.join('\n');
+      var reset = rec && ingChanged && rec.lvl !== 'complete';   // liste modifiée à la main : l'ancienne mention de fiabilité ne vaut plus
+      var out = {
+        id: id, name: name, type: type, cook: inCook.value.trim(), servings: inServ.value.trim(),
+        ing: ing, steps: steps, tips: tips, url: url,
+        src: rec ? rec.src : 'Ajoutée', btn: rec ? rec.btn : 'Ouvrir le lien ↗',
+        date: rec && rec.date ? rec.date : new Date().toISOString().slice(0, 10),
+        lvl: rec ? (reset ? 'user' : rec.lvl) : 'user',
+        probable: rec && !reset ? rec.probable : [], ingNote: rec && !reset ? rec.ingNote : '',
+        stepsNote: rec && !stepsChanged ? rec.stepsNote : '',
+        sum: rec && !ingChanged ? rec.sum : ing.slice(0, 4).join(', '),
+        ts: rec ? rec.ts : Date.now()
+      };
       save.disabled = true; status.textContent = 'Enregistrement…';
-      var failed = function (e) { save.disabled = false; status.textContent = ''; err.textContent = (e && e.photo) ? e.photo : saveError(e); };
-      dbP.then(function (d) {
-        if (!d) throw { code: 'unavailable' };
-        var up = picked && assets
-          ? assets.upload(picked.blob, { type: 'image/jpeg' }).then(function (r) { photo = r.id; }, function () { throw { photo: 'La photo n’a pas pu être envoyée. Réessayez, ou retirez-la pour enregistrer sans photo.' }; })
-          : Promise.resolve();
-        return up.then(function () {
-          var now = new Date();
-          var doc = {
-            name: name, type: type, cook: inCook.value.trim().slice(0, 60), servings: inServ.value.trim().slice(0, 60),
-            ing: ing, steps: steps, url: url, photo: photo,
-            created: rec && rec.date ? rec.date : now.toISOString().slice(0, 10), ts: rec ? rec.ts : now.getTime()
-          };
-          return d.collection('recettes').doc(id).set(doc).then(function () { return doc; });
-        });
-      }).then(function (doc) {
-        if (oldPhoto && oldPhoto !== photo && assets) { try { assets.delete(oldPhoto).catch(function () {}); } catch (e) {} }
-        var r = normalize(id, doc); if (r) U[id] = r;
-        rebuild(); location.hash = '#' + id;
-      }, failed);
+      commit({ id: id, rec: out }, (rec ? 'Modifie : ' : 'Ajoute : ') + name).then(function () {
+        location.hash = '#' + id;
+      }, function (e) { save.disabled = false; status.textContent = ''; err.textContent = writeError(e); });
     });
     view.appendChild(f);
   }
 
-  function missingScreen(h) {
+  /* Réglages : dépôt de données et jeton */
+  function settingsScreen() {
+    formActive = true;
     view.appendChild(back('#accueil', 'Types de plats'));
-    var loading = dbState === 'loading';
-    view.appendChild(el('h1', null, loading ? 'Chargement…' : 'Recette introuvable'));
-    view.appendChild(el('p', 'sub', loading ? 'Les recettes ajoutées se chargent.' : 'Cette recette n’existe plus ou n’est pas accessible.'));
+    view.appendChild(el('h1', null, 'Réglages'));
+    view.appendChild(el('p', 'qintro', 'Tout le monde peut lire le carnet. Pour le modifier depuis cet appareil, collez ici un jeton GitHub limité au dépôt du carnet. Le jeton reste sur cet appareil.'));
+    var f = el('form', 'form'); f.noValidate = true;
+    var inRepo = textInput('c-repo', cfg.repo, 100, DEFAULT_REPO); inRepo.autocapitalize = 'off'; inRepo.autocomplete = 'off';
+    f.appendChild(field('c-repo', 'Dépôt des données', inRepo, 'Format : propriétaire/nom'));
+    var inTok = el('input'); inTok.type = 'password'; inTok.id = 'c-tok'; inTok.autocomplete = 'off'; inTok.autocapitalize = 'off';
+    inTok.placeholder = cfg.token ? 'Jeton enregistré : laissez vide pour le garder' : 'github_pat_…';
+    f.appendChild(field('c-tok', 'Jeton GitHub', inTok, 'Ne le partagez avec personne.'));
+
+    var how = el('details', 'qgroup');
+    var hs = el('summary'); hs.appendChild(el('span', null, 'Comment créer le jeton')); how.appendChild(hs);
+    var ol = el('ol', 'tips howto');
+    ['Sur github.com : votre photo de profil, Settings, Developer settings, Personal access tokens, Fine-grained tokens, Generate new token.',
+     'Resource owner : le propriétaire du dépôt du carnet. Expiration : 1 an au maximum.',
+     'Repository access : « Only select repositories », puis le dépôt du carnet uniquement.',
+     'Repository permissions : Contents → « Read and write ». Aucune autre permission.',
+     'Generate token, copiez-le tout de suite (il ne sera plus affiché) et collez-le ci-dessus.'
+    ].forEach(function (x) { ol.appendChild(el('li', null, x)); });
+    how.appendChild(ol); f.appendChild(how);
+
+    var msg = el('p', 'status'); msg.setAttribute('aria-live', 'polite');
+    var err = el('p', 'err'); err.setAttribute('role', 'alert');
+    f.appendChild(err); f.appendChild(msg);
+    var actions = el('div', 'actions');
+    var save = el('button', 'btn', 'Enregistrer et tester'); save.type = 'submit';
+    actions.appendChild(save);
+    if (cfg.token) {
+      var forget = el('button', 'btn danger', 'Oublier le jeton'); forget.type = 'button';
+      forget.onclick = function () { cfg.token = ''; saveCfg(); lastSync = 0; route(true); };
+      actions.appendChild(forget);
+    }
+    f.appendChild(actions);
+    f.addEventListener('submit', function (ev) {
+      ev.preventDefault(); err.textContent = ''; msg.textContent = '';
+      var repo = inRepo.value.trim();
+      if (!REPO_RE.test(repo)) { err.textContent = 'Le dépôt doit s’écrire propriétaire/nom.'; inRepo.focus(); return; }
+      var tok = inTok.value.trim();
+      cfg.repo = repo; if (tok) cfg.token = tok; saveCfg();
+      save.disabled = true; msg.textContent = 'Test de la connexion…';
+      api('/repos/' + cfg.repo).then(function (j) {
+        save.disabled = false; msg.textContent = '';
+        if (j && j.permissions && j.permissions.push) {
+          msg.textContent = 'Connexion réussie : vous pouvez modifier le carnet depuis cet appareil.';
+        } else if (cfg.token) {
+          err.textContent = 'Le dépôt est accessible, mais ce jeton ne peut pas y écrire. Vérifiez la permission Contents : Read and write.';
+        } else {
+          msg.textContent = 'Dépôt accessible en lecture. Ajoutez un jeton pour pouvoir modifier.';
+        }
+        refreshData(true);
+      }, function (e) {
+        save.disabled = false; msg.textContent = '';
+        err.textContent = e.status === 401 ? 'Jeton refusé ou expiré.'
+          : e.status === 404 ? 'Dépôt introuvable. Vérifiez son nom et que le jeton y a accès.'
+          : !e.status ? 'Pas de connexion. Réessayez.' : 'Échec du test (' + e.status + ').';
+      });
+    });
+    view.appendChild(f);
+  }
+
+  function missingScreen() {
+    view.appendChild(back('#accueil', 'Types de plats'));
+    view.appendChild(el('h1', null, 'Recette introuvable'));
+    view.appendChild(el('p', 'sub', 'Cette recette n’existe plus ou n’est pas encore chargée.'));
   }
 
   /* Liens à identifier */
@@ -784,7 +835,12 @@ body { margin: 0; }
     view.appendChild(el('p', 'hint', 'Facebook demande parfois de se connecter pour ouvrir un reel.'));
   }
 
-  function route(soft) {
+  function rerender() {
+    var h = location.hash || '';
+    if (formActive || h === '#a-identifier') return;
+    route(true);
+  }
+  function route(quiet) {
     var h = (location.hash || '').replace(/^#/, '');
     formActive = false;
     view.textContent = '';
@@ -793,14 +849,14 @@ body { margin: 0; }
     if (byId[h]) recipeScreen(byId[h]);
     else if (tById[h]) typeScreen(tById[h]);
     else if (h === 'a-identifier') queueScreen();
+    else if (h === 'reglages') settingsScreen();
     else if (h === 'ajouter' || h.indexOf('ajouter/') === 0) formScreen(null, h.slice(8));
     else if (h.indexOf('modifier/') === 0) {
       rec = byId[h.slice(9)];
-      if (rec && rec.user) formScreen(rec); else missingScreen(h);
+      if (rec) formScreen(rec); else missingScreen();
     }
-    else if (/^u-/.test(h)) missingScreen(h);
     else home();
-    if (soft === true) return;
+    if (quiet === true) return;
     try { window.scrollTo(0, 0); } catch (e) {}
     if (!firstRoute) {
       var t = view.querySelector('h1');
@@ -809,11 +865,13 @@ body { margin: 0; }
     firstRoute = false;
   }
 
-  rebuild();
   window.addEventListener('hashchange', function () { route(); });
+  document.addEventListener('visibilitychange', function () { if (document.visibilityState === 'visible') refreshData(false); });
+  window.addEventListener('online', function () { refreshData(true); });
   route();
-  boot();
+  refreshData(true);
 })();
 </script>
+<script>if('serviceWorker' in navigator){window.addEventListener('load',function(){navigator.serviceWorker.register('sw.js').catch(function(){});});}</script>
 </body>
 </html>
