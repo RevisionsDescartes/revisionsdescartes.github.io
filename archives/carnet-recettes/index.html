@@ -258,6 +258,10 @@ input[type="file"] { font: inherit; font-size: 0.95rem; max-width: 100%; }
 .hint { font-size: 0.82rem; color: var(--muted); margin: 0; }
 .foot { margin: 0.4rem 0 0; font-size: 0.9rem; }
 .howto { margin-top: 0; padding: 0 1rem 0.9rem 2.2rem; }
+.reordering .tile[data-type] { cursor: grab; user-select: none; -webkit-user-select: none; -webkit-touch-callout: none; position: relative; }
+.grip { position: absolute; top: 0.6rem; right: 0.75rem; font-size: 1.2rem; line-height: 1; letter-spacing: -0.15em; opacity: 0.75; }
+.tile.placeholder { opacity: 0.35; outline: 2px dashed var(--c); outline-offset: -2px; }
+.tile.ghost { position: fixed; z-index: 100; margin: 0; pointer-events: none; box-shadow: 0 12px 30px rgba(0,0,0,0.3); transform: scale(1.04); opacity: 0.97; }
 input[type="password"] { font: inherit; font-size: 1rem; color: var(--fg); background: var(--surface); border: 1px solid var(--line); border-radius: 0.7rem; padding: 0.65rem 0.75rem; min-height: 2.9rem; width: 100%; }
 html { -webkit-text-size-adjust: 100%; }
 body { margin: 0; }
@@ -275,6 +279,14 @@ body { margin: 0; }
   var T = D.types;
   var R = [], byId = Object.create(null), tById = Object.create(null);
   T.forEach(function (t) { tById[t.id] = t; });
+  var order = T.map(function (t) { return t.id; });
+  function parseOrder(a) {
+    var seen = Object.create(null), out = [];
+    (Array.isArray(a) ? a : []).forEach(function (id) { if (typeof id === 'string' && tById[id] && !seen[id]) { seen[id] = 1; out.push(id); } });
+    T.forEach(function (t) { if (!seen[t.id]) out.push(t.id); });
+    return out;
+  }
+  function TS() { return order.map(function (id) { return tById[id]; }); }
   var RESERVED = { 'accueil': 1, 'a-identifier': 1, 'ajouter': 1, 'modifier': 1, 'reglages': 1 };
   var view = document.getElementById('view');
   var firstRoute = true;
@@ -390,12 +402,17 @@ body { margin: 0; }
     R = list; byId = Object.create(null);
     R.forEach(function (r) { byId[r.id] = r; });
   }
-  function setRecipes(list) { useList(list); lsSet('carnet:data', JSON.stringify(list)); }
+  function setData(list, ord) { useList(list); order = parseOrder(ord); lsSet('carnet:data', JSON.stringify({ recipes: list, typeOrder: order })); }
 
   var seed = parseRecipes({ recipes: D.recipes });
-  var cached = null;
-  try { var cj = JSON.parse(lsGet('carnet:data') || 'null'); if (Array.isArray(cj)) cached = parseRecipes({ recipes: cj }); } catch (e) {}
+  var cached = null, cachedOrder = null;
+  try {
+    var cj = JSON.parse(lsGet('carnet:data') || 'null');
+    if (Array.isArray(cj)) cached = parseRecipes({ recipes: cj });
+    else if (cj && typeof cj === 'object') { cached = parseRecipes(cj); cachedOrder = cj.typeOrder; }
+  } catch (e) {}
   useList(cached && cached.length ? cached : seed);
+  order = parseOrder(cachedOrder);
 
   /* ---- Dépôt de données (API GitHub) ---- */
   function b64dec(s) {
@@ -425,7 +442,7 @@ body { margin: 0; }
     return api('/repos/' + cfg.repo + '/contents/' + FILE + '?ref=' + BRANCH).then(function (j) {
       var data;
       try { data = JSON.parse(b64dec(j.content)); } catch (e) { throw new Error('format'); }
-      return { sha: j.sha, recipes: parseRecipes(data) };
+      return { sha: j.sha, recipes: parseRecipes(data), order: parseOrder(data && data.typeOrder) };
     });
   }
   var lastSync = 0;
@@ -433,8 +450,9 @@ body { margin: 0; }
     if (!force && Date.now() - lastSync < 60000) return Promise.resolve();
     lastSync = Date.now();
     return fetchRemote().then(function (rm) {
-      var changed = JSON.stringify(rm.recipes) !== JSON.stringify(R) || sync !== 'ok';
-      sync = 'ok'; setRecipes(rm.recipes);
+      var ord = inflight > 0 ? order : rm.order;
+      var changed = JSON.stringify(rm.recipes) !== JSON.stringify(R) || ord.join() !== order.join() || sync !== 'ok';
+      sync = 'ok'; setData(rm.recipes, ord);
       if (changed) rerender();
     }, function (e) {
       var s = e && e.status === 404 ? 'missing' : 'offline';
@@ -453,19 +471,20 @@ body { margin: 0; }
   function commit(op, message) {
     function attempt(n) {
       return fetchRemote().catch(function (e) {
-        if (e && e.status === 404) return { sha: undefined, recipes: R };
+        if (e && e.status === 404) return { sha: undefined, recipes: R, order: order };
         throw e;
       }).then(function (rm) {
-        var list = applyOp(rm.recipes, op);
-        var body = { message: message.slice(0, 120), content: b64enc(JSON.stringify({ recipes: list }, null, 1) + '\n'), branch: BRANCH };
+        var list = op.order ? rm.recipes : applyOp(rm.recipes, op);
+        var ord = op.order ? parseOrder(op.order) : rm.order;
+        var body = { message: message.slice(0, 120), content: b64enc(JSON.stringify({ recipes: list, typeOrder: ord }, null, 1) + '\n'), branch: BRANCH };
         if (rm.sha) body.sha = rm.sha;
-        return api('/repos/' + cfg.repo + '/contents/' + FILE, { method: 'PUT', body: JSON.stringify(body) }).then(function () { return list; }, function (e) {
+        return api('/repos/' + cfg.repo + '/contents/' + FILE, { method: 'PUT', body: JSON.stringify(body) }).then(function () { return { list: list, ord: ord }; }, function (e) {
           if ((e.status === 409 || e.status === 422) && n < 2) return attempt(n + 1);
           throw e;
         });
       });
     }
-    return attempt(0).then(function (list) { sync = 'ok'; setRecipes(list); return list; });
+    return attempt(0).then(function (res) { sync = 'ok'; setData(res.list, res.ord); return res.list; });
   }
   function writeError(e) {
     var s = e && e.status;
@@ -483,36 +502,174 @@ body { margin: 0; }
     return null;
   }
 
+  /* Réorganiser les types : appui long puis glissement (tactile), glisser (souris), flèches (clavier) */
+  var reorder = false, inflight = 0, savingP = Promise.resolve(), statusEl = null, reorderOff = null;
+  function setStatus(msg, isErr) {
+    if (statusEl && statusEl.isConnected) { statusEl.textContent = msg; statusEl.className = isErr ? 'err' : 'status'; }
+  }
+  function orderFromDom(grid) {
+    var vis = Array.prototype.map.call(grid.querySelectorAll('.tile[data-type]'), function (t) { return t.getAttribute('data-type'); });
+    return vis.concat(order.filter(function (id) { return vis.indexOf(id) < 0; }));
+  }
+  function saveOrder(next) {
+    if (next.join() === order.join()) return;
+    var prev = order.slice(); order = next; inflight += 1;
+    setStatus('Enregistrement de l’ordre…');
+    savingP = savingP.then(function () { return commit({ order: next }, 'Réorganise les types'); }).then(function () {
+      inflight -= 1;
+      if (!inflight) setStatus('Ordre enregistré. Vos autres appareils le verront à leur prochaine ouverture.');
+    }, function (e) {
+      inflight -= 1; order = prev;
+      if (reorder) { route(true); setStatus(writeError(e), true); }
+    });
+  }
+  function enableReorder(grid) {
+    if (reorderOff) reorderOff();
+    var drag = null, timer = null, kbTimer = null, sx = 0, sy = 0, last = { x: 0, y: 0 }, raf = 0, mousePending = null;
+    function tiles() { return Array.prototype.slice.call(grid.querySelectorAll('.tile[data-type]')); }
+    function xy(e) { var t = (e.touches && e.touches[0]) || (e.changedTouches && e.changedTouches[0]) || e; return { x: t.clientX, y: t.clientY }; }
+    function pick(tile, p) {
+      var r = tile.getBoundingClientRect(), g = tile.cloneNode(true);
+      g.classList.add('ghost'); g.removeAttribute('tabindex'); g.removeAttribute('data-type');
+      g.style.cssText = 'left:' + r.left + 'px;top:' + r.top + 'px;width:' + r.width + 'px;height:' + r.height + 'px';
+      document.body.appendChild(g);
+      tile.classList.add('placeholder');
+      drag = { tile: tile, ghost: g, dx: p.x - r.left, dy: p.y - r.top };
+      try { if (navigator.vibrate) navigator.vibrate(15); } catch (e) {}
+      last = p; loop();
+    }
+    function hit(p) {
+      var list = tiles();
+      for (var i = 0; i < list.length; i++) {
+        var t = list[i]; if (t === drag.tile) continue;
+        var r = t.getBoundingClientRect();
+        if (p.x >= r.left && p.x <= r.right && p.y >= r.top && p.y <= r.bottom) {
+          if (list.indexOf(drag.tile) < i) grid.insertBefore(drag.tile, t.nextSibling); else grid.insertBefore(drag.tile, t);
+          return;
+        }
+      }
+    }
+    function move(p) {
+      last = p;
+      drag.ghost.style.left = (p.x - drag.dx) + 'px'; drag.ghost.style.top = (p.y - drag.dy) + 'px';
+      hit(p);
+    }
+    function loop() {   /* défilement automatique près des bords */
+      if (!drag) return;
+      var h = window.innerHeight || 800, v = 0;
+      if (last.y < 80) v = -12; else if (last.y > h - 80) v = 12;
+      if (v) { try { window.scrollBy(0, v); } catch (e) {} hit(last); }
+      raf = requestAnimationFrame(loop);
+    }
+    function end() {
+      clearTimeout(timer); mousePending = null;
+      if (!drag) return;
+      cancelAnimationFrame(raf);
+      if (drag.ghost.parentNode) drag.ghost.parentNode.removeChild(drag.ghost);
+      drag.tile.classList.remove('placeholder'); drag = null;
+      saveOrder(orderFromDom(grid));
+    }
+    /* tactile : appui long (350 ms), puis le doigt entraîne la tuile */
+    grid.addEventListener('touchstart', function (e) {
+      var t = e.target.closest ? e.target.closest('.tile[data-type]') : null;
+      if (!t || drag || (e.touches && e.touches.length > 1)) return;
+      var p = xy(e); sx = p.x; sy = p.y; last = p;
+      clearTimeout(timer); timer = setTimeout(function () { pick(t, last); }, 350);
+    }, { passive: true });
+    grid.addEventListener('touchmove', function (e) {
+      var p = xy(e);
+      if (drag) { e.preventDefault(); move(p); return; }
+      last = p;
+      if (Math.abs(p.x - sx) > 8 || Math.abs(p.y - sy) > 8) clearTimeout(timer);   // l'utilisateur fait défiler la page
+    }, { passive: false });
+    grid.addEventListener('touchend', end);
+    grid.addEventListener('touchcancel', end);
+    /* souris : glisser dès 5 px */
+    grid.addEventListener('pointerdown', function (e) {
+      if (e.pointerType === 'touch' || e.button !== 0) return;
+      var t = e.target.closest ? e.target.closest('.tile[data-type]') : null;
+      if (t) mousePending = { tile: t, x: e.clientX, y: e.clientY };
+    });
+    function onPtrMove(e) {
+      if (e.pointerType === 'touch') return;
+      var p = { x: e.clientX, y: e.clientY };
+      if (drag) { move(p); return; }
+      if (mousePending && (Math.abs(p.x - mousePending.x) > 5 || Math.abs(p.y - mousePending.y) > 5) && grid.isConnected) pick(mousePending.tile, { x: mousePending.x, y: mousePending.y }), move(p);
+    }
+    function onPtrUp(e) { if (e.pointerType !== 'touch') end(); }
+    document.addEventListener('pointermove', onPtrMove);
+    document.addEventListener('pointerup', onPtrUp);
+    reorderOff = function () { document.removeEventListener('pointermove', onPtrMove); document.removeEventListener('pointerup', onPtrUp); reorderOff = null; };
+    grid.addEventListener('contextmenu', function (e) { e.preventDefault(); });
+    /* clavier : flèches sur une tuile */
+    grid.addEventListener('keydown', function (e) {
+      var t = e.target; if (!t.getAttribute || !t.getAttribute('data-type')) return;
+      var k = e.key, list = tiles(), i = list.indexOf(t);
+      if ((k === 'ArrowLeft' || k === 'ArrowUp') && i > 0) grid.insertBefore(t, list[i - 1]);
+      else if ((k === 'ArrowRight' || k === 'ArrowDown') && i < list.length - 1) grid.insertBefore(t, list[i + 1].nextSibling);
+      else return;
+      e.preventDefault(); t.focus();
+      clearTimeout(kbTimer); kbTimer = setTimeout(function () { saveOrder(orderFromDom(grid)); }, 700);
+    });
+  }
+
   /* Niveau 1 : types de plats */
   function home() {
     view.appendChild(el('h1', null, 'Carnet de recettes'));
-    view.appendChild(el('p', 'sub', plural(R.length, 'recette', 'recettes') + ' · choisissez un type de plat'));
-    if (canEdit()) view.appendChild(addButton('#ajouter', '+ Ajouter une recette'));
-    var hint = syncHint(); if (hint) view.appendChild(hint);
+    view.appendChild(el('p', 'sub', reorder ? 'Maintenez une tuile enfoncée, puis faites-la glisser.' : plural(R.length, 'recette', 'recettes') + ' · choisissez un type de plat'));
+    if (reorder) view.className = 'reordering';
+    if (canEdit()) {
+      var row = el('div', 'rowbtns');
+      if (!reorder) {
+        row.appendChild(addButton('#ajouter', '+ Ajouter une recette'));
+        var rb = el('button', 'btn ghost', 'Réorganiser les types'); rb.type = 'button';
+        rb.onclick = function () { reorder = true; route(true); };
+        row.appendChild(rb);
+      } else {
+        var done = el('button', 'btn', 'Terminé'); done.type = 'button';
+        done.onclick = function () { reorder = false; statusEl = null; route(true); };
+        row.appendChild(done);
+      }
+      view.appendChild(row);
+    }
+    if (reorder) { statusEl = el('p', 'status'); statusEl.setAttribute('aria-live', 'polite'); view.appendChild(statusEl); }
+    var hint = reorder ? null : syncHint(); if (hint) view.appendChild(hint);
     var grid = el('div', 'tiles');
-    T.forEach(function (t) {
+    if (reorder) grid.setAttribute('role', 'list');
+    TS().forEach(function (t) {
       var n = recipesOf(t.id).length;
       if (t.id === 'aclasser' && !n) return;
       var feat = (t.id === 'plats' || t.id === 'accomp') && n;
-      var a = link('#' + t.id, 'tile themed ' + tcls(t.id) + (feat ? ' feat' : '') + (n ? '' : ' zero'));
+      var cls = 'tile themed ' + tcls(t.id) + (feat ? ' feat' : '') + (n ? '' : ' zero');
+      var a;
+      if (reorder) {
+        a = el('div', cls); a.setAttribute('data-type', t.id); a.tabIndex = 0; a.setAttribute('role', 'listitem');
+        a.setAttribute('aria-label', t.label + '. Flèches pour déplacer.');
+      } else a = link('#' + t.id, cls);
       a.appendChild(icon(t.id));
+      if (reorder) { var gr = el('span', 'grip', '⋮⋮'); gr.setAttribute('aria-hidden', 'true'); a.appendChild(gr); }
       var tx = el('span', 'txt');
       tx.appendChild(el('span', 'tn', soft(t.label)));
       tx.appendChild(el('span', 'tc', n ? plural(n, 'recette', 'recettes') : 'Aucune pour l’instant'));
       a.appendChild(tx);
       grid.appendChild(a);
     });
-    var q = link('#a-identifier', 'tile queue themed');
-    q.appendChild(icon('loupe'));
-    var qt = el('span', 'txt');
-    qt.appendChild(el('span', 'tn', 'Liens à identifier'));
-    qt.appendChild(el('span', 'tc', plural(pendingTotal, 'lien', 'liens')));
-    q.appendChild(qt);
-    grid.appendChild(q);
+    if (!reorder) {
+      var q = link('#a-identifier', 'tile queue themed');
+      q.appendChild(icon('loupe'));
+      var qt = el('span', 'txt');
+      qt.appendChild(el('span', 'tn', 'Liens à identifier'));
+      qt.appendChild(el('span', 'tc', plural(pendingTotal, 'lien', 'liens')));
+      q.appendChild(qt);
+      grid.appendChild(q);
+    }
     view.appendChild(grid);
-    var foot = el('p', 'foot');
-    foot.appendChild(link('#reglages', null, 'Réglages · ' + (canEdit() ? 'modification activée' : 'lecture seule')));
-    view.appendChild(foot);
+    if (reorder) enableReorder(grid);
+    else {
+      var foot = el('p', 'foot');
+      foot.appendChild(link('#reglages', null, 'Réglages · ' + (canEdit() ? 'modification activée' : 'lecture seule')));
+      view.appendChild(foot);
+    }
   }
 
   /* Niveau 2 : plats d'un type */
@@ -647,7 +804,7 @@ body { margin: 0; }
     var ft = el('fieldset', 'field');
     ft.appendChild(el('legend', 'lbl', 'Type de plat'));
     var grid = el('div', 'chipgrid');
-    T.forEach(function (t) {
+    TS().forEach(function (t) {
       var lab = el('label', 'chip themed ' + tcls(t.id));
       var inp = el('input'); inp.type = 'radio'; inp.name = 'type'; inp.value = t.id; if (sel === t.id) inp.checked = true;
       var cb = el('span', 'cb'); cb.appendChild(icon(t.id)); cb.appendChild(el('span', null, soft(t.label)));
@@ -837,7 +994,7 @@ body { margin: 0; }
 
   function rerender() {
     var h = location.hash || '';
-    if (formActive || h === '#a-identifier') return;
+    if (formActive || reorder || h === '#a-identifier') return;
     route(true);
   }
   function route(quiet) {
@@ -865,7 +1022,7 @@ body { margin: 0; }
     firstRoute = false;
   }
 
-  window.addEventListener('hashchange', function () { route(); });
+  window.addEventListener('hashchange', function () { reorder = false; route(); });
   document.addEventListener('visibilitychange', function () { if (document.visibilityState === 'visible') refreshData(false); });
   window.addEventListener('online', function () { refreshData(true); });
   route();
