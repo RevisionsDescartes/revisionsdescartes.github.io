@@ -266,6 +266,28 @@ input[type="file"] { font: inherit; font-size: 0.95rem; max-width: 100%; }
 .tile.placeholder { opacity: 0.35; outline: 2px dashed var(--c); outline-offset: -2px; }
 .tile.ghost { position: fixed; z-index: 100; margin: 0; pointer-events: none; box-shadow: 0 12px 30px rgba(0,0,0,0.3); transform: scale(1.04); opacity: 0.97; }
 input[type="password"] { font: inherit; font-size: 1rem; color: var(--fg); background: var(--surface); border: 1px solid var(--line); border-radius: 0.7rem; padding: 0.65rem 0.75rem; min-height: 2.9rem; width: 100%; }
+.seg { display: flex; gap: 0.25rem; padding: 0.25rem; background: var(--surface); border: 1px solid var(--line); border-radius: 0.85rem; }
+.seg a { flex: 1; display: grid; place-items: center; min-height: 2.6rem; border-radius: 0.65rem; color: var(--muted); font-weight: 600; text-decoration: none; }
+.seg a[aria-current] { background: var(--accent); color: var(--on-accent); }
+:root { --k-meal: #2B3A67; --k-meal-on: #FFFFFF; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --k-meal: #B4C2EE; --k-meal-on: #12141F; } }
+:root[data-theme="dark"] { --k-meal: #B4C2EE; --k-meal-on: #12141F; }
+.t-meal { --c: var(--k-meal); --on-c: var(--k-meal-on); }
+.tile.wide { grid-column: 1 / -1; min-height: 4.2rem; flex-direction: row; align-items: center; justify-content: flex-start; gap: 0.8rem; }
+.tile.wide .ic-box { width: 2.4rem; height: 2.4rem; }
+.rows { list-style: none; margin: 0; padding: 0; background: var(--surface); border: 1px solid var(--line); border-radius: 0.9rem; overflow: hidden; }
+.rows li + li { border-top: 1px solid var(--line); }
+.row { display: flex; align-items: center; gap: 0.5rem; min-height: 2.75rem; padding: 0.3rem 0.5rem 0.3rem 0.85rem; color: var(--fg); text-decoration: none; }
+.row:active { background: var(--tint, var(--accent-soft)); }
+@media (hover: hover) { .row:hover { background: var(--tint, var(--accent-soft)); } }
+.rn { flex: 1; min-width: 0; font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.mchip { flex: none; font-size: 0.7rem; line-height: 1.5; padding: 0 0.45rem; border: 1px solid var(--line); border-radius: 999px; color: var(--muted); }
+.dot { flex: none; opacity: 0.65; width: 0.5rem; height: 0.5rem; border-radius: 50%; border: 1.5px solid var(--muted); }
+.grp { display: grid; gap: 0.45rem; }
+.grp-head { display: flex; align-items: center; gap: 0.5rem; margin-top: 0.3rem; padding-bottom: 0.3rem; border-bottom: 2px solid var(--c); }
+.grp-head .ic-box { width: 1.9rem; height: 1.9rem; }
+.grp-head h2 { font-size: 1.05rem; color: var(--fg); }
+.grp-head .grp-n { margin-left: auto; font-size: 0.8rem; color: var(--muted); font-variant-numeric: tabular-nums; }
 html { -webkit-text-size-adjust: 100%; }
 body { margin: 0; }
 </style>
@@ -290,7 +312,9 @@ body { margin: 0; }
     return out;
   }
   function TS() { return order.map(function (id) { return tById[id]; }); }
-  var RESERVED = { 'accueil': 1, 'a-identifier': 1, 'ajouter': 1, 'modifier': 1, 'reglages': 1 };
+  var MEALS = [{ id: 'dejeuner', label: 'Déjeuner', short: 'Déj.' }, { id: 'diner', label: 'Dîner', short: 'Dîn.' }];
+  var mById = Object.create(null); MEALS.forEach(function (m) { mById[m.id] = m; });
+  var RESERVED = { 'repas': 1, 'accueil': 1, 'a-identifier': 1, 'ajouter': 1, 'modifier': 1, 'reglages': 1 };
   var view = document.getElementById('view');
   var firstRoute = true;
   var formActive = false;
@@ -330,6 +354,8 @@ body { margin: 0; }
     desserts: '<path class="a" d="M19 34h26L32 60z"/><path class="sw" d="M24 39l11 12M40 37L28 51"/>' +
       '<circle class="b" cx="32" cy="22" r="14"/><rect class="a" x="15" y="31" width="34" height="6" rx="3"/><circle class="a" cx="32" cy="7" r="4"/>',
     aclasser: '<circle class="b" cx="32" cy="32" r="24"/><path class="s" d="M24 26c0-5 3.5-8 8-8s8 3 8 8c0 6-8 6-8 12"/><circle class="a" cx="32" cy="46" r="2.8"/>',
+    dejeuner: '<circle class="a" cx="32" cy="32" r="12"/><circle class="b" cx="32" cy="32" r="7"/><path class="s" d="M32 6v8M32 50v8M6 32h8M50 32h8M13.6 13.6l5.7 5.7M44.7 44.7l5.7 5.7M13.6 50.4l5.7-5.7M44.7 19.3l5.7-5.7"/>',
+    diner: '<path class="a" d="M40 8A24 24 0 1 0 56 40 19 19 0 0 1 40 8z"/><circle class="b" cx="49" cy="15" r="3"/><circle class="b" cx="56" cy="27" r="2"/>',
     loupe: '<circle class="b" cx="27" cy="27" r="17"/><circle class="w" cx="27" cy="27" r="10"/><path class="s" style="stroke-width:5" d="M40 40l15 15"/>'
   };
 
@@ -342,6 +368,7 @@ body { margin: 0; }
   }
   function soft(label) { return label.replace('Accompagnements', 'Accompagne­ments'); }
   function recipesOf(typeId) { return R.filter(function (r) { return r.type === typeId; }); }
+  function recipesOfMeal(mealId) { return R.filter(function (r) { return mealId === 'sans' ? !r.meals.length : r.meals.indexOf(mealId) >= 0; }); }
   function link(href, cls, text) { var a = el('a', cls, text); a.href = href; return a; }
   function ext(href, cls, text) { var a = link(href, cls, text); a.target = '_blank'; a.rel = 'noopener noreferrer'; return a; }
   function back(href, label) { return link(href, 'back', '‹ ' + label); }
@@ -378,6 +405,11 @@ body { margin: 0; }
     if (typeof u !== 'string' || !u) return '';
     try { var x = new URL(u); return (x.protocol === 'https:' || x.protocol === 'http:') ? x.href : ''; } catch (e) { return ''; }
   }
+  function cleanMeals(a) {
+    var out = [];
+    if (Array.isArray(a)) MEALS.forEach(function (m) { if (a.indexOf(m.id) >= 0) out.push(m.id); });
+    return out;
+  }
   function normalize(o) {
     if (!o || typeof o !== 'object') return null;
     var id = typeof o.id === 'string' ? o.id : '';
@@ -391,7 +423,8 @@ body { margin: 0; }
       url: cleanUrl(o.url), btn: str(o.btn, 60) || 'Ouvrir le lien ↗', lvl: LEVELS[o.lvl] ? o.lvl : 'user',
       ing: ing, probable: cleanList(o.probable, 20, 100), ingNote: str(o.ingNote, 600),
       steps: cleanList(o.steps, 60, 600), stepsNote: str(o.stepsNote, 600), tips: cleanList(o.tips, 20, 400),
-      sum: str(o.sum, 200) || ing.slice(0, 4).join(', '), ts: typeof o.ts === 'number' ? o.ts : 0
+      sum: str(o.sum, 200) || ing.slice(0, 4).join(', '), ts: typeof o.ts === 'number' ? o.ts : 0,
+      meals: cleanMeals(o.meals)
     };
   }
   function parseRecipes(data) {
@@ -617,9 +650,22 @@ body { margin: 0; }
   }
 
   /* Niveau 1 : types de plats */
-  function home() {
+  var cameFrom = '';   // dernière liste ouverte : sert au lien « retour » de la fiche
+  function viewSwitch(mode) {
+    var nav = el('nav', 'seg'); nav.setAttribute('aria-label', 'Affichage');
+    [['types', '#accueil', 'Types de plat'], ['repas', '#repas', 'Repas']].forEach(function (x) {
+      var a = link(x[1], null, x[2]);
+      if (mode === x[0]) a.setAttribute('aria-current', 'page');
+      nav.appendChild(a);
+    });
+    return nav;
+  }
+  function home(mode) {
+    mode = (mode === 'repas' && !reorder) ? 'repas' : 'types';
+    lsSet('carnet:view', mode);
     view.appendChild(el('h1', null, 'Carnet de recettes'));
-    view.appendChild(el('p', 'sub', reorder ? 'Maintenez une tuile enfoncée, puis faites-la glisser.' : plural(R.length, 'recette', 'recettes') + ' · choisissez un type de plat'));
+    view.appendChild(el('p', 'sub', reorder ? 'Maintenez une tuile enfoncée, puis faites-la glisser.' : plural(R.length, 'recette', 'recettes') + (mode === 'repas' ? ' · choisissez un repas' : ' · choisissez un type de plat')));
+    if (!reorder) view.appendChild(viewSwitch(mode));
     if (reorder) view.className = 'reordering';
     if (canEdit()) {
       var row = el('div', 'rowbtns');
@@ -636,7 +682,20 @@ body { margin: 0; }
     var hint = reorder ? null : syncHint(); if (hint) view.appendChild(hint);
     var grid = el('div', 'tiles');
     if (reorder) grid.setAttribute('role', 'list');
-    TS().forEach(function (t) {
+    if (mode === 'repas') {
+      MEALS.concat([{ id: 'sans', label: 'Sans repas' }]).forEach(function (m) {
+        var n = recipesOfMeal(m.id).length;
+        if (m.id === 'sans' && !n) return;
+        var sans = m.id === 'sans';
+        var a = link('#repas/' + m.id, 'tile themed ' + (sans ? 't-aclasser wide' : 't-meal' + (n ? ' feat' : '')) + (n ? '' : ' zero'));
+        a.appendChild(icon(sans ? 'aclasser' : m.id));
+        var tx = el('span', 'txt');
+        tx.appendChild(el('span', 'tn', m.label));
+        tx.appendChild(el('span', 'tc', n ? plural(n, 'recette', 'recettes') : 'Aucune pour l’instant'));
+        a.appendChild(tx);
+        grid.appendChild(a);
+      });
+    } else TS().forEach(function (t) {
       var n = recipesOf(t.id).length;
       if (t.id === 'aclasser' && !n) return;
       var feat = (t.id === 'plats' || t.id === 'accomp') && n;
@@ -668,7 +727,7 @@ body { margin: 0; }
     else {
       var foot = el('div', 'foot');
       foot.appendChild(link('#reglages', null, 'Réglages · ' + (canEdit() ? 'modification activée' : 'lecture seule')));
-      if (canEdit()) {
+      if (canEdit() && mode === 'types') {
         var rb = el('button', 'linkbtn', 'Réorganiser les types'); rb.type = 'button';
         rb.onclick = function () { reorder = true; route(true); try { window.scrollTo(0, 0); } catch (e) {} };
         foot.appendChild(rb);
@@ -680,6 +739,7 @@ body { margin: 0; }
   /* Niveau 2 : plats d'un type */
   function typeScreen(t) {
     var items = recipesOf(t.id);
+    cameFrom = '#' + t.id;
     view.className = 'themed ' + tcls(t.id);
     view.appendChild(back('#accueil', 'Types de plats'));
     var ban = el('div', 'banner');
@@ -700,32 +760,78 @@ body { margin: 0; }
       view.appendChild(box);
       return;
     }
-    var ul = el('ul', 'dishes');
+    view.appendChild(rowList(items, true));
+  }
+
+  /* Liste condensée : une ligne par recette */
+  function rowList(items, showMeals) {
+    var ul = el('ul', 'rows');
     items.forEach(function (r) {
       var li = el('li');
-      var a = link('#' + r.id, 'dish');
-      var th = el('span', 'thumb'); th.appendChild(icon(r.type));
-      a.appendChild(th);
-      var tx = el('span', 'dtxt');
-      tx.appendChild(el('span', 'dn', r.name));
-      if (r.sum) tx.appendChild(el('span', 'ds', r.sum));
-      tx.appendChild(el('span', 'dm', [r.cook, r.src].filter(Boolean).join(' · ')));
-      a.appendChild(tx);
+      var a = link('#' + r.id, 'row');
+      a.appendChild(el('span', 'rn', r.name));
+      if (showMeals) r.meals.forEach(function (id) { a.appendChild(el('span', 'mchip', mById[id].short)); });
+      if (r.lvl === 'partial' || r.lvl === 'title' || r.lvl === 'none') {
+        var d = el('span', 'dot'); d.title = (LEVELS[r.lvl] || LEVELS.none)[0]; d.setAttribute('role', 'img'); d.setAttribute('aria-label', 'Recette incomplète : ' + d.title);
+        a.appendChild(d);
+      }
       a.appendChild(el('span', 'chev', '›'));
       li.appendChild(a); ul.appendChild(li);
     });
-    view.appendChild(ul);
+    return ul;
+  }
+
+  /* Niveau 2 (vue Repas) : recettes d'un repas, groupées par type */
+  function mealScreen(id) {
+    var sans = id === 'sans';
+    var m = sans ? { id: 'sans', label: 'Sans repas' } : mById[id];
+    var items = recipesOfMeal(id);
+    cameFrom = '#repas/' + id;
+    view.className = 'themed ' + (sans ? 't-aclasser' : 't-meal');
+    view.appendChild(back('#repas', 'Repas'));
+    var ban = el('div', 'banner');
+    ban.appendChild(icon(sans ? 'aclasser' : id));
+    var bt = el('div');
+    bt.appendChild(el('h1', null, m.label));
+    bt.appendChild(el('p', 'sub', items.length ? plural(items.length, 'recette', 'recettes') : 'Aucune recette pour l’instant'));
+    ban.appendChild(bt);
+    view.appendChild(ban);
+    if (canEdit() && !sans) view.appendChild(addButton('#ajouter/repas-' + id, '+ Ajouter à ' + m.label));
+    var hint = syncHint(); if (hint) view.appendChild(hint);
+    if (sans && items.length) view.appendChild(el('p', 'sub', 'Ces recettes n’ont pas encore de repas. Ouvrez-en une, puis « Modifier ».'));
+    if (!items.length) {
+      var box = el('div', 'emptybox');
+      box.appendChild(el('p', null, sans ? 'Toutes les recettes ont un repas.' : 'Aucune recette n’a ce repas pour l’instant. Ouvrez une recette, puis « Modifier », pour lui en donner un.'));
+      view.appendChild(box);
+      return;
+    }
+    TS().forEach(function (t) {
+      var g = items.filter(function (r) { return r.type === t.id; });
+      if (!g.length) return;
+      g.sort(function (a, b) { return a.name.localeCompare(b.name, 'fr', { sensitivity: 'base' }); });
+      var sec = el('section', 'grp themed ' + tcls(t.id));
+      var gh = el('div', 'grp-head');
+      gh.appendChild(icon(t.id));
+      gh.appendChild(el('h2', null, t.label));
+      gh.appendChild(el('span', 'grp-n', String(g.length)));
+      sec.appendChild(gh);
+      sec.appendChild(rowList(g, false));
+      view.appendChild(sec);
+    });
   }
 
   /* Niveau 3 : fiche d'un plat */
   function recipeScreen(r) {
     var t = tById[r.type];
     view.className = 'themed ' + tcls(r.type);
-    view.appendChild(back('#' + t.id, t.label));
+    var inMeal = /^#repas\/(\w+)$/.exec(cameFrom);
+    var backMeal = inMeal && (inMeal[1] === 'sans' ? !r.meals.length : r.meals.indexOf(inMeal[1]) >= 0) ? (inMeal[1] === 'sans' ? 'Sans repas' : mById[inMeal[1]].label) : '';
+    view.appendChild(backMeal ? back(cameFrom, backMeal) : back('#' + t.id, t.label));
     var h = el('div', 'hero'); h.appendChild(icon(r.type)); view.appendChild(h);
     view.appendChild(el('h1', null, r.name));
     var m = el('div', 'meta');
     m.appendChild(el('span', 'tag src', r.src));
+    r.meals.forEach(function (id) { m.appendChild(el('span', 'tag', mById[id].label)); });
     if (r.cook) m.appendChild(el('span', 'tag', r.cook));
     var dt = fmt(r.date);
     if (dt) m.appendChild(el('span', 'date', (r.src === 'Ajoutée' ? 'Ajoutée le ' : 'Partagée le ') + dt));
@@ -792,7 +898,9 @@ body { margin: 0; }
     formActive = true;
     var editing = !!rec;
     var sel = rec ? rec.type : (preset && tById[preset] ? preset : '');
-    view.appendChild(back(editing ? '#' + rec.id : (sel ? '#' + sel : '#accueil'), editing ? 'Retour à la recette' : (sel ? tById[sel].label : 'Types de plats')));
+    var presetMeal = (!rec && preset && preset.indexOf('repas-') === 0 && mById[preset.slice(6)]) ? preset.slice(6) : '';
+    var selMeals = rec ? rec.meals : (presetMeal ? [presetMeal] : []);
+    view.appendChild(back(editing ? '#' + rec.id : (presetMeal ? '#repas/' + presetMeal : (sel ? '#' + sel : '#accueil')), editing ? 'Retour à la recette' : (presetMeal ? mById[presetMeal].label : (sel ? tById[sel].label : 'Types de plats'))));
     view.appendChild(el('h1', null, editing ? 'Modifier la recette' : 'Nouvelle recette'));
     if (!canEdit()) {
       var nb = el('div', 'emptybox');
@@ -817,6 +925,17 @@ body { margin: 0; }
     });
     ft.appendChild(grid); f.appendChild(ft);
 
+    var fm = el('fieldset', 'field');
+    fm.appendChild(el('legend', 'lbl', 'Repas (facultatif)'));
+    var mg = el('div', 'chipgrid');
+    MEALS.forEach(function (m) {
+      var lab = el('label', 'chip themed t-meal');
+      var inp = el('input'); inp.type = 'checkbox'; inp.name = 'meal'; inp.value = m.id; if (selMeals.indexOf(m.id) >= 0) inp.checked = true;
+      var cb = el('span', 'cb'); cb.appendChild(icon(m.id)); cb.appendChild(el('span', null, m.label));
+      lab.appendChild(inp); lab.appendChild(cb); mg.appendChild(lab);
+    });
+    fm.appendChild(mg); fm.appendChild(el('p', 'help', 'Cochez les deux si la recette convient au déjeuner et au dîner.')); f.appendChild(fm);
+
     var inCook = textInput('f-cook', rec && rec.cook, 60, 'Ex. : Four, poêle, sans cuisson');
     f.appendChild(field('f-cook', 'Cuisson ou méthode (facultatif)', inCook));
     var inServ = textInput('f-serv', rec && rec.servings, 60, 'Ex. : 4 personnes');
@@ -837,7 +956,7 @@ body { margin: 0; }
 
     var actions = el('div', 'actions');
     var save = el('button', 'btn', editing ? 'Enregistrer les modifications' : 'Enregistrer la recette'); save.type = 'submit';
-    var cancel = link(editing ? '#' + rec.id : (sel ? '#' + sel : '#accueil'), 'btn ghost', 'Annuler');
+    var cancel = link(editing ? '#' + rec.id : (presetMeal ? '#repas/' + presetMeal : (sel ? '#' + sel : '#accueil')), 'btn ghost', 'Annuler');
     actions.appendChild(save); actions.appendChild(cancel); f.appendChild(actions);
 
     if (editing) {
@@ -890,7 +1009,8 @@ body { margin: 0; }
         probable: rec && !reset ? rec.probable : [], ingNote: rec && !reset ? rec.ingNote : '',
         stepsNote: rec && !stepsChanged ? rec.stepsNote : '',
         sum: rec && !ingChanged ? rec.sum : ing.slice(0, 4).join(', '),
-        ts: rec ? rec.ts : Date.now()
+        ts: rec ? rec.ts : Date.now(),
+        meals: cleanMeals(Array.prototype.map.call(f.querySelectorAll('input[name="meal"]:checked'), function (x) { return x.value; }))
       };
       save.disabled = true; status.textContent = 'Enregistrement…';
       commit({ id: id, rec: out }, (rec ? 'Modifie : ' : 'Ajoute : ') + name).then(function () {
@@ -1010,6 +1130,7 @@ body { margin: 0; }
     var rec;
     if (byId[h]) recipeScreen(byId[h]);
     else if (tById[h]) typeScreen(tById[h]);
+    else if (h.indexOf('repas/') === 0 && (mById[h.slice(6)] || h.slice(6) === 'sans')) mealScreen(h.slice(6));
     else if (h === 'a-identifier') queueScreen();
     else if (h === 'reglages') settingsScreen();
     else if (h === 'ajouter' || h.indexOf('ajouter/') === 0) formScreen(null, h.slice(8));
@@ -1017,7 +1138,9 @@ body { margin: 0; }
       rec = byId[h.slice(9)];
       if (rec) formScreen(rec); else missingScreen();
     }
-    else home();
+    else if (h === 'repas') home('repas');
+    else if (h === 'accueil') home('types');
+    else home(lsGet('carnet:view'));
     if (quiet === true) return;
     try { window.scrollTo(0, 0); } catch (e) {}
     if (!firstRoute) {
