@@ -291,6 +291,7 @@ input[type="password"] { font: inherit; font-size: 1rem; color: var(--fg); backg
 .more { display: flex; align-items: center; justify-content: center; width: 100%; min-height: 2.75rem; background: none; border: 0; padding: 0; font: inherit; font-size: 1.4rem; line-height: 1; letter-spacing: 0.1em; color: var(--muted); cursor: pointer; }
 .more[aria-expanded="true"] { font-size: 0.85rem; letter-spacing: 0; }
 @media (hover: hover) { .more:hover { background: var(--tint, var(--accent-soft)); color: var(--fg); } }
+.addrow { grid-column: 1 / -1; margin-top: 0.2rem; }
 html { -webkit-text-size-adjust: 100%; }
 body { margin: 0; }
 </style>
@@ -675,15 +676,11 @@ body { margin: 0; }
     view.appendChild(el('p', 'sub', reorder ? 'Maintenez une tuile enfoncée, puis faites-la glisser.' : plural(R.length, 'recette', 'recettes') + (mode === 'repas' ? ' · choisissez un repas' : ' · choisissez un type de plat')));
     if (!reorder) view.appendChild(viewSwitch(mode));
     if (reorder) view.className = 'reordering';
-    if (canEdit()) {
+    if (canEdit() && reorder) {
       var row = el('div', 'rowbtns');
-      if (!reorder) {
-        row.appendChild(addButton('#ajouter', '+ Ajouter une recette'));
-      } else {
-        var done = el('button', 'btn', 'Terminé'); done.type = 'button';
-        done.onclick = function () { reorder = false; statusEl = null; route(true); };
-        row.appendChild(done);
-      }
+      var done = el('button', 'btn', 'Terminé'); done.type = 'button';
+      done.onclick = function () { reorder = false; statusEl = null; route(true); };
+      row.appendChild(done);
       view.appendChild(row);
     }
     if (reorder) { statusEl = el('p', 'status'); statusEl.setAttribute('aria-live', 'polite'); view.appendChild(statusEl); }
@@ -721,6 +718,11 @@ body { margin: 0; }
       a.appendChild(tx);
       grid.appendChild(a);
     });
+    if (!reorder && canEdit()) {
+      var addRow = el('div', 'rowbtns addrow');
+      addRow.appendChild(addButton('#ajouter', '+ Ajouter une recette'));
+      grid.appendChild(addRow);
+    }
     if (!reorder) {
       var q = link('#a-identifier', 'tile queue themed');
       q.appendChild(icon('loupe'));
