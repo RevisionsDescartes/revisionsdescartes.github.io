@@ -1,8 +1,8 @@
-/* Carnet de recettes : hors ligne. Page = réseau d'abord (3 s), sinon copie en cache. */
-const V = 'carnet-v9';
+/* Carnet de recettes : hors ligne. Page = réseau d'abord (3 s, revalidée à chaque fois), sinon copie en cache. */
+const V = 'carnet-v10';
 const SHELL = ['./', './index.html', './manifest.json', './icon-192.png', './icon-512.png'];
 self.addEventListener('install', (e) => {
-  e.waitUntil(caches.open(V).then((c) => c.addAll(SHELL)).then(() => self.skipWaiting()));
+  e.waitUntil(caches.open(V).then((c) => c.addAll(SHELL.map((u) => new Request(u, { cache: 'reload' })))).then(() => self.skipWaiting()));
 });
 self.addEventListener('activate', (e) => {
   e.waitUntil(caches.keys().then((ks) => Promise.all(ks.filter((k) => k !== V).map((k) => caches.delete(k)))).then(() => self.clients.claim()));
@@ -13,7 +13,7 @@ function page(req) {
     const give = (r) => { if (!done && r) { done = true; resolve(r); } };
     const fromCache = () => caches.match('./index.html').then(give);
     const timer = setTimeout(fromCache, 3000);
-    fetch(req).then((r) => {
+    fetch(req.url, { cache: 'no-cache', credentials: 'same-origin' }).then((r) => {
       clearTimeout(timer);
       if (r.ok) { const c = r.clone(); caches.open(V).then((x) => x.put('./index.html', c)); give(r); }
       else fromCache();
