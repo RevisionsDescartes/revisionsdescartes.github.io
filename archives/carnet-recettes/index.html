@@ -269,10 +269,11 @@ input[type="password"] { font: inherit; font-size: 1rem; color: var(--fg); backg
 .seg { display: flex; gap: 0.25rem; padding: 0.25rem; background: var(--surface); border: 1px solid var(--line); border-radius: 0.85rem; }
 .seg a { flex: 1; display: grid; place-items: center; min-height: 2.6rem; border-radius: 0.65rem; color: var(--muted); font-weight: 600; text-decoration: none; }
 .seg a[aria-current] { background: var(--accent); color: var(--on-accent); }
-:root { --k-meal: #2B3A67; --k-meal-on: #FFFFFF; }
-@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --k-meal: #B4C2EE; --k-meal-on: #12141F; } }
-:root[data-theme="dark"] { --k-meal: #B4C2EE; --k-meal-on: #12141F; }
-.t-meal { --c: var(--k-meal); --on-c: var(--k-meal-on); }
+:root { --k-dejeuner: #F2A516; --k-dejeuner-on: #2A1700; --k-diner: #2B3A67; --k-diner-on: #FFFFFF; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --k-dejeuner: #F5B640; --k-dejeuner-on: #2A1700; --k-diner: #B4C2EE; --k-diner-on: #12141F; } }
+:root[data-theme="dark"] { --k-dejeuner: #F5B640; --k-dejeuner-on: #2A1700; --k-diner: #B4C2EE; --k-diner-on: #12141F; }
+.t-dejeuner { --c: var(--k-dejeuner); --on-c: var(--k-dejeuner-on); }
+.t-diner { --c: var(--k-diner); --on-c: var(--k-diner-on); }
 .tile.wide { grid-column: 1 / -1; min-height: 4.2rem; flex-direction: row; align-items: center; justify-content: flex-start; gap: 0.8rem; }
 .tile.wide .ic-box { width: 2.4rem; height: 2.4rem; }
 .rows { list-style: none; margin: 0; padding: 0; background: var(--surface); border: 1px solid var(--line); border-radius: 0.9rem; overflow: hidden; }
@@ -713,7 +714,7 @@ body { margin: 0; }
         var n = recipesOfMeal(m.id).length;
         if (m.id === 'sans' && !n) return;
         var sans = m.id === 'sans';
-        var a = link('#repas/' + m.id, 'tile themed ' + (sans ? 't-aclasser wide' : 't-meal' + (n ? ' feat' : '')) + (n ? '' : ' zero'));
+        var a = link('#repas/' + m.id, 'tile themed ' + (sans ? 't-aclasser wide' : 't-' + m.id + (n ? ' feat' : '')) + (n ? '' : ' zero'));
         a.appendChild(icon(sans ? 'aclasser' : m.id));
         var tx = el('span', 'txt');
         tx.appendChild(el('span', 'tn', m.label));
@@ -724,8 +725,7 @@ body { margin: 0; }
     } else TS().forEach(function (t) {
       var n = recipesOf(t.id).length;
       if (t.id === 'aclasser' && !n) return;
-      var feat = (t.id === 'plats' || t.id === 'accomp') && n;
-      var cls = 'tile themed ' + tcls(t.id) + (feat ? ' feat' : '') + (n ? '' : ' zero');
+      var cls = 'tile themed ' + tcls(t.id) + (n ? '' : ' zero');
       var a;
       if (reorder) {
         a = el('div', cls); a.setAttribute('data-type', t.id); a.tabIndex = 0; a.setAttribute('role', 'listitem');
@@ -835,7 +835,7 @@ body { margin: 0; }
     var m = sans ? { id: 'sans', label: 'Sans repas' } : mById[id];
     var items = recipesOfMeal(id);
     cameFrom = '#repas/' + id;
-    view.className = 'themed ' + (sans ? 't-aclasser' : 't-meal');
+    view.className = 'themed ' + (sans ? 't-aclasser' : 't-' + id);
     view.appendChild(back('#repas', 'Repas'));
     var ban = el('div', 'banner');
     ban.appendChild(icon(sans ? 'aclasser' : id));
@@ -1000,7 +1000,7 @@ body { margin: 0; }
     fm.appendChild(el('legend', 'lbl', 'Repas (facultatif)'));
     var mg = el('div', 'chipgrid');
     MEALS.forEach(function (m) {
-      var lab = el('label', 'chip themed t-meal');
+      var lab = el('label', 'chip themed t-' + m.id);
       var inp = el('input'); inp.type = 'checkbox'; inp.name = 'meal'; inp.value = m.id; if (selMeals.indexOf(m.id) >= 0) inp.checked = true;
       var cb = el('span', 'cb'); cb.appendChild(icon(m.id)); cb.appendChild(el('span', null, m.label));
       lab.appendChild(inp); lab.appendChild(cb); mg.appendChild(lab);
