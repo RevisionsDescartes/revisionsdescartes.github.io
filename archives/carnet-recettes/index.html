@@ -1127,6 +1127,41 @@ body { margin: 0; }
     return m ? m[0] : v;
   }
   function autoName(u, iso) { return ('Recette ' + linkInfo(u).label + ' du ' + fmt(iso)).slice(0, 120); }
+  // Titre de la vidéo : essai au mieux (YouTube direct, puis service oEmbed public). Jamais bloquant : en cas d'échec on renvoie ''.
+  var titleCache = {};
+  function getJson(u, ms) {
+    return new Promise(function (resolve) {
+      var done = false, ctl = (typeof AbortController === 'function') ? new AbortController() : null;
+      var t = setTimeout(function () { if (!done) { done = true; if (ctl) ctl.abort(); resolve(null); } }, ms);
+      var end = function (v) { if (!done) { done = true; clearTimeout(t); resolve(v); } };
+      try {
+        fetch(u, ctl ? { signal: ctl.signal, credentials: 'omit', referrerPolicy: 'no-referrer' } : { credentials: 'omit' })
+          .then(function (r) { return r.ok ? r.json() : null; }).then(end, function () { end(null); });
+      } catch (e) { end(null); }
+    });
+  }
+  function cleanTitle(t) {
+    t = (typeof t === 'string' ? t : '').replace(/[\u0000-\u001f\u007f]+/g, ' ').replace(/\s+/g, ' ').trim();
+    if (t.length < 3 || /^https?:\/\//i.test(t)) return '';
+    return t.slice(0, 120);
+  }
+  function fetchTitle(u) {
+    if (!u || !/^https?:\/\//i.test(u)) return Promise.resolve('');
+    if (titleCache[u] !== undefined) return Promise.resolve(titleCache[u]);
+    var enc = encodeURIComponent(u), tries = [];
+    if (linkInfo(u).label === 'YouTube') tries.push('https://www.youtube.com/oembed?format=json&url=' + enc);
+    tries.push('https://noembed.com/embed?url=' + enc);
+    var i = 0;
+    function next() {
+      if (i >= tries.length) { titleCache[u] = ''; return Promise.resolve(''); }
+      return getJson(tries[i++], 6000).then(function (j) {
+        var t = j && !j.error ? cleanTitle(j.title) : '';
+        if (t) { titleCache[u] = t; return t; }
+        return next();
+      });
+    }
+    return next();
+  }
   function formScreen(rec, preset, pre, shared) {
     formActive = true;
     var editing = !!rec;
@@ -1159,7 +1194,28 @@ body { margin: 0; }
       (editing || pre) ? '' : 'Vous pouvez coller seulement un lien : le nom et le type sont alors facultatifs, et la recette ira dans « À classer ».'));
 
     var inName = textInput('f-name', rec ? rec.name : (shared ? shared.name : ''), 120, 'Ex. : Poulet rôti au citron'); inName.autocomplete = 'off';
-    f.appendChild(field('f-name', (editing || pre) ? 'Nom du plat' : 'Nom du plat (facultatif si vous collez un lien)', inName));
+    f.appendChild(field('f-name', (editing || pre) ? 'Nom du plat' : 'Nom du plat (facultatif si vous collez un lien)', inName,
+      editing ? '' : 'Pour une vidéo, le titre est proposé automatiquement ; vous pouvez le modifier.'));
+    // Nom = titre de la vidéo, tant que vous n'avez rien saisi vous-même.
+    var nameTouched = false, autoFilled = '', basePh = inName.placeholder, titleSeq = 0;
+    inName.addEventListener('input', function () { nameTouched = true; });
+    function proposeTitle() {
+      if (editing) return;
+      var u = pickUrl(inUrl.value), seq = ++titleSeq;
+      if (!/^https?:\/\//i.test(u)) { inName.placeholder = basePh; return; }
+      if (nameTouched || (inName.value.trim() && inName.value !== autoFilled)) return;   // nom saisi ou fourni par l'appli de partage : on le garde
+      inName.placeholder = 'Recherche du titre…';
+      fetchTitle(u).then(function (t) {
+        if (seq !== titleSeq) return;
+        inName.placeholder = basePh;
+        if (!t || nameTouched || !document.body.contains(inName)) return;
+        if (inName.value.trim() && inName.value !== autoFilled) return;
+        inName.value = t; autoFilled = t;
+      });
+    }
+    inUrl.addEventListener('change', proposeTitle);
+    inUrl.addEventListener('paste', function () { setTimeout(function () { inUrl.value = pickUrl(inUrl.value); proposeTitle(); }, 0); });
+    setTimeout(proposeTitle, 0);
 
     var ft = el('fieldset', 'field');
     ft.appendChild(el('legend', 'lbl', (editing || pre) ? 'Type de plat' : 'Type de plat (facultatif si vous collez un lien)'));
