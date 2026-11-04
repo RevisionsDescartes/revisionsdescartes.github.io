@@ -331,6 +331,7 @@ body.hasbar { padding-bottom: calc(5.4rem + env(safe-area-inset-bottom, 0px)); }
 .bar .searchbox { flex: 1; min-width: 0; }
 .bar .barbtn { flex: 1 1 auto; white-space: nowrap; min-height: 2.9rem; }
 .bar .searchbox + .barbtn { flex: none; }
+.foot-meta { margin-top: 1.4rem; padding-top: 0.9rem; border-top: 1px solid var(--line, rgba(0,0,0,.08)); }
 html { -webkit-text-size-adjust: 100%; }
 body { margin: 0; }
 </style>
@@ -1029,14 +1030,7 @@ body { margin: 0; }
     else view.appendChild(backMeal ? back(cameFrom, backMeal) : back('#' + t.id, t.label));
     var h = el('div', 'hero'); h.appendChild(icon(r.type)); view.appendChild(h);
     view.appendChild(el('h1', null, r.name));
-    var m = el('div', 'meta');
-    m.appendChild(el('span', 'tag src', r.src));
-    mealsOf(r).forEach(function (id) { m.appendChild(el('span', 'tag', mById[id].label)); });
-    if (r.status) { var stt = sById[r.status]; m.appendChild(el('span', 'tag st st-' + r.status, (stt.mark !== stt.label ? stt.mark + ' ' : '') + stt.label)); }
-    if (r.cook) m.appendChild(el('span', 'tag', r.cook));
-    var dt = fmt(r.date);
-    if (dt) m.appendChild(el('span', 'date', (r.src === 'Ajoutée' ? 'Ajoutée le ' : 'Partagée le ') + dt));
-    view.appendChild(m);
+    if (r.cook) { var mc = el('div', 'meta'); mc.appendChild(el('span', 'tag', r.cook)); view.appendChild(mc); }
     if (r.servings) view.appendChild(el('p', 'serv', 'Pour ' + r.servings.charAt(0).toLowerCase() + r.servings.slice(1)));
     if (canEdit()) {
       var sr = el('div', 'statusrow'); sr.setAttribute('role', 'group'); sr.setAttribute('aria-label', 'Statut de la recette');
@@ -1092,6 +1086,14 @@ body { margin: 0; }
       rb.appendChild(link('#modifier/' + r.id, 'btn ghost', 'Modifier cette recette'));
       view.appendChild(rb);
     }
+    // Origine, repas, statut et date : toujours tout en bas de la fiche
+    var m = el('div', 'meta foot-meta');
+    m.appendChild(el('span', 'tag src', r.src));
+    mealsOf(r).forEach(function (id) { m.appendChild(el('span', 'tag', mById[id].label)); });
+    if (r.status) { var stt = sById[r.status]; m.appendChild(el('span', 'tag st st-' + r.status, (stt.mark !== stt.label ? stt.mark + ' ' : '') + stt.label)); }
+    var dt = fmt(r.date);
+    if (dt) m.appendChild(el('span', 'date', (r.src === 'Ajoutée' ? 'Ajoutée le ' : 'Partagée le ') + dt));
+    view.appendChild(m);
   }
 
   /* Ajouter / modifier */
