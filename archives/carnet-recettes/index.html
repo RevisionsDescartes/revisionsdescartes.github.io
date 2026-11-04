@@ -2,7 +2,7 @@
 <html lang="fr">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,interactive-widget=resizes-content">
 <meta name="theme-color" content="#2238B4">
 <meta name="color-scheme" content="light dark">
 <link rel="manifest" href="manifest.json">
@@ -323,6 +323,14 @@ input[type="password"] { font: inherit; font-size: 1rem; color: var(--fg); backg
 .cnt { font-variant-numeric: tabular-nums; font-weight: 700; font-size: 1.15rem; min-width: 2rem; text-align: right; }
 .todo.zero .cnt, .todo.zero .tn2 { color: var(--muted); }
 .todo .chev { color: var(--accent); }
+body.hasbar { padding-bottom: calc(5.4rem + env(safe-area-inset-bottom, 0px)); }
+.bar { position: fixed; left: 0; right: 0; bottom: 0; z-index: 30; background: var(--bg); border-top: 1px solid var(--line);
+  padding: 0.6rem max(16px, env(safe-area-inset-right, 0px)) calc(0.6rem + env(safe-area-inset-bottom, 0px)) max(16px, env(safe-area-inset-left, 0px)); }
+.bar[hidden] { display: none; }
+.bar-in { max-width: 40rem; margin-inline: auto; display: flex; align-items: center; gap: 0.6rem; }
+.bar .searchbox { flex: 1; min-width: 0; }
+.bar .barbtn { flex: 1 1 auto; white-space: nowrap; min-height: 2.9rem; }
+.bar .searchbox + .barbtn { flex: none; }
 html { -webkit-text-size-adjust: 100%; }
 body { margin: 0; }
 </style>
@@ -626,6 +634,12 @@ body { margin: 0; }
   }
 
   function addButton(href, label) { return link(href, 'btn', label); }
+  /* Barre fixe en bas de l'écran : recherche (accueil) et bouton Ajouter (listes) */
+  var bar = document.createElement('div'); bar.className = 'bar'; bar.hidden = true;
+  var barIn = el('div', 'bar-in'); bar.appendChild(barIn); document.body.appendChild(bar);
+  function clearBar() { barIn.textContent = ''; bar.hidden = true; document.body.classList.remove('hasbar'); }
+  function showBar(nodes) { nodes.forEach(function (n) { if (n) barIn.appendChild(n); }); bar.hidden = !nodes.some(Boolean); document.body.classList.toggle('hasbar', !bar.hidden); }
+  function barAdd(href, label, aria) { var a = link(href, 'btn barbtn', label); if (aria) a.setAttribute('aria-label', aria); return a; }
   function syncHint() {
     if (sync === 'offline') return el('p', 'hint', 'Hors connexion : dernière version enregistrée sur cet appareil.');
     if (sync === 'missing') return el('p', 'hint', 'Dépôt de données introuvable : recettes intégrées à l’appli affichées.');
@@ -761,10 +775,10 @@ body { margin: 0; }
     if (reorder) view.appendChild(el('p', 'sub', 'Maintenez une tuile enfoncée, puis faites-la glisser.'));
     var results = null, hb = view;
     if (!reorder) {
-      view.appendChild(searchBox(function () { return { results: results, body: hb }; }));
       results = el('div', 'results'); results.hidden = true; view.appendChild(results);
       hb = el('div', 'homebody'); view.appendChild(hb);
       hb.appendChild(viewSwitch(mode));
+      showBar([searchBox(), canEdit() ? barAdd('#ajouter', '+ Ajouter', 'Ajouter une recette') : null]);
     }
     if (reorder) view.className = 'reordering';
     if (canEdit() && reorder) {
@@ -808,11 +822,6 @@ body { margin: 0; }
       a.appendChild(tx);
       grid.appendChild(a);
     });
-    if (!reorder && canEdit()) {
-      var addRow = el('div', 'rowbtns addrow');
-      addRow.appendChild(addButton('#ajouter', '+ Ajouter une recette'));
-      grid.appendChild(addRow);
-    }
     if (!reorder) {
       var tc = todoCounts();
       var q = link('#a-traiter', 'tile queue themed');
@@ -841,13 +850,14 @@ body { margin: 0; }
   /* Recherche */
   function searchBox() {
     var wrap = el('div', 'searchbox');
-    var inp = el('input'); inp.type = 'search'; inp.id = 'q'; inp.placeholder = 'Rechercher une recette ou un ingrédient'; inp.value = searchQ;
+    var inp = el('input'); inp.type = 'search'; inp.id = 'q'; inp.placeholder = 'Rechercher une recette'; inp.value = searchQ;
     inp.autocomplete = 'off'; inp.setAttribute('enterkeyhint', 'search'); inp.setAttribute('aria-label', 'Rechercher une recette ou un ingrédient');
     inp.addEventListener('input', function () {
       searchQ = inp.value;
       var res = view.querySelector('.results'), body = view.querySelector('.homebody');
       if (res && body) showResults(res, body);
     });
+    inp.addEventListener('keydown', function (e) { if (e.key === 'Enter') { e.preventDefault(); inp.blur(); } });
     wrap.appendChild(inp);
     return wrap;
   }
@@ -887,7 +897,7 @@ body { margin: 0; }
     bt.appendChild(el('p', 'sub', fstat ? items.length + ' sur ' + plural(all.length, 'recette', 'recettes') : (items.length ? plural(items.length, 'recette', 'recettes') : 'Aucune recette pour l’instant')));
     ban.appendChild(bt);
     view.appendChild(ban);
-    if (canEdit()) view.appendChild(addButton('#ajouter/' + t.id, '+ Ajouter à ' + t.label));
+    if (canEdit()) showBar([barAdd('#ajouter/' + t.id, '+ Ajouter à ' + t.label)]);
     var hint = syncHint(); if (hint) view.appendChild(hint);
     var fb = all.length ? filterBar() : null; if (fb) view.appendChild(fb);
     if (all.length && !items.length) {
@@ -978,7 +988,7 @@ body { margin: 0; }
     bt.appendChild(el('p', 'sub', fstat ? items.length + ' sur ' + plural(all.length, 'recette', 'recettes') : (items.length ? plural(items.length, 'recette', 'recettes') : 'Aucune recette pour l’instant')));
     ban.appendChild(bt);
     view.appendChild(ban);
-    if (canEdit() && !sans) view.appendChild(addButton('#ajouter/repas-' + id, '+ Ajouter à ' + m.label));
+    if (canEdit()) showBar([sans ? barAdd('#ajouter', '+ Ajouter une recette') : barAdd('#ajouter/repas-' + id, '+ Ajouter à ' + m.label)]);
     var hint = syncHint(); if (hint) view.appendChild(hint);
     if (sans && all.length) view.appendChild(el('p', 'sub', 'Ces recettes n’ont pas encore de repas. Ouvrez-en une, puis « Modifier ».'));
     var fb = all.length ? filterBar() : null; if (fb) view.appendChild(fb);
@@ -1465,12 +1475,18 @@ body { margin: 0; }
 
   function rerender() {
     var h = location.hash || '';
+    if (document.activeElement && document.activeElement.id === 'q') {   // saisie en cours : on ne rafraîchit que les résultats
+      var res = view.querySelector('.results'), body = view.querySelector('.homebody');
+      if (res && body) showResults(res, body);
+      return;
+    }
     if (formActive || reorder || (h === '#a-identifier' && view.querySelector('.qask'))) return;   // pas de rafraîchissement pendant une confirmation
     route(true);
   }
   function route(quiet) {
     var h = (location.hash || '').replace(/^#/, '');
     formActive = false;
+    clearBar();
     view.textContent = '';
     view.className = '';
     var rec;
