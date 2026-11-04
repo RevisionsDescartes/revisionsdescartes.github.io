@@ -288,6 +288,9 @@ input[type="password"] { font: inherit; font-size: 1rem; color: var(--fg); backg
 .grp-head .ic-box { width: 1.9rem; height: 1.9rem; }
 .grp-head h2 { font-size: 1.05rem; color: var(--fg); }
 .grp-head .grp-n { margin-left: auto; font-size: 0.8rem; color: var(--muted); font-variant-numeric: tabular-nums; }
+.more { display: flex; align-items: center; justify-content: center; width: 100%; min-height: 2.75rem; background: none; border: 0; padding: 0; font: inherit; font-size: 1.4rem; line-height: 1; letter-spacing: 0.1em; color: var(--muted); cursor: pointer; }
+.more[aria-expanded="true"] { font-size: 0.85rem; letter-spacing: 0; }
+@media (hover: hover) { .more:hover { background: var(--tint, var(--accent-soft)); color: var(--fg); } }
 html { -webkit-text-size-adjust: 100%; }
 body { margin: 0; }
 </style>
@@ -764,10 +767,14 @@ body { margin: 0; }
   }
 
   /* Liste condensée : une ligne par recette */
-  function rowList(items, showMeals) {
+  var expanded = Object.create(null);   // groupes dépliés (vue Repas), conservés tant que l'appli reste ouverte
+  var GROUP_MAX = 3;
+  function rowList(items, showMeals, key) {
     var ul = el('ul', 'rows');
-    items.forEach(function (r) {
+    var extra = [];
+    items.forEach(function (r, i) {
       var li = el('li');
+      if (key && i >= GROUP_MAX) { extra.push(li); li.hidden = !expanded[key]; }
       var a = link('#' + r.id, 'row');
       a.appendChild(el('span', 'rn', r.name));
       if (showMeals) r.meals.forEach(function (id) { a.appendChild(el('span', 'mchip', mById[id].short)); });
@@ -778,6 +785,19 @@ body { margin: 0; }
       a.appendChild(el('span', 'chev', '›'));
       li.appendChild(a); ul.appendChild(li);
     });
+    if (extra.length) {
+      var more = el('li'), btn = el('button', 'more', '');
+      btn.type = 'button';
+      var sync = function () {
+        var open = !!expanded[key];
+        extra.forEach(function (x) { x.hidden = !open; });
+        btn.textContent = open ? 'Réduire' : '···';
+        btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+        btn.setAttribute('aria-label', open ? 'Réduire la liste' : 'Afficher les ' + plural(extra.length, 'autre recette', 'autres recettes'));
+      };
+      btn.onclick = function () { expanded[key] = !expanded[key]; sync(); };
+      sync(); more.appendChild(btn); ul.appendChild(more);
+    }
     return ul;
   }
 
@@ -815,7 +835,7 @@ body { margin: 0; }
       gh.appendChild(el('h2', null, t.label));
       gh.appendChild(el('span', 'grp-n', String(g.length)));
       sec.appendChild(gh);
-      sec.appendChild(rowList(g, false));
+      sec.appendChild(rowList(g, false, sans ? '' : id + '/' + t.id));
       view.appendChild(sec);
     });
   }
