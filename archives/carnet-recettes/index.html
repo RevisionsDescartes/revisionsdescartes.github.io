@@ -332,6 +332,9 @@ body.hasbar { padding-bottom: calc(5.4rem + env(safe-area-inset-bottom, 0px)); }
 .bar .barbtn { flex: 1 1 auto; white-space: nowrap; min-height: 2.9rem; }
 .bar .searchbox + .barbtn { flex: none; }
 .foot-meta { margin-top: 1.4rem; padding-top: 0.9rem; border-top: 1px solid var(--line, rgba(0,0,0,.08)); }
+.pastebtn { margin: 0 0 0.5rem; }
+.perr { margin: 0.3rem 0 0; color: var(--danger); font-weight: 600; }
+.perr:empty { display: none; }
 html { -webkit-text-size-adjust: 100%; }
 body { margin: 0; }
 </style>
@@ -1192,8 +1195,25 @@ body { margin: 0; }
       var want = inUrl.value.trim() ? 'essayer' : '';
       var r2 = f.querySelector('input[name="status"][value="' + want + '"]'); if (r2) r2.checked = true;
     });
-    f.appendChild(field('f-url', 'Lien de la recette (YouTube, Facebook ou autre)', inUrl,
-      (editing || pre) ? '' : 'Vous pouvez coller seulement un lien : le nom et le type sont alors facultatifs, et la recette ira dans « À classer ».'));
+    var urlField = field('f-url', 'Lien de la recette (YouTube, Facebook ou autre)', inUrl,
+      (editing || pre) ? '' : 'Vous pouvez coller seulement un lien : le nom et le type sont alors facultatifs, et la recette ira dans « À classer ».');
+    var pasteMsg = el('p', 'perr'); pasteMsg.setAttribute('role', 'alert');
+    if (!editing && !pre) {
+      var pasteBtn = el('button', 'btn ghost pastebtn', 'Coller le lien copié'); pasteBtn.type = 'button';
+      pasteBtn.onclick = function () {
+        pasteMsg.textContent = '';
+        var rd = (navigator.clipboard && navigator.clipboard.readText) ? navigator.clipboard.readText() : Promise.reject(new Error('nope'));
+        rd.then(function (txt) {
+          var u = /https?:\/\/[^\s]+/i.exec(txt || '');
+          if (!u) { pasteMsg.textContent = 'Aucun lien trouvé dans ce qui est copié. Copiez d’abord le lien de la vidéo.'; return; }
+          inUrl.value = pickUrl(u[0].replace(/[)\].,;!?]+$/, ''));
+          inUrl.dispatchEvent(new Event('input')); proposeTitle();
+        }, function () { pasteMsg.textContent = 'Impossible de lire ce qui est copié. Appuyez longuement dans le champ du lien, puis choisissez « Coller ».'; });
+      };
+      urlField.insertBefore(pasteBtn, inUrl);
+    }
+    urlField.appendChild(pasteMsg);
+    f.appendChild(urlField);
 
     var inName = textInput('f-name', rec ? rec.name : (shared ? shared.name : ''), 120, 'Ex. : Poulet rôti au citron'); inName.autocomplete = 'off';
     f.appendChild(field('f-name', (editing || pre) ? 'Nom du plat' : 'Nom du plat (facultatif si vous collez un lien)', inName,
@@ -1413,6 +1433,28 @@ body { margin: 0; }
       });
     });
     view.appendChild(f);
+
+    var bk = el('section', 'sheet'); bk.setAttribute('aria-labelledby', 'h-bk');
+    var bh = el('h2', null, 'Sauvegarde'); bh.id = 'h-bk'; bk.appendChild(bh);
+    var nIn = R.length;
+    var last = lsGet('carnet:backup'), lastTxt = last && /^\d{4}-\d{2}-\d{2}$/.test(last) ? fmt(last) : '';
+    bk.appendChild(el('p', 'note', 'Télécharge une copie de vos ' + nIn + ' recettes (fichier recettes.json). Dernière sauvegarde sur cet appareil : ' + (lastTxt || 'aucune') + '.'));
+    var bb = el('button', 'btn', 'Télécharger une sauvegarde'); bb.type = 'button';
+    var bm = el('p', 'status'); bm.setAttribute('aria-live', 'polite');
+    bb.onclick = function () {
+      var today = new Date().toISOString().slice(0, 10);
+      var txt = JSON.stringify({ recipes: R, typeOrder: order, dismissed: dismissed }, null, 1) + '\n';
+      try {
+        var url = URL.createObjectURL(new Blob([txt], { type: 'application/json' }));
+        var a = el('a'); a.href = url; a.download = 'carnet-recettes-' + today + '.json'; document.body.appendChild(a); a.click(); document.body.removeChild(a);
+        setTimeout(function () { URL.revokeObjectURL(url); }, 4000);
+        lsSet('carnet:backup', today);
+        bm.textContent = 'Sauvegarde téléchargée (' + R.length + ' recettes). Cherchez « carnet-recettes-' + today + '.json » dans vos téléchargements.';
+      } catch (e) { bm.textContent = 'Le téléchargement a échoué sur cet appareil.'; }
+    };
+    bk.appendChild(bb); bk.appendChild(bm);
+    bk.appendChild(el('p', 'help', 'Pour restaurer : remplacez le fichier recettes.json du dépôt GitHub par cette copie, ou demandez-moi dans Claude. GitHub garde aussi l’historique des versions du fichier.'));
+    view.appendChild(bk);
   }
 
   function missingScreen() {
