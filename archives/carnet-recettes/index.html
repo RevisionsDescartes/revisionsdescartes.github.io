@@ -281,7 +281,7 @@ input[type="password"] { font: inherit; font-size: 1rem; color: var(--fg); backg
 .row { display: flex; align-items: center; gap: 0.5rem; min-height: 2.75rem; padding: 0.3rem 0.5rem 0.3rem 0.85rem; color: var(--fg); text-decoration: none; }
 .row:active { background: var(--tint, var(--accent-soft)); }
 @media (hover: hover) { .row:hover { background: var(--tint, var(--accent-soft)); } }
-.rn { flex: 1; min-width: 0; font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.rn { flex: 1; min-width: 0; font-weight: 600; overflow: hidden; display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; line-clamp: 2; overflow-wrap: anywhere; line-height: 1.3; padding-block: 0.1rem; }
 .mchip { flex: none; font-size: 0.7rem; line-height: 1.5; padding: 0 0.45rem; border: 1px solid var(--line); border-radius: 999px; color: var(--muted); }
 .dot { flex: none; opacity: 0.65; width: 0.5rem; height: 0.5rem; border-radius: 50%; border: 1.5px solid var(--muted); }
 .grp { display: grid; gap: 0.45rem; }
@@ -297,6 +297,32 @@ input[type="password"] { font: inherit; font-size: 1rem; color: var(--fg); backg
 .btn.small { min-height: 2.5rem; padding: 0.2rem 0.9rem; font-size: 0.9rem; }
 .linkbtn.dng { color: var(--danger); }
 .qask { font-size: 0.9rem; font-weight: 600; }
+.err:empty { display: none; }
+.searchbox input { width: 100%; font: inherit; font-size: 1rem; color: var(--fg); background: var(--surface); border: 1px solid var(--line); border-radius: 0.8rem; padding: 0.65rem 0.85rem; min-height: 2.9rem; }
+.homebody, .results { display: grid; gap: 1.1rem; }
+.results { gap: 0.7rem; }
+.homebody[hidden], .results[hidden] { display: none; }
+.row .ic-box { width: 1.6rem; height: 1.6rem; }
+.fbar, .statusrow { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+.fchip { min-height: 2.5rem; padding: 0.2rem 0.7rem; font: inherit; font-size: 0.85rem; font-weight: 600; color: var(--fg); background: var(--surface); border: 1px solid var(--line); border-radius: 999px; cursor: pointer; }
+.fchip.on { background: var(--accent); color: var(--on-accent); border-color: var(--accent); }
+.fchip[disabled] { opacity: 0.6; cursor: progress; }
+:root { --st-fav: #9A6200; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --st-fav: #F5B640; } }
+:root[data-theme="dark"] { --st-fav: #F5B640; }
+.schip { flex: none; font-size: 0.72rem; line-height: 1.5; padding: 0 0.4rem; border-radius: 999px; border: 1px solid currentColor; font-weight: 600; }
+.s-favorite, .st-favorite { color: var(--st-fav); }
+.s-testee, .st-testee { color: var(--k-salades); }
+.s-essayer, .st-essayer { color: var(--k-sandwichs); }
+.tag.st { border-color: currentColor; font-weight: 600; background: none; }
+.todos { list-style: none; margin: 0; padding: 0; display: grid; gap: 0.6rem; }
+.todo { display: flex; align-items: center; gap: 0.8rem; min-height: 3.4rem; padding: 0.7rem 0.9rem 0.7rem 1rem; background: var(--surface); border: 1px solid var(--line); border-radius: 0.9rem; color: var(--fg); text-decoration: none; }
+.todo .dtx { flex: 1; min-width: 0; display: grid; }
+.tn2 { font-weight: 700; }
+.td2 { font-size: 0.85rem; color: var(--muted); }
+.cnt { font-variant-numeric: tabular-nums; font-weight: 700; font-size: 1.15rem; min-width: 2rem; text-align: right; }
+.todo.zero .cnt, .todo.zero .tn2 { color: var(--muted); }
+.todo .chev { color: var(--accent); }
 html { -webkit-text-size-adjust: 100%; }
 body { margin: 0; }
 </style>
@@ -323,7 +349,14 @@ body { margin: 0; }
   function TS() { return order.map(function (id) { return tById[id]; }); }
   var MEALS = [{ id: 'dejeuner', label: 'Déjeuner', short: 'Déj.' }, { id: 'diner', label: 'Dîner', short: 'Dîn.' }];
   var mById = Object.create(null); MEALS.forEach(function (m) { mById[m.id] = m; });
-  var RESERVED = { 'repas': 1, 'accueil': 1, 'a-identifier': 1, 'ajouter': 1, 'modifier': 1, 'reglages': 1 };
+  var STATUSES = [
+    { id: 'essayer', label: 'À essayer', mark: 'À essayer', cls: 't-sandwichs', filter: 'À essayer' },
+    { id: 'testee', label: 'Testée', mark: '✓', cls: 't-salades', filter: 'Testées' },
+    { id: 'favorite', label: 'Favorite', mark: '★', cls: 't-dejeuner', filter: '★ Favorites' }
+  ];
+  var sById = Object.create(null); STATUSES.forEach(function (x) { sById[x.id] = x; });
+  function cleanStatus(x) { return sById[x] ? x : ''; }
+  var RESERVED = { 'a-traiter': 1, 'a-completer': 1, 'recherche': 1, 'partage': 1, 'repas': 1, 'accueil': 1, 'a-identifier': 1, 'ajouter': 1, 'modifier': 1, 'reglages': 1 };
   var view = document.getElementById('view');
   var firstRoute = true;
   var formActive = false;
@@ -397,6 +430,36 @@ body { margin: 0; }
     var a = r.meals, f = AUTO_MEAL[r.type];
     return (f && a.indexOf(f) < 0) ? cleanMeals(a.concat(f)) : a;
   }
+  function incompleteWhy(r) {
+    if (r.lvl === 'partial' || r.lvl === 'title' || r.lvl === 'none') return (LEVELS[r.lvl] || LEVELS.none)[0];
+    return r.ing.length ? '' : 'Aucun ingrédient renseigné';
+  }
+  function fold(x) { return (x || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/œ/g, 'oe').replace(/æ/g, 'ae'); }
+  function searchWords(q) { return fold(q).split(/[^a-z0-9]+/).filter(Boolean); }
+  function searchRecipes(q) {
+    var words = searchWords(q), out = [];
+    if (!words.length) return null;
+    R.forEach(function (r) {
+      var name = fold(r.name);
+      var rest = fold([r.sum, r.ing.join(' '), tById[r.type].label, r.cook, r.src, r.status ? sById[r.status].label : '',
+        mealsOf(r).map(function (m) { return mById[m].label; }).join(' '), r.tips.join(' ')].join(' '));
+      var score = 0, all = true;
+      words.forEach(function (w) { if (name.indexOf(w) >= 0) score += 3; else if (rest.indexOf(w) >= 0) score += 1; else all = false; });
+      if (all) out.push({ r: r, score: score });
+    });
+    out.sort(function (a, b) { return b.score - a.score || a.r.name.localeCompare(b.r.name, 'fr'); });
+    return out.map(function (x) { return x.r; });
+  }
+  var searchQ = '', fstat = '';
+  function todoCounts() {
+    var recs = {}, aclasser = 0, sans = 0, compl = 0;
+    R.forEach(function (r) {
+      var a = r.type === 'aclasser', b = !mealsOf(r).length, c = !!incompleteWhy(r);
+      if (a) aclasser++; if (b) sans++; if (c) compl++;
+      if (a || c) recs[r.id] = 1;   // « Sans repas » n'entre pas dans le total : Petit-déjeuner, Snacks et Desserts y restent par choix
+    });
+    return { links: pendingList().length, aclasser: aclasser, sans: sans, compl: compl, recipes: Object.keys(recs).length };
+  }
   function recipesOfMeal(mealId) { return R.filter(function (r) { var m = mealsOf(r); return mealId === 'sans' ? !m.length : m.indexOf(mealId) >= 0; }); }
   function link(href, cls, text) { var a = el('a', cls, text); a.href = href; return a; }
   function ext(href, cls, text) { var a = link(href, cls, text); a.target = '_blank'; a.rel = 'noopener noreferrer'; return a; }
@@ -453,7 +516,7 @@ body { margin: 0; }
       ing: ing, probable: cleanList(o.probable, 20, 100), ingNote: str(o.ingNote, 600),
       steps: cleanList(o.steps, 60, 600), stepsNote: str(o.stepsNote, 600), tips: cleanList(o.tips, 20, 400),
       sum: str(o.sum, 200) || ing.slice(0, 4).join(', '), ts: typeof o.ts === 'number' ? o.ts : 0,
-      meals: cleanMeals(o.meals)
+      meals: cleanMeals(o.meals), status: cleanStatus(o.status)
     };
   }
   function parseRecipes(data) {
@@ -696,7 +759,13 @@ body { margin: 0; }
     lsSet('carnet:view', mode);
     view.appendChild(el('h1', null, 'Carnet de recettes'));
     if (reorder) view.appendChild(el('p', 'sub', 'Maintenez une tuile enfoncée, puis faites-la glisser.'));
-    if (!reorder) view.appendChild(viewSwitch(mode));
+    var results = null, hb = view;
+    if (!reorder) {
+      view.appendChild(searchBox(function () { return { results: results, body: hb }; }));
+      results = el('div', 'results'); results.hidden = true; view.appendChild(results);
+      hb = el('div', 'homebody'); view.appendChild(hb);
+      hb.appendChild(viewSwitch(mode));
+    }
     if (reorder) view.className = 'reordering';
     if (canEdit() && reorder) {
       var row = el('div', 'rowbtns');
@@ -706,7 +775,7 @@ body { margin: 0; }
       view.appendChild(row);
     }
     if (reorder) { statusEl = el('p', 'status'); statusEl.setAttribute('aria-live', 'polite'); view.appendChild(statusEl); }
-    var hint = reorder ? null : syncHint(); if (hint) view.appendChild(hint);
+    var hint = reorder ? null : syncHint(); if (hint) hb.appendChild(hint);
     var grid = el('div', 'tiles');
     if (reorder) grid.setAttribute('role', 'list');
     if (mode === 'repas') {
@@ -745,15 +814,16 @@ body { margin: 0; }
       grid.appendChild(addRow);
     }
     if (!reorder) {
-      var q = link('#a-identifier', 'tile queue themed');
+      var tc = todoCounts();
+      var q = link('#a-traiter', 'tile queue themed');
       q.appendChild(icon('loupe'));
       var qt = el('span', 'txt');
-      qt.appendChild(el('span', 'tn', 'Liens à identifier'));
-      qt.appendChild(el('span', 'tc', plural(pendingList().length, 'lien', 'liens')));
+      qt.appendChild(el('span', 'tn', 'À traiter'));
+      qt.appendChild(el('span', 'tc', (tc.links || tc.recipes) ? [tc.links ? plural(tc.links, 'lien', 'liens') : '', tc.recipes ? plural(tc.recipes, 'recette', 'recettes') : ''].filter(Boolean).join(' · ') : 'Rien à traiter'));
       q.appendChild(qt);
       grid.appendChild(q);
     }
-    view.appendChild(grid);
+    (reorder ? view : hb).appendChild(grid);
     if (reorder) enableReorder(grid);
     else {
       var foot = el('div', 'foot');
@@ -763,25 +833,68 @@ body { margin: 0; }
         rb.onclick = function () { reorder = true; route(true); try { window.scrollTo(0, 0); } catch (e) {} };
         foot.appendChild(rb);
       }
-      view.appendChild(foot);
+      hb.appendChild(foot);
     }
+    if (results && searchWords(searchQ).length) { showResults(results, hb); }
+  }
+
+  /* Recherche */
+  function searchBox() {
+    var wrap = el('div', 'searchbox');
+    var inp = el('input'); inp.type = 'search'; inp.id = 'q'; inp.placeholder = 'Rechercher une recette ou un ingrédient'; inp.value = searchQ;
+    inp.autocomplete = 'off'; inp.setAttribute('enterkeyhint', 'search'); inp.setAttribute('aria-label', 'Rechercher une recette ou un ingrédient');
+    inp.addEventListener('input', function () {
+      searchQ = inp.value;
+      var res = view.querySelector('.results'), body = view.querySelector('.homebody');
+      if (res && body) showResults(res, body);
+    });
+    wrap.appendChild(inp);
+    return wrap;
+  }
+  function showResults(res, body) {
+    var list = searchRecipes(searchQ);
+    res.textContent = '';
+    if (!list) { res.hidden = true; body.hidden = false; return; }
+    res.hidden = false; body.hidden = true;
+    var cnt = el('p', 'sub', list.length ? plural(list.length, 'résultat', 'résultats') : 'Aucun résultat'); cnt.setAttribute('role', 'status'); res.appendChild(cnt);
+    if (!list.length) { var eb = el('div', 'emptybox'); eb.appendChild(el('p', null, 'Essayez un autre mot, ou un seul mot-clé. La recherche porte sur le nom, les ingrédients, le type, le repas et le statut.')); res.appendChild(eb); return; }
+    var ul = el('ul', 'rows');
+    list.slice(0, 60).forEach(function (r) {
+      var li = el('li'), a = link('#' + r.id, 'row themed ' + tcls(r.type));
+      a.appendChild(icon(r.type));
+      a.appendChild(el('span', 'rn', r.name));
+      if (r.status) a.appendChild(statusChip(r.status));
+      var why = incompleteWhy(r);
+      if (why) { var d = el('span', 'dot'); d.title = why; d.setAttribute('role', 'img'); d.setAttribute('aria-label', 'Recette incomplète : ' + why); a.appendChild(d); }
+      a.appendChild(el('span', 'chev', '›'));
+      a.addEventListener('click', function () { cameFrom = '#recherche'; });
+      li.appendChild(a); ul.appendChild(li);
+    });
+    res.appendChild(ul);
+    if (list.length > 60) res.appendChild(el('p', 'hint', 'Seuls les 60 premiers résultats sont affichés. Précisez votre recherche.'));
   }
 
   /* Niveau 2 : plats d'un type */
   function typeScreen(t) {
-    var items = recipesOf(t.id);
-    cameFrom = '#' + t.id;
+    var all = recipesOf(t.id), items = byStatus(all);
+    cameFrom = '#' + t.id; searchQ = '';
     view.className = 'themed ' + tcls(t.id);
     view.appendChild(back('#accueil', 'Types de plats'));
     var ban = el('div', 'banner');
     ban.appendChild(icon(t.id));
     var bt = el('div');
     bt.appendChild(el('h1', null, t.label));
-    bt.appendChild(el('p', 'sub', items.length ? plural(items.length, 'recette', 'recettes') : 'Aucune recette pour l’instant'));
+    bt.appendChild(el('p', 'sub', fstat ? items.length + ' sur ' + plural(all.length, 'recette', 'recettes') : (items.length ? plural(items.length, 'recette', 'recettes') : 'Aucune recette pour l’instant')));
     ban.appendChild(bt);
     view.appendChild(ban);
     if (canEdit()) view.appendChild(addButton('#ajouter/' + t.id, '+ Ajouter à ' + t.label));
     var hint = syncHint(); if (hint) view.appendChild(hint);
+    var fb = all.length ? filterBar() : null; if (fb) view.appendChild(fb);
+    if (all.length && !items.length) {
+      var fe = el('div', 'emptybox'); fe.appendChild(el('p', null, 'Aucune recette de ce type avec ce statut.'));
+      var fr = el('button', 'linkbtn', 'Voir toutes les recettes'); fr.type = 'button'; fr.onclick = function () { fstat = ''; route(true); };
+      fe.appendChild(fr); view.appendChild(fe); return;
+    }
     if (!items.length) {
       var box = el('div', 'emptybox');
       box.appendChild(el('p', null, t.id === 'soupes'
@@ -795,6 +908,25 @@ body { margin: 0; }
   }
 
   /* Liste condensée : une ligne par recette */
+  function statusChip(id) {
+    var st = sById[id], c = el('span', 'schip s-' + id, st.mark);
+    c.title = st.label; c.setAttribute('role', 'img'); c.setAttribute('aria-label', st.label);
+    return c;
+  }
+  /* Filtre par statut (valable pour toutes les listes tant que l'appli reste ouverte) */
+  function filterBar() {
+    var any = R.some(function (r) { return r.status; });
+    if (!any && !fstat) return null;
+    var nav = el('nav', 'fbar'); nav.setAttribute('aria-label', 'Filtrer par statut');
+    [{ id: '', filter: 'Toutes' }].concat(STATUSES.slice().reverse()).forEach(function (x) {
+      var b = el('button', 'fchip' + (fstat === x.id ? ' on' : ''), x.filter); b.type = 'button';
+      b.setAttribute('aria-pressed', fstat === x.id ? 'true' : 'false');
+      b.onclick = function () { fstat = x.id; route(true); };
+      nav.appendChild(b);
+    });
+    return nav;
+  }
+  function byStatus(items) { return fstat ? items.filter(function (r) { return r.status === fstat; }) : items; }
   var expanded = Object.create(null);   // groupes dépliés (vue Repas), conservés tant que l'appli reste ouverte
   var GROUP_MAX = 3;
   function rowList(items, showMeals, key) {
@@ -805,9 +937,11 @@ body { margin: 0; }
       if (key && i >= GROUP_MAX) { extra.push(li); li.hidden = !expanded[key]; }
       var a = link('#' + r.id, 'row');
       a.appendChild(el('span', 'rn', r.name));
+      if (r.status) a.appendChild(statusChip(r.status));
       if (showMeals) mealsOf(r).forEach(function (id) { a.appendChild(el('span', 'mchip', mById[id].short)); });
-      if (r.lvl === 'partial' || r.lvl === 'title' || r.lvl === 'none') {
-        var d = el('span', 'dot'); d.title = (LEVELS[r.lvl] || LEVELS.none)[0]; d.setAttribute('role', 'img'); d.setAttribute('aria-label', 'Recette incomplète : ' + d.title);
+      var why = incompleteWhy(r);
+      if (why) {
+        var d = el('span', 'dot'); d.title = why; d.setAttribute('role', 'img'); d.setAttribute('aria-label', 'Recette incomplète : ' + why);
         a.appendChild(d);
       }
       a.appendChild(el('span', 'chev', '›'));
@@ -833,20 +967,26 @@ body { margin: 0; }
   function mealScreen(id) {
     var sans = id === 'sans';
     var m = sans ? { id: 'sans', label: 'Sans repas' } : mById[id];
-    var items = recipesOfMeal(id);
-    cameFrom = '#repas/' + id;
+    var all = recipesOfMeal(id), items = byStatus(all);
+    cameFrom = '#repas/' + id; searchQ = '';
     view.className = 'themed ' + (sans ? 't-aclasser' : 't-' + id);
     view.appendChild(back('#repas', 'Repas'));
     var ban = el('div', 'banner');
     ban.appendChild(icon(sans ? 'aclasser' : id));
     var bt = el('div');
     bt.appendChild(el('h1', null, m.label));
-    bt.appendChild(el('p', 'sub', items.length ? plural(items.length, 'recette', 'recettes') : 'Aucune recette pour l’instant'));
+    bt.appendChild(el('p', 'sub', fstat ? items.length + ' sur ' + plural(all.length, 'recette', 'recettes') : (items.length ? plural(items.length, 'recette', 'recettes') : 'Aucune recette pour l’instant')));
     ban.appendChild(bt);
     view.appendChild(ban);
     if (canEdit() && !sans) view.appendChild(addButton('#ajouter/repas-' + id, '+ Ajouter à ' + m.label));
     var hint = syncHint(); if (hint) view.appendChild(hint);
-    if (sans && items.length) view.appendChild(el('p', 'sub', 'Ces recettes n’ont pas encore de repas. Ouvrez-en une, puis « Modifier ».'));
+    if (sans && all.length) view.appendChild(el('p', 'sub', 'Ces recettes n’ont pas encore de repas. Ouvrez-en une, puis « Modifier ».'));
+    var fb = all.length ? filterBar() : null; if (fb) view.appendChild(fb);
+    if (all.length && !items.length) {
+      var fe = el('div', 'emptybox'); fe.appendChild(el('p', null, 'Aucune recette avec ce statut ici.'));
+      var fr = el('button', 'linkbtn', 'Voir toutes les recettes'); fr.type = 'button'; fr.onclick = function () { fstat = ''; route(true); };
+      fe.appendChild(fr); view.appendChild(fe); return;
+    }
     if (!items.length) {
       var box = el('div', 'emptybox');
       box.appendChild(el('p', null, sans ? 'Toutes les recettes ont un repas.' : 'Aucune recette n’a ce repas pour l’instant. Ouvrez une recette, puis « Modifier », pour lui en donner un.'));
@@ -874,17 +1014,37 @@ body { margin: 0; }
     view.className = 'themed ' + tcls(r.type);
     var inMeal = /^#repas\/(\w+)$/.exec(cameFrom);
     var backMeal = inMeal && (inMeal[1] === 'sans' ? !mealsOf(r).length : mealsOf(r).indexOf(inMeal[1]) >= 0) ? (inMeal[1] === 'sans' ? 'Sans repas' : mById[inMeal[1]].label) : '';
-    view.appendChild(backMeal ? back(cameFrom, backMeal) : back('#' + t.id, t.label));
+    if (cameFrom === '#recherche' && searchWords(searchQ).length) view.appendChild(back('#accueil', 'Recherche'));
+    else if (cameFrom === '#a-completer' && incompleteWhy(r)) view.appendChild(back('#a-completer', 'À compléter'));
+    else view.appendChild(backMeal ? back(cameFrom, backMeal) : back('#' + t.id, t.label));
     var h = el('div', 'hero'); h.appendChild(icon(r.type)); view.appendChild(h);
     view.appendChild(el('h1', null, r.name));
     var m = el('div', 'meta');
     m.appendChild(el('span', 'tag src', r.src));
     mealsOf(r).forEach(function (id) { m.appendChild(el('span', 'tag', mById[id].label)); });
+    if (r.status) { var stt = sById[r.status]; m.appendChild(el('span', 'tag st st-' + r.status, (stt.mark !== stt.label ? stt.mark + ' ' : '') + stt.label)); }
     if (r.cook) m.appendChild(el('span', 'tag', r.cook));
     var dt = fmt(r.date);
     if (dt) m.appendChild(el('span', 'date', (r.src === 'Ajoutée' ? 'Ajoutée le ' : 'Partagée le ') + dt));
     view.appendChild(m);
     if (r.servings) view.appendChild(el('p', 'serv', 'Pour ' + r.servings.charAt(0).toLowerCase() + r.servings.slice(1)));
+    if (canEdit()) {
+      var sr = el('div', 'statusrow'); sr.setAttribute('role', 'group'); sr.setAttribute('aria-label', 'Statut de la recette');
+      var serr = el('p', 'err'); serr.setAttribute('role', 'alert');
+      STATUSES.forEach(function (st) {
+        var b = el('button', 'fchip' + (r.status === st.id ? ' on' : ''), (st.mark !== st.label ? st.mark + ' ' : '') + st.label); b.type = 'button';
+        b.setAttribute('aria-pressed', r.status === st.id ? 'true' : 'false');
+        b.onclick = function () {
+          var next = r.status === st.id ? '' : st.id, rec2 = {};
+          Object.keys(r).forEach(function (k) { rec2[k] = r[k]; }); rec2.status = next;
+          Array.prototype.forEach.call(sr.querySelectorAll('button'), function (x) { x.disabled = true; });
+          commit({ id: r.id, rec: rec2 }, 'Statut de « ' + r.name + ' » : ' + (next ? st.label : 'aucun')).then(function () { route(true); },
+            function (e) { Array.prototype.forEach.call(sr.querySelectorAll('button'), function (x) { x.disabled = false; }); serr.textContent = writeError(e); });
+        };
+        sr.appendChild(b);
+      });
+      view.appendChild(sr); view.appendChild(serr);
+    }
 
     var lv = LEVELS[r.lvl] || LEVELS.none;
     var s1 = el('section', 'sheet'); s1.setAttribute('aria-labelledby', 'h-ing');
@@ -957,17 +1117,18 @@ body { margin: 0; }
     return m ? m[0] : v;
   }
   function autoName(u, iso) { return ('Recette ' + linkInfo(u).label + ' du ' + fmt(iso)).slice(0, 120); }
-  function formScreen(rec, preset, pre) {
+  function formScreen(rec, preset, pre, shared) {
     formActive = true;
     var editing = !!rec;
     var sel = rec ? rec.type : (preset && tById[preset] ? preset : '');
     var presetMeal = (!rec && preset && preset.indexOf('repas-') === 0 && mById[preset.slice(6)]) ? preset.slice(6) : '';
     var selMeals = rec ? rec.meals : (presetMeal ? [presetMeal] : []);
-    var backHref = pre ? '#a-identifier' : (editing ? '#' + rec.id : (presetMeal ? '#repas/' + presetMeal : (sel ? '#' + sel : '#accueil')));
-    var backLabel = pre ? 'Liens à identifier' : (editing ? 'Retour à la recette' : (presetMeal ? mById[presetMeal].label : (sel ? tById[sel].label : 'Types de plats')));
+    var backHref = pre ? '#a-identifier' : shared ? '#accueil' : (editing ? '#' + rec.id : (presetMeal ? '#repas/' + presetMeal : (sel ? '#' + sel : '#accueil')));
+    var backLabel = pre ? 'Liens à identifier' : shared ? 'Types de plats' : (editing ? 'Retour à la recette' : (presetMeal ? mById[presetMeal].label : (sel ? tById[sel].label : 'Types de plats')));
     view.appendChild(back(backHref, backLabel));
-    view.appendChild(el('h1', null, editing ? 'Modifier la recette' : (pre ? 'Classer ce lien' : 'Nouvelle recette')));
+    view.appendChild(el('h1', null, editing ? 'Modifier la recette' : (pre ? 'Classer ce lien' : (shared ? 'Ajouter ce lien' : 'Nouvelle recette'))));
     if (pre) view.appendChild(el('p', 'sub', 'Ouvrez le lien pour voir la recette, puis renseignez son nom et son type.'));
+    if (shared) view.appendChild(el('p', 'sub', 'Lien reçu par partage. Vérifiez le nom proposé, puis enregistrez : le type est facultatif.'));
     if (!canEdit()) {
       var nb = el('div', 'emptybox');
       nb.appendChild(el('p', null, 'La modification n’est pas activée sur cet appareil.'));
@@ -977,12 +1138,17 @@ body { margin: 0; }
     }
     var f = el('form', 'form'); f.noValidate = true;
 
-    var inUrl = textInput('f-url', rec ? rec.url : (pre ? pre.url : ''), 500, 'https://…'); inUrl.type = 'url'; inUrl.autocapitalize = 'off'; inUrl.setAttribute('inputmode', 'url');
+    var inUrl = textInput('f-url', rec ? rec.url : (pre ? pre.url : (shared ? shared.url : '')), 500, 'https://…'); inUrl.type = 'url'; inUrl.autocapitalize = 'off'; inUrl.setAttribute('inputmode', 'url');
     inUrl.addEventListener('change', function () { inUrl.value = pickUrl(inUrl.value); });
+    inUrl.addEventListener('input', function () {
+      if (statusTouched || editing) return;
+      var want = inUrl.value.trim() ? 'essayer' : '';
+      var r2 = f.querySelector('input[name="status"][value="' + want + '"]'); if (r2) r2.checked = true;
+    });
     f.appendChild(field('f-url', 'Lien de la recette (YouTube, Facebook ou autre)', inUrl,
       (editing || pre) ? '' : 'Vous pouvez coller seulement un lien : le nom et le type sont alors facultatifs, et la recette ira dans « À classer ».'));
 
-    var inName = textInput('f-name', rec && rec.name, 120, 'Ex. : Poulet rôti au citron'); inName.autocomplete = 'off';
+    var inName = textInput('f-name', rec ? rec.name : (shared ? shared.name : ''), 120, 'Ex. : Poulet rôti au citron'); inName.autocomplete = 'off';
     f.appendChild(field('f-name', (editing || pre) ? 'Nom du plat' : 'Nom du plat (facultatif si vous collez un lien)', inName));
 
     var ft = el('fieldset', 'field');
@@ -1015,6 +1181,21 @@ body { margin: 0; }
       mhelp.textContent = isAuto ? 'Les soupes sont toujours au dîner. Cochez aussi Déjeuner si besoin.' : 'Cochez les deux si la recette convient au déjeuner et au dîner.';
     }
     grid.addEventListener('change', syncMeals); syncMeals();
+
+    var fs2 = el('fieldset', 'field');
+    fs2.appendChild(el('legend', 'lbl', 'Statut (facultatif)'));
+    var sg = el('div', 'chipgrid');
+    var statusTouched = !!rec;
+    [{ id: '', label: 'Aucun', cls: 't-aclasser' }].concat(STATUSES).forEach(function (st) {
+      var lab = el('label', 'chip themed ' + st.cls);
+      var inp = el('input'); inp.type = 'radio'; inp.name = 'status'; inp.value = st.id;
+      inp.checked = (rec ? rec.status : ((pre || shared) ? 'essayer' : '')) === st.id;
+      var cb = el('span', 'cb'); cb.appendChild(el('span', null, (st.mark && st.mark !== st.label ? st.mark + ' ' : '') + st.label));
+      lab.appendChild(inp); lab.appendChild(cb); sg.appendChild(lab);
+    });
+    sg.addEventListener('change', function () { statusTouched = true; });
+    fs2.appendChild(sg); fs2.appendChild(el('p', 'help', 'Sans choix de votre part, un lien collé passe automatiquement en « À essayer ».'));
+    f.appendChild(fs2);
 
     var inCook = textInput('f-cook', rec && rec.cook, 60, 'Ex. : Four, poêle, sans cuisson');
     f.appendChild(field('f-cook', 'Cuisson ou méthode (facultatif)', inCook));
@@ -1092,6 +1273,7 @@ body { margin: 0; }
         stepsNote: rec && !stepsChanged ? rec.stepsNote : '',
         sum: rec && !ingChanged ? rec.sum : ing.slice(0, 4).join(', '),
         ts: rec ? rec.ts : Date.now(),
+        status: cleanStatus((f.querySelector('input[name="status"]:checked') || {}).value),
         meals: cleanMeals(Array.prototype.map.call(f.querySelectorAll('input[name="meal"]:checked:not(:disabled)'), function (x) { return x.value; }))
       };
       save.disabled = true; status.textContent = 'Enregistrement…';
@@ -1172,9 +1354,45 @@ body { margin: 0; }
   }
 
   /* Liens à identifier */
+  /* À traiter : toutes les « boîtes » au même endroit */
+  function todoScreen() {
+    searchQ = '';
+    view.appendChild(back('#accueil', 'Types de plats'));
+    view.appendChild(el('h1', null, 'À traiter'));
+    view.appendChild(el('p', 'qintro', 'Tout ce qui attend d’être complété ou rangé.'));
+    var c = todoCounts();
+    var ul = el('ul', 'todos');
+    [
+      { href: '#a-identifier', title: 'Liens à identifier', n: c.links, unit: ['lien', 'liens'], desc: 'Liens partagés dont le nom n’est pas connu' },
+      { href: '#aclasser', title: 'À classer', n: c.aclasser, unit: ['recette', 'recettes'], desc: 'Recettes sans type de plat précis' },
+      { href: '#repas/sans', title: 'Sans repas', n: c.sans, unit: ['recette', 'recettes'], desc: 'Recettes ni au déjeuner ni au dîner' },
+      { href: '#a-completer', title: 'À compléter', n: c.compl, unit: ['recette', 'recettes'], desc: 'Liste d’ingrédients absente ou incomplète' }
+    ].forEach(function (x) {
+      var li = el('li'), a = link(x.href, 'todo' + (x.n ? '' : ' zero'));
+      var tx = el('span', 'dtx');
+      tx.appendChild(el('span', 'tn2', x.title));
+      tx.appendChild(el('span', 'td2', x.desc));
+      a.appendChild(tx);
+      a.appendChild(el('span', 'cnt', x.n ? String(x.n) : '✓'));
+      a.appendChild(el('span', 'chev', '›'));
+      var lab = x.n ? plural(x.n, x.unit[0], x.unit[1]) : 'rien à faire'; a.setAttribute('aria-label', x.title + ' : ' + lab);
+      li.appendChild(a); ul.appendChild(li);
+    });
+    view.appendChild(ul);
+  }
+  function completeScreen() {
+    searchQ = ''; cameFrom = '#a-completer';
+    var items = R.filter(function (r) { return !!incompleteWhy(r); });
+    view.appendChild(back('#a-traiter', 'À traiter'));
+    view.appendChild(el('h1', null, 'À compléter'));
+    view.appendChild(el('p', 'qintro', 'Recettes dont la liste d’ingrédients est absente ou incomplète. Un point à droite d’une ligne indique qu’elle est incomplète.'));
+    if (!items.length) { var b = el('div', 'emptybox'); b.appendChild(el('p', null, 'Toutes les recettes ont leurs ingrédients.')); view.appendChild(b); return; }
+    view.appendChild(rowList(items, true));
+  }
   var flash = '', qOpen = Object.create(null);
   function queueScreen() {
-    view.appendChild(back('#accueil', 'Types de plats'));
+    searchQ = '';
+    view.appendChild(back('#a-traiter', 'À traiter'));
     view.appendChild(el('h1', null, 'Liens à identifier'));
     var left = pendingList();
     view.appendChild(el('p', 'qintro', 'Ces liens ont été partagés comme recettes, mais leur nom n’est pas connu. Le numéro permet de les citer dans le chat.' + (canEdit() ? ' Ouvrez un lien, puis classez-le en recette ou retirez-le de la liste.' : '')));
@@ -1227,6 +1445,24 @@ body { margin: 0; }
     view.appendChild(el('p', 'hint', 'Facebook demande parfois de se connecter pour ouvrir un reel.'));
   }
 
+  /* Partage depuis une autre appli (Android : Partager > Carnet de recettes) */
+  var sharedIn = null;
+  function parseShare(sp) {
+    var title = (sp.get('title') || '').trim(), text = (sp.get('text') || '').trim(), url = (sp.get('url') || '').trim();
+    var re = /https?:\/\/[^\s]+/i, link = '';
+    [url, text, title].forEach(function (x) { if (!link) { var m = re.exec(x); if (m) link = m[0].replace(/[)\].,;!?]+$/, ''); } });
+    var name = title && !re.test(title) ? title : text.replace(re, '').replace(/\s+/g, ' ').replace(/^["«“'\s:–-]+|["»”'\s:–-]+$/g, '');
+    if (name.length < 3 || name.length > 100) name = '';
+    return { url: link, name: name };
+  }
+  try {
+    var sp0 = new URLSearchParams(location.search);
+    if (sp0.has('url') || sp0.has('text') || sp0.has('title')) {
+      sharedIn = parseShare(sp0);
+      history.replaceState(null, '', location.pathname + '#partage');
+    }
+  } catch (e) {}
+
   function rerender() {
     var h = location.hash || '';
     if (formActive || reorder || (h === '#a-identifier' && view.querySelector('.qask'))) return;   // pas de rafraîchissement pendant une confirmation
@@ -1242,6 +1478,9 @@ body { margin: 0; }
     else if (tById[h]) typeScreen(tById[h]);
     else if (h.indexOf('repas/') === 0 && (mById[h.slice(6)] || h.slice(6) === 'sans')) mealScreen(h.slice(6));
     else if (h === 'a-identifier') queueScreen();
+    else if (h === 'partage') { var sh = sharedIn; sharedIn = null; formScreen(null, '', null, sh); }
+    else if (h === 'a-traiter') todoScreen();
+    else if (h === 'a-completer') completeScreen();
     else if (h.indexOf('classer/') === 0) { var pi = PBY[h.slice(8)]; var pend = pi && pendingList().indexOf(pi) >= 0; if (pend && canEdit()) formScreen(null, '', pi); else queueScreen(); }
     else if (h === 'reglages') settingsScreen();
     else if (h === 'ajouter' || h.indexOf('ajouter/') === 0) formScreen(null, h.slice(8));
