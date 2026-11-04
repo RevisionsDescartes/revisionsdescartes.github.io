@@ -1,5 +1,5 @@
 /* Carnet de recettes : hors ligne. Page = réseau d'abord (3 s), sinon copie en cache. */
-const V = 'carnet-v8';
+const V = 'carnet-v9';
 const SHELL = ['./', './index.html', './manifest.json', './icon-192.png', './icon-512.png'];
 self.addEventListener('install', (e) => {
   e.waitUntil(caches.open(V).then((c) => c.addAll(SHELL)).then(() => self.skipWaiting()));
