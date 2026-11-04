@@ -292,6 +292,10 @@ input[type="password"] { font: inherit; font-size: 1rem; color: var(--fg); backg
 .more[aria-expanded="true"] { font-size: 0.85rem; letter-spacing: 0; }
 @media (hover: hover) { .more:hover { background: var(--tint, var(--accent-soft)); color: var(--fg); } }
 .addrow { grid-column: 1 / -1; margin-top: 0.2rem; }
+.qlist li .qact { grid-column: 2 / -1; display: flex; align-items: center; flex-wrap: wrap; gap: 0.4rem 0.9rem; padding-bottom: 0.4rem; }
+.btn.small { min-height: 2.5rem; padding: 0.2rem 0.9rem; font-size: 0.9rem; }
+.linkbtn.dng { color: var(--danger); }
+.qask { font-size: 0.9rem; font-weight: 600; }
 html { -webkit-text-size-adjust: 100%; }
 body { margin: 0; }
 </style>
@@ -322,8 +326,23 @@ body { margin: 0; }
   var view = document.getElementById('view');
   var firstRoute = true;
   var formActive = false;
-  var fbCount = 0; Object.keys(D.pendingFb).forEach(function (y) { fbCount += D.pendingFb[y].length; });
-  var pendingTotal = fbCount + D.pendingYt.length;
+  function nk(u) { try { return new URL(u).href; } catch (e) { return ''; } }   // clé de comparaison d'un lien
+  var ALLP = [], PBY = Object.create(null);
+  D.pendingYt.forEach(function (r, i) { ALLP.push({ id: 'Y' + (i + 1), grp: 'YouTube', date: r.date, url: r.url, key: nk(r.url), note: r.note || '', src: 'YouTube', btn: 'Voir la vidéo ↗' }); });
+  (function () { var k = 0; Object.keys(D.pendingFb).sort().forEach(function (y) { D.pendingFb[y].forEach(function (r) { k += 1; ALLP.push({ id: 'F' + k, grp: 'Facebook ' + y, date: r.date, url: r.url, key: nk(r.url), note: '', src: 'Facebook', btn: 'Voir le reel ↗' }); }); }); })();
+  ALLP.forEach(function (p) { PBY[p.id] = p; });
+  var dismissed = [];
+  function cleanDismissed(a) {
+    var seen = Object.create(null), out = [];
+    (Array.isArray(a) ? a : []).forEach(function (u) { var k = typeof u === 'string' ? nk(u) : ''; if (k && !seen[k] && out.length < 3000) { seen[k] = 1; out.push(k); } });
+    return out;
+  }
+  function pendingList() {
+    var used = Object.create(null);
+    R.forEach(function (r) { if (r.url) used[nk(r.url)] = 1; });
+    dismissed.forEach(function (k) { used[k] = 1; });
+    return ALLP.filter(function (p) { return !used[p.key]; });
+  }
   var LEVELS = {
     complete: ['Liste complète', true],
     partial: ['Liste partielle', false],
@@ -447,7 +466,7 @@ body { margin: 0; }
     R = list; byId = Object.create(null);
     R.forEach(function (r) { byId[r.id] = r; });
   }
-  function setData(list, ord) { useList(list); order = parseOrder(ord); lsSet('carnet:data', JSON.stringify({ recipes: list, typeOrder: order })); }
+  function setData(list, ord, dis) { useList(list); order = parseOrder(ord); dismissed = dis || dismissed; lsSet('carnet:data', JSON.stringify({ recipes: list, typeOrder: order, dismissed: dismissed })); }
 
   var seed = parseRecipes({ recipes: D.recipes });
   var cached = null, cachedOrder = null;
@@ -458,6 +477,7 @@ body { margin: 0; }
   } catch (e) {}
   useList(cached && cached.length ? cached : seed);
   order = parseOrder(cachedOrder);
+  try { dismissed = cleanDismissed((JSON.parse(lsGet('carnet:data') || 'null') || {}).dismissed); } catch (e) {}
 
   /* ---- Dépôt de données (API GitHub) ---- */
   function b64dec(s) {
@@ -487,7 +507,7 @@ body { margin: 0; }
     return api('/repos/' + cfg.repo + '/contents/' + FILE + '?ref=' + BRANCH).then(function (j) {
       var data;
       try { data = JSON.parse(b64dec(j.content)); } catch (e) { throw new Error('format'); }
-      return { sha: j.sha, recipes: parseRecipes(data), order: parseOrder(data && data.typeOrder) };
+      return { sha: j.sha, recipes: parseRecipes(data), order: parseOrder(data && data.typeOrder), dismissed: cleanDismissed(data && data.dismissed) };
     });
   }
   var lastSync = 0;
@@ -496,8 +516,8 @@ body { margin: 0; }
     lastSync = Date.now();
     return fetchRemote().then(function (rm) {
       var ord = inflight > 0 ? order : rm.order;
-      var changed = JSON.stringify(rm.recipes) !== JSON.stringify(R) || ord.join() !== order.join() || sync !== 'ok';
-      sync = 'ok'; setData(rm.recipes, ord);
+      var changed = JSON.stringify(rm.recipes) !== JSON.stringify(R) || ord.join() !== order.join() || rm.dismissed.join() !== dismissed.join() || sync !== 'ok';
+      sync = 'ok'; setData(rm.recipes, ord, rm.dismissed);
       if (changed) rerender();
     }, function (e) {
       var s = e && e.status === 404 ? 'missing' : 'offline';
@@ -516,20 +536,21 @@ body { margin: 0; }
   function commit(op, message) {
     function attempt(n) {
       return fetchRemote().catch(function (e) {
-        if (e && e.status === 404) return { sha: undefined, recipes: R, order: order };
+        if (e && e.status === 404) return { sha: undefined, recipes: R, order: order, dismissed: dismissed };
         throw e;
       }).then(function (rm) {
-        var list = op.order ? rm.recipes : applyOp(rm.recipes, op);
+        var list = op.id ? applyOp(rm.recipes, op) : rm.recipes;
         var ord = op.order ? parseOrder(op.order) : rm.order;
-        var body = { message: message.slice(0, 120), content: b64enc(JSON.stringify({ recipes: list, typeOrder: ord }, null, 1) + '\n'), branch: BRANCH };
+        var dis = op.dismiss ? cleanDismissed(rm.dismissed.concat([op.dismiss])) : rm.dismissed;
+        var body = { message: message.slice(0, 120), content: b64enc(JSON.stringify({ recipes: list, typeOrder: ord, dismissed: dis }, null, 1) + '\n'), branch: BRANCH };
         if (rm.sha) body.sha = rm.sha;
-        return api('/repos/' + cfg.repo + '/contents/' + FILE, { method: 'PUT', body: JSON.stringify(body) }).then(function () { return { list: list, ord: ord }; }, function (e) {
+        return api('/repos/' + cfg.repo + '/contents/' + FILE, { method: 'PUT', body: JSON.stringify(body) }).then(function () { return { list: list, ord: ord, dis: dis }; }, function (e) {
           if ((e.status === 409 || e.status === 422) && n < 2) return attempt(n + 1);
           throw e;
         });
       });
     }
-    return attempt(0).then(function (res) { sync = 'ok'; setData(res.list, res.ord); return res.list; });
+    return attempt(0).then(function (res) { sync = 'ok'; setData(res.list, res.ord, res.dis); return res.list; });
   }
   function writeError(e) {
     var s = e && e.status;
@@ -728,7 +749,7 @@ body { margin: 0; }
       q.appendChild(icon('loupe'));
       var qt = el('span', 'txt');
       qt.appendChild(el('span', 'tn', 'Liens à identifier'));
-      qt.appendChild(el('span', 'tc', plural(pendingTotal, 'lien', 'liens')));
+      qt.appendChild(el('span', 'tc', plural(pendingList().length, 'lien', 'liens')));
       q.appendChild(qt);
       grid.appendChild(q);
     }
@@ -921,14 +942,17 @@ body { margin: 0; }
   }
   function textArea(id, value, ph) { var t = el('textarea'); t.id = id; if (ph) t.placeholder = ph; if (value) t.value = value; return t; }
 
-  function formScreen(rec, preset) {
+  function formScreen(rec, preset, pre) {
     formActive = true;
     var editing = !!rec;
     var sel = rec ? rec.type : (preset && tById[preset] ? preset : '');
     var presetMeal = (!rec && preset && preset.indexOf('repas-') === 0 && mById[preset.slice(6)]) ? preset.slice(6) : '';
     var selMeals = rec ? rec.meals : (presetMeal ? [presetMeal] : []);
-    view.appendChild(back(editing ? '#' + rec.id : (presetMeal ? '#repas/' + presetMeal : (sel ? '#' + sel : '#accueil')), editing ? 'Retour à la recette' : (presetMeal ? mById[presetMeal].label : (sel ? tById[sel].label : 'Types de plats'))));
-    view.appendChild(el('h1', null, editing ? 'Modifier la recette' : 'Nouvelle recette'));
+    var backHref = pre ? '#a-identifier' : (editing ? '#' + rec.id : (presetMeal ? '#repas/' + presetMeal : (sel ? '#' + sel : '#accueil')));
+    var backLabel = pre ? 'Liens à identifier' : (editing ? 'Retour à la recette' : (presetMeal ? mById[presetMeal].label : (sel ? tById[sel].label : 'Types de plats')));
+    view.appendChild(back(backHref, backLabel));
+    view.appendChild(el('h1', null, editing ? 'Modifier la recette' : (pre ? 'Classer ce lien' : 'Nouvelle recette')));
+    if (pre) view.appendChild(el('p', 'sub', 'Ouvrez le lien pour voir la recette, puis renseignez son nom et son type.'));
     if (!canEdit()) {
       var nb = el('div', 'emptybox');
       nb.appendChild(el('p', null, 'La modification n’est pas activée sur cet appareil.'));
@@ -983,7 +1007,7 @@ body { margin: 0; }
     var taTips = textArea('f-tips', rec && rec.tips.join('\n'), 'Laisser reposer la pâte 5 minutes.');
     taTips.style.minHeight = '5rem';
     f.appendChild(field('f-tips', 'Astuces (facultatif)', taTips, 'Une astuce par ligne.'));
-    var inUrl = textInput('f-url', rec && rec.url, 500, 'https://…'); inUrl.type = 'url'; inUrl.autocapitalize = 'off'; inUrl.setAttribute('inputmode', 'url');
+    var inUrl = textInput('f-url', rec ? rec.url : (pre ? pre.url : ''), 500, 'https://…'); inUrl.type = 'url'; inUrl.autocapitalize = 'off'; inUrl.setAttribute('inputmode', 'url');
     f.appendChild(field('f-url', 'Lien de la recette (facultatif)', inUrl));
 
     var err = el('p', 'err'); err.setAttribute('role', 'alert');
@@ -992,7 +1016,7 @@ body { margin: 0; }
 
     var actions = el('div', 'actions');
     var save = el('button', 'btn', editing ? 'Enregistrer les modifications' : 'Enregistrer la recette'); save.type = 'submit';
-    var cancel = link(editing ? '#' + rec.id : (presetMeal ? '#repas/' + presetMeal : (sel ? '#' + sel : '#accueil')), 'btn ghost', 'Annuler');
+    var cancel = link(backHref, 'btn ghost', 'Annuler');
     actions.appendChild(save); actions.appendChild(cancel); f.appendChild(actions);
 
     if (editing) {
@@ -1039,8 +1063,8 @@ body { margin: 0; }
       var out = {
         id: id, name: name, type: type, cook: inCook.value.trim(), servings: inServ.value.trim(),
         ing: ing, steps: steps, tips: tips, url: url,
-        src: rec ? rec.src : 'Ajoutée', btn: rec ? rec.btn : 'Ouvrir le lien ↗',
-        date: rec && rec.date ? rec.date : new Date().toISOString().slice(0, 10),
+        src: rec ? rec.src : (pre ? pre.src : 'Ajoutée'), btn: rec ? rec.btn : (pre ? pre.btn : 'Ouvrir le lien ↗'),
+        date: rec && rec.date ? rec.date : (pre && pre.date ? pre.date : new Date().toISOString().slice(0, 10)),
         lvl: rec ? (reset ? 'user' : rec.lvl) : 'user',
         probable: rec && !reset ? rec.probable : [], ingNote: rec && !reset ? rec.ingNote : '',
         stepsNote: rec && !stepsChanged ? rec.stepsNote : '',
@@ -1049,8 +1073,8 @@ body { margin: 0; }
         meals: cleanMeals(Array.prototype.map.call(f.querySelectorAll('input[name="meal"]:checked:not(:disabled)'), function (x) { return x.value; }))
       };
       save.disabled = true; status.textContent = 'Enregistrement…';
-      commit({ id: id, rec: out }, (rec ? 'Modifie : ' : 'Ajoute : ') + name).then(function () {
-        location.hash = '#' + id;
+      commit({ id: id, rec: out, dismiss: pre ? pre.key : undefined }, (rec ? 'Modifie : ' : 'Ajoute : ') + name).then(function () {
+        if (pre) { flash = '« ' + name + ' » enregistrée.'; location.hash = '#a-identifier'; } else location.hash = '#' + id;
       }, function (e) { save.disabled = false; status.textContent = ''; err.textContent = writeError(e); });
     });
     view.appendChild(f);
@@ -1126,12 +1150,18 @@ body { margin: 0; }
   }
 
   /* Liens à identifier */
+  var flash = '', qOpen = Object.create(null);
   function queueScreen() {
     view.appendChild(back('#accueil', 'Types de plats'));
     view.appendChild(el('h1', null, 'Liens à identifier'));
-    view.appendChild(el('p', 'qintro', 'Ces liens ont été partagés comme recettes, mais leur nom n’est pas connu. Le numéro permet de les citer dans le chat.'));
+    var left = pendingList();
+    view.appendChild(el('p', 'qintro', 'Ces liens ont été partagés comme recettes, mais leur nom n’est pas connu. Le numéro permet de les citer dans le chat.' + (canEdit() ? ' Ouvrez un lien, puis classez-le en recette ou retirez-le de la liste.' : '')));
+    if (flash) { var fl = el('p', 'status', flash + ' ' + plural(left.length, 'lien restant', 'liens restants') + '.'); fl.setAttribute('role', 'status'); view.appendChild(fl); flash = ''; }
+    var errBox = el('p', 'err'); errBox.setAttribute('role', 'alert');
     function group(title, rows) {
       var d = el('details', 'qgroup');
+      if (qOpen[title]) d.open = true;
+      d.addEventListener('toggle', function () { qOpen[title] = d.open; });
       var s = el('summary'); s.appendChild(el('span', null, title)); s.appendChild(el('span', 'n', plural(rows.length, 'lien', 'liens'))); d.appendChild(s);
       var ul = el('ul', 'qlist');
       rows.forEach(function (r) {
@@ -1141,21 +1171,43 @@ body { margin: 0; }
         if (r.note) dd.appendChild(el('small', null, r.note));
         li.appendChild(dd);
         li.appendChild(ext(r.url, null, 'Ouvrir ↗'));
+        if (canEdit()) {
+          var act = el('div', 'qact');
+          var cl = link('#classer/' + r.id, 'btn small', 'Classer');
+          var rm = el('button', 'linkbtn dng', 'Retirer'); rm.type = 'button';
+          rm.onclick = function () {
+            act.textContent = '';
+            act.appendChild(el('span', 'qask', 'Retirer ' + r.id + ' de la liste ?'));
+            var yes = el('button', 'btn small danger', 'Oui'); yes.type = 'button';
+            var no = el('button', 'btn small ghost', 'Non'); no.type = 'button';
+            no.onclick = function () { act.textContent = ''; act.appendChild(cl); act.appendChild(rm); rm.focus(); };
+            yes.onclick = function () {
+              yes.disabled = true; no.disabled = true; errBox.textContent = '';
+              commit({ dismiss: r.key }, 'Retire le lien ' + r.id).then(function () {
+                flash = 'Lien ' + r.id + ' retiré.'; view.textContent = ''; view.className = ''; queueScreen();
+              }, function (e) { yes.disabled = false; no.disabled = false; errBox.textContent = writeError(e); });
+            };
+            act.appendChild(yes); act.appendChild(no); yes.focus();
+          };
+          act.appendChild(cl); act.appendChild(rm); li.appendChild(act);
+        }
         ul.appendChild(li);
       });
       d.appendChild(ul); return d;
     }
-    view.appendChild(group('YouTube', D.pendingYt.map(function (r, i) { return { id: 'Y' + (i + 1), date: r.date, url: r.url, note: r.note }; })));
-    var k = 0;
-    Object.keys(D.pendingFb).sort().forEach(function (y) {
-      view.appendChild(group('Facebook ' + y, D.pendingFb[y].map(function (r) { k += 1; return { id: 'F' + k, date: r.date, url: r.url }; })));
-    });
+    view.appendChild(errBox);
+    var groups = [], byG = Object.create(null);
+    left.forEach(function (p) { if (!byG[p.grp]) { byG[p.grp] = []; groups.push(p.grp); } byG[p.grp].push(p); });
+    if (!left.length) {
+      var box = el('div', 'emptybox'); box.appendChild(el('p', null, 'Tous les liens ont été traités.')); view.appendChild(box);
+    }
+    groups.forEach(function (g) { view.appendChild(group(g, byG[g])); });
     view.appendChild(el('p', 'hint', 'Facebook demande parfois de se connecter pour ouvrir un reel.'));
   }
 
   function rerender() {
     var h = location.hash || '';
-    if (formActive || reorder || h === '#a-identifier') return;
+    if (formActive || reorder || (h === '#a-identifier' && view.querySelector('.qask'))) return;   // pas de rafraîchissement pendant une confirmation
     route(true);
   }
   function route(quiet) {
@@ -1168,6 +1220,7 @@ body { margin: 0; }
     else if (tById[h]) typeScreen(tById[h]);
     else if (h.indexOf('repas/') === 0 && (mById[h.slice(6)] || h.slice(6) === 'sans')) mealScreen(h.slice(6));
     else if (h === 'a-identifier') queueScreen();
+    else if (h.indexOf('classer/') === 0) { var pi = PBY[h.slice(8)]; var pend = pi && pendingList().indexOf(pi) >= 0; if (pend && canEdit()) formScreen(null, '', pi); else queueScreen(); }
     else if (h === 'reglages') settingsScreen();
     else if (h === 'ajouter' || h.indexOf('ajouter/') === 0) formScreen(null, h.slice(8));
     else if (h.indexOf('modifier/') === 0) {
