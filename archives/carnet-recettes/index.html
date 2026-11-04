@@ -694,7 +694,7 @@ body { margin: 0; }
     mode = (mode === 'repas' && !reorder) ? 'repas' : 'types';
     lsSet('carnet:view', mode);
     view.appendChild(el('h1', null, 'Carnet de recettes'));
-    view.appendChild(el('p', 'sub', reorder ? 'Maintenez une tuile enfoncée, puis faites-la glisser.' : plural(R.length, 'recette', 'recettes') + (mode === 'repas' ? ' · choisissez un repas' : ' · choisissez un type de plat')));
+    if (reorder) view.appendChild(el('p', 'sub', 'Maintenez une tuile enfoncée, puis faites-la glisser.'));
     if (!reorder) view.appendChild(viewSwitch(mode));
     if (reorder) view.className = 'reordering';
     if (canEdit() && reorder) {
@@ -942,6 +942,21 @@ body { margin: 0; }
   }
   function textArea(id, value, ph) { var t = el('textarea'); t.id = id; if (ph) t.placeholder = ph; if (value) t.value = value; return t; }
 
+  function linkInfo(u) {
+    var h = '';
+    try { h = new URL(u).hostname.toLowerCase().replace(/^(www|m)\./, ''); } catch (e) {}
+    if (/(^|\.)youtube\.com$|^youtu\.be$/.test(h)) return { label: 'YouTube', btn: 'Voir la vidéo ↗' };
+    if (/(^|\.)facebook\.com$|^fb\.watch$|^fb\.com$/.test(h)) return { label: 'Facebook', btn: 'Voir le reel ↗' };
+    if (/(^|\.)instagram\.com$/.test(h)) return { label: 'Instagram', btn: 'Voir le reel ↗' };
+    if (/(^|\.)tiktok\.com$/.test(h)) return { label: 'TikTok', btn: 'Voir la vidéo ↗' };
+    return { label: h ? 'sur ' + h : 'sur un site', btn: 'Ouvrir le lien ↗' };
+  }
+  function pickUrl(v) {   // un texte partagé depuis une appli contient souvent du texte autour du lien
+    v = (v || '').trim();
+    var m = /https?:\/\/[^\s]+/i.exec(v);
+    return m ? m[0] : v;
+  }
+  function autoName(u, iso) { return ('Recette ' + linkInfo(u).label + ' du ' + fmt(iso)).slice(0, 120); }
   function formScreen(rec, preset, pre) {
     formActive = true;
     var editing = !!rec;
@@ -962,11 +977,16 @@ body { margin: 0; }
     }
     var f = el('form', 'form'); f.noValidate = true;
 
+    var inUrl = textInput('f-url', rec ? rec.url : (pre ? pre.url : ''), 500, 'https://…'); inUrl.type = 'url'; inUrl.autocapitalize = 'off'; inUrl.setAttribute('inputmode', 'url');
+    inUrl.addEventListener('change', function () { inUrl.value = pickUrl(inUrl.value); });
+    f.appendChild(field('f-url', 'Lien de la recette (YouTube, Facebook ou autre)', inUrl,
+      (editing || pre) ? '' : 'Vous pouvez coller seulement un lien : le nom et le type sont alors facultatifs, et la recette ira dans « À classer ».'));
+
     var inName = textInput('f-name', rec && rec.name, 120, 'Ex. : Poulet rôti au citron'); inName.autocomplete = 'off';
-    f.appendChild(field('f-name', 'Nom du plat', inName));
+    f.appendChild(field('f-name', (editing || pre) ? 'Nom du plat' : 'Nom du plat (facultatif si vous collez un lien)', inName));
 
     var ft = el('fieldset', 'field');
-    ft.appendChild(el('legend', 'lbl', 'Type de plat'));
+    ft.appendChild(el('legend', 'lbl', (editing || pre) ? 'Type de plat' : 'Type de plat (facultatif si vous collez un lien)'));
     var grid = el('div', 'chipgrid');
     TS().forEach(function (t) {
       var lab = el('label', 'chip themed ' + tcls(t.id));
@@ -1007,8 +1027,6 @@ body { margin: 0; }
     var taTips = textArea('f-tips', rec && rec.tips.join('\n'), 'Laisser reposer la pâte 5 minutes.');
     taTips.style.minHeight = '5rem';
     f.appendChild(field('f-tips', 'Astuces (facultatif)', taTips, 'Une astuce par ligne.'));
-    var inUrl = textInput('f-url', rec ? rec.url : (pre ? pre.url : ''), 500, 'https://…'); inUrl.type = 'url'; inUrl.autocapitalize = 'off'; inUrl.setAttribute('inputmode', 'url');
-    f.appendChild(field('f-url', 'Lien de la recette (facultatif)', inUrl));
 
     var err = el('p', 'err'); err.setAttribute('role', 'alert');
     var status = el('p', 'status'); status.setAttribute('aria-live', 'polite');
@@ -1047,14 +1065,18 @@ body { margin: 0; }
       var name = inName.value.trim();
       var checked = f.querySelector('input[name="type"]:checked');
       var type = checked ? checked.value : '';
-      if (!name) { err.textContent = 'Indiquez le nom du plat.'; inName.focus(); return; }
-      if (!type) { err.textContent = 'Choisissez un type de plat.'; var first = f.querySelector('input[name="type"]'); if (first) first.focus(); return; }
-      var url = inUrl.value.trim();
+      var url = pickUrl(inUrl.value);
       if (url) {
         var tryUrl = /^[a-z][a-z0-9+.-]*:/i.test(url) ? url : 'https://' + url;
         url = cleanUrl(tryUrl);
         if (!url) { err.textContent = 'Ce lien n’est pas valide. Il doit commencer par http ou https.'; inUrl.focus(); return; }
       }
+      var viaLink = !editing && !pre && !!url;   // lien collé : nom et type deviennent facultatifs
+      var today = new Date().toISOString().slice(0, 10);
+      if (!name && viaLink) name = autoName(url, today);
+      if (!type && viaLink) type = 'aclasser';
+      if (!name) { err.textContent = (editing || pre) ? 'Indiquez le nom du plat.' : 'Indiquez le nom du plat, ou collez un lien.'; inName.focus(); return; }
+      if (!type) { err.textContent = 'Choisissez un type de plat.'; var first = f.querySelector('input[name="type"]'); if (first) first.focus(); return; }
       var ing = lines(taIng.value, 60, false), steps = lines(taSteps.value, 60, true), tips = lines(taTips.value, 20, false);
       var id = rec ? rec.id : newId();
       var ingChanged = rec && ing.join('\n') !== rec.ing.join('\n');
@@ -1063,8 +1085,8 @@ body { margin: 0; }
       var out = {
         id: id, name: name, type: type, cook: inCook.value.trim(), servings: inServ.value.trim(),
         ing: ing, steps: steps, tips: tips, url: url,
-        src: rec ? rec.src : (pre ? pre.src : 'Ajoutée'), btn: rec ? rec.btn : (pre ? pre.btn : 'Ouvrir le lien ↗'),
-        date: rec && rec.date ? rec.date : (pre && pre.date ? pre.date : new Date().toISOString().slice(0, 10)),
+        src: rec ? rec.src : (pre ? pre.src : 'Ajoutée'), btn: rec ? rec.btn : (pre ? pre.btn : (url ? linkInfo(url).btn : 'Ouvrir le lien ↗')),
+        date: rec && rec.date ? rec.date : (pre && pre.date ? pre.date : today),
         lvl: rec ? (reset ? 'user' : rec.lvl) : 'user',
         probable: rec && !reset ? rec.probable : [], ingNote: rec && !reset ? rec.ingNote : '',
         stepsNote: rec && !stepsChanged ? rec.stepsNote : '',
