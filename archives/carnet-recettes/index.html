@@ -371,7 +371,12 @@ body { margin: 0; }
   }
   function soft(label) { return label.replace('Accompagnements', 'Accompagne­ments'); }
   function recipesOf(typeId) { return R.filter(function (r) { return r.type === typeId; }); }
-  function recipesOfMeal(mealId) { return R.filter(function (r) { return mealId === 'sans' ? !r.meals.length : r.meals.indexOf(mealId) >= 0; }); }
+  var AUTO_MEAL = { soupes: 'diner' };   // règle : toute soupe est au dîner, sans rien cocher
+  function mealsOf(r) {
+    var a = r.meals, f = AUTO_MEAL[r.type];
+    return (f && a.indexOf(f) < 0) ? cleanMeals(a.concat(f)) : a;
+  }
+  function recipesOfMeal(mealId) { return R.filter(function (r) { var m = mealsOf(r); return mealId === 'sans' ? !m.length : m.indexOf(mealId) >= 0; }); }
   function link(href, cls, text) { var a = el('a', cls, text); a.href = href; return a; }
   function ext(href, cls, text) { var a = link(href, cls, text); a.target = '_blank'; a.rel = 'noopener noreferrer'; return a; }
   function back(href, label) { return link(href, 'back', '‹ ' + label); }
@@ -777,7 +782,7 @@ body { margin: 0; }
       if (key && i >= GROUP_MAX) { extra.push(li); li.hidden = !expanded[key]; }
       var a = link('#' + r.id, 'row');
       a.appendChild(el('span', 'rn', r.name));
-      if (showMeals) r.meals.forEach(function (id) { a.appendChild(el('span', 'mchip', mById[id].short)); });
+      if (showMeals) mealsOf(r).forEach(function (id) { a.appendChild(el('span', 'mchip', mById[id].short)); });
       if (r.lvl === 'partial' || r.lvl === 'title' || r.lvl === 'none') {
         var d = el('span', 'dot'); d.title = (LEVELS[r.lvl] || LEVELS.none)[0]; d.setAttribute('role', 'img'); d.setAttribute('aria-label', 'Recette incomplète : ' + d.title);
         a.appendChild(d);
@@ -845,13 +850,13 @@ body { margin: 0; }
     var t = tById[r.type];
     view.className = 'themed ' + tcls(r.type);
     var inMeal = /^#repas\/(\w+)$/.exec(cameFrom);
-    var backMeal = inMeal && (inMeal[1] === 'sans' ? !r.meals.length : r.meals.indexOf(inMeal[1]) >= 0) ? (inMeal[1] === 'sans' ? 'Sans repas' : mById[inMeal[1]].label) : '';
+    var backMeal = inMeal && (inMeal[1] === 'sans' ? !mealsOf(r).length : mealsOf(r).indexOf(inMeal[1]) >= 0) ? (inMeal[1] === 'sans' ? 'Sans repas' : mById[inMeal[1]].label) : '';
     view.appendChild(backMeal ? back(cameFrom, backMeal) : back('#' + t.id, t.label));
     var h = el('div', 'hero'); h.appendChild(icon(r.type)); view.appendChild(h);
     view.appendChild(el('h1', null, r.name));
     var m = el('div', 'meta');
     m.appendChild(el('span', 'tag src', r.src));
-    r.meals.forEach(function (id) { m.appendChild(el('span', 'tag', mById[id].label)); });
+    mealsOf(r).forEach(function (id) { m.appendChild(el('span', 'tag', mById[id].label)); });
     if (r.cook) m.appendChild(el('span', 'tag', r.cook));
     var dt = fmt(r.date);
     if (dt) m.appendChild(el('span', 'date', (r.src === 'Ajoutée' ? 'Ajoutée le ' : 'Partagée le ') + dt));
@@ -954,7 +959,16 @@ body { margin: 0; }
       var cb = el('span', 'cb'); cb.appendChild(icon(m.id)); cb.appendChild(el('span', null, m.label));
       lab.appendChild(inp); lab.appendChild(cb); mg.appendChild(lab);
     });
-    fm.appendChild(mg); fm.appendChild(el('p', 'help', 'Cochez les deux si la recette convient au déjeuner et au dîner.')); f.appendChild(fm);
+    var mhelp = el('p', 'help');
+    fm.appendChild(mg); fm.appendChild(mhelp); f.appendChild(fm);
+    var autoId = AUTO_MEAL.soupes, autoBox = mg.querySelector('input[value="' + autoId + '"]'), autoUser = autoBox.checked;
+    function syncMeals() {
+      var chk = f.querySelector('input[name="type"]:checked'), isAuto = !!(chk && AUTO_MEAL[chk.value] === autoId);
+      if (isAuto && !autoBox.disabled) { autoUser = autoBox.checked; autoBox.checked = true; autoBox.disabled = true; }
+      else if (!isAuto && autoBox.disabled) { autoBox.disabled = false; autoBox.checked = autoUser; }
+      mhelp.textContent = isAuto ? 'Les soupes sont toujours au dîner. Cochez aussi Déjeuner si besoin.' : 'Cochez les deux si la recette convient au déjeuner et au dîner.';
+    }
+    grid.addEventListener('change', syncMeals); syncMeals();
 
     var inCook = textInput('f-cook', rec && rec.cook, 60, 'Ex. : Four, poêle, sans cuisson');
     f.appendChild(field('f-cook', 'Cuisson ou méthode (facultatif)', inCook));
@@ -1030,7 +1044,7 @@ body { margin: 0; }
         stepsNote: rec && !stepsChanged ? rec.stepsNote : '',
         sum: rec && !ingChanged ? rec.sum : ing.slice(0, 4).join(', '),
         ts: rec ? rec.ts : Date.now(),
-        meals: cleanMeals(Array.prototype.map.call(f.querySelectorAll('input[name="meal"]:checked'), function (x) { return x.value; }))
+        meals: cleanMeals(Array.prototype.map.call(f.querySelectorAll('input[name="meal"]:checked:not(:disabled)'), function (x) { return x.value; }))
       };
       save.disabled = true; status.textContent = 'Enregistrement…';
       commit({ id: id, rec: out }, (rec ? 'Modifie : ' : 'Ajoute : ') + name).then(function () {
