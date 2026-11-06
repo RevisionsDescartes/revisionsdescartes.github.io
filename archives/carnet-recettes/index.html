@@ -337,6 +337,7 @@ body.hasbar { padding-bottom: calc(5.4rem + env(safe-area-inset-bottom, 0px)); }
 .perr { margin: 0.3rem 0 0; color: var(--danger); font-weight: 600; }
 .perr:empty { display: none; }
 [hidden] { display: none !important; }
+.topsave { margin-bottom: 0.2rem; }
 html { -webkit-text-size-adjust: 100%; }
 body { margin: 0; }
 </style>
@@ -1203,6 +1204,9 @@ body { margin: 0; }
       return;
     }
     var f = el('form', 'form'); f.noValidate = true;
+    var topSave = el('button', 'btn topsave', editing ? 'Enregistrer les modifications' : 'Enregistrer la recette'); topSave.type = 'submit';   // même bouton qu'en bas, pour les longs formulaires
+    f.appendChild(topSave);
+    var topErr = el('p', 'perr'); f.appendChild(topErr);   // reprend le message d'erreur du bas, visible depuis le bouton du haut
 
     var inUrl = textInput('f-url', rec ? rec.url : (pre ? pre.url : (shared ? shared.url : '')), 500, 'https://…'); inUrl.type = 'url'; inUrl.autocapitalize = 'off'; inUrl.setAttribute('inputmode', 'url');
     inUrl.addEventListener('change', function () { inUrl.value = pickUrl(inUrl.value); });
@@ -1324,7 +1328,8 @@ body { margin: 0; }
       var chk = f.querySelector('input[name="type"]:checked'), tipKind = !!(chk && TIPTYPES[chk.value]);
       nameLbl.textContent = tipKind ? nameLbl0.replace('Nom du plat', 'Titre de l’astuce') : nameLbl0;
       if (fTips) fTips.hidden = tipKind;
-      if (saveBtn) saveBtn.textContent = editing ? 'Enregistrer les modifications' : (tipKind ? 'Enregistrer l’astuce' : 'Enregistrer la recette');
+      var lbl = editing ? 'Enregistrer les modifications' : (tipKind ? 'Enregistrer l’astuce' : 'Enregistrer la recette');
+      topSave.textContent = lbl; if (saveBtn) saveBtn.textContent = lbl;
     }
     grid.addEventListener('change', syncKind); grid.addEventListener('change', syncKind2); syncKind();
     var taTips = textArea('f-tips', rec && rec.tips.join('\n'), 'Laisser reposer la pâte 5 minutes.');
@@ -1334,6 +1339,7 @@ body { margin: 0; }
     var err = el('p', 'err'); err.setAttribute('role', 'alert');
     var status = el('p', 'status'); status.setAttribute('aria-live', 'polite');
     f.appendChild(err); f.appendChild(status);
+    try { new MutationObserver(function () { topErr.textContent = err.textContent; }).observe(err, { childList: true, characterData: true, subtree: true }); } catch (x) {}
 
     var actions = el('div', 'actions');
     var save = el('button', 'btn', editing ? 'Enregistrer les modifications' : 'Enregistrer la recette'); save.type = 'submit';
@@ -1399,10 +1405,13 @@ body { margin: 0; }
         status: cleanStatus((f.querySelector('input[name="status"]:checked') || {}).value),
         meals: TIPTYPES[type] ? [] : cleanMeals(Array.prototype.map.call(f.querySelectorAll('input[name="meal"]:checked:not(:disabled)'), function (x) { return x.value; }))
       };
-      save.disabled = true; status.textContent = 'Enregistrement…';
+      save.disabled = true; topSave.disabled = true; status.textContent = 'Enregistrement…';
       commit({ id: id, rec: out, dismiss: pre ? pre.key : undefined }, (rec ? 'Modifie : ' : 'Ajoute : ') + name).then(function () {
         if (pre) { flash = '« ' + name + ' » enregistrée.'; location.hash = '#a-identifier'; } else location.hash = '#' + id;
-      }, function (e) { save.disabled = false; status.textContent = ''; err.textContent = writeError(e); });
+      }, function (e) {
+        save.disabled = false; topSave.disabled = false; status.textContent = ''; err.textContent = writeError(e);
+        try { err.scrollIntoView({ block: 'center' }); } catch (x) {}   // l'erreur est en bas : on l'amène à l'écran même si le clic venait du haut
+      });
     });
     view.appendChild(f);
   }
