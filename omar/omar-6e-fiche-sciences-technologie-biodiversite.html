@@ -1,0 +1,150 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Fiche &#183; La biodiversit&#233; actuelle et pass&#233;e</title>
+<style>
+:root { --encre:#1c1917; --gris:#57534e; --or:#b45309; --or-bg:#fffbeb; --bleu:#1e3a8a; color-scheme: light; }
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body { margin: 0; background: #e7ecf3; color: var(--encre);
+       font: 15px/1.35 system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif; }
+.affiche { background: #fff; margin: 0 auto; padding: 14px 12px 18px; }
+/* bandeau */
+.bandeau { display: flex; align-items: center; gap: 12px; padding: 12px 14px; border-radius: 16px;
+           background: linear-gradient(135deg, #1e3a8a, #3730a3); color: #fff; }
+.bandeau .titres { flex: 1 1 auto; min-width: 0; }
+.bandeau h1 { margin: 0; font-size: 27px; line-height: 1.05; font-weight: 900; letter-spacing: .02em;
+              text-transform: uppercase; }
+.bandeau .sous { display: inline-block; margin: 6px 0 0; padding: 2px 12px; border-radius: 999px; background: #facc15;
+                 color: #1e1b4b; font-weight: 850; font-size: 14px; letter-spacing: .02em; text-transform: uppercase; }
+.bandeau .qui { flex: 0 0 auto; display: flex; align-items: center; gap: 8px; }
+.bandeau .badge { padding: 6px 12px; border-radius: 999px; background: #fff; color: var(--bleu); font-weight: 900;
+                  font-size: 15px; white-space: nowrap; }
+.legende { display: flex; flex-wrap: wrap; gap: 2px 14px; margin: 10px 2px 0; color: var(--gris); font-size: 13px; }
+.legende b { color: var(--or); }
+.legende i { font-style: normal; color: #b91c1c; font-weight: 700; }
+.legende em { font-style: normal; color: #1e3a8a; font-weight: 700; }
+/* cartes */
+.grille { display: grid; grid-template-columns: 1fr; gap: 10px; margin: 10px 0 0; }
+.carte { display: flex; flex-direction: column; min-width: 0; padding: 9px 11px 10px; border: 2px solid var(--c);
+         border-radius: 14px; background: var(--bg); }
+.carte h2 { display: flex; align-items: center; gap: 8px; margin: 0 0 6px; color: var(--c); font-size: 17px;
+            line-height: 1.15; font-weight: 850; }
+.num { flex: 0 0 auto; display: inline-grid; place-items: center; width: 27px; height: 27px; border-radius: 50%;
+       background: var(--c); color: #fff; font-size: 14px; font-weight: 900; }
+.fig { background: #fff; border-radius: 10px; padding: 3px; margin: 0 0 6px; }
+.fig svg { display: block; width: 100%; height: auto; max-height: 150px; }
+.nota { margin: 0; color: var(--c); font-size: 25px; line-height: 1.1; font-weight: 900; letter-spacing: .03em;
+        white-space: nowrap; }
+.nota.petite { font-size: 19px; }
+.ligne { margin: 3px 0 0; }
+.coeur { position: relative; margin: 7px 0 0; padding: 5px 8px 5px 25px; border-left: 4px solid #d97706;
+         border-radius: 0 8px 8px 0; background: var(--or-bg); font-size: 14px; }
+.coeur::before { content: "\2605"; position: absolute; left: 7px; top: 4px; color: #d97706; }
+.piege { margin: 7px 0 0; padding: 4px 8px; border: 1.5px dashed #dc2626; border-radius: 8px; background: #fef2f2;
+         color: #991b1b; font-size: 14px; }
+.piege b { color: #b91c1c; }
+.si, .alors { display: flex; flex-wrap: wrap; align-items: baseline; gap: 2px 7px; margin: 3px 0 0; font-weight: 700; }
+.mot { display: inline-block; min-width: 3.9em; padding: 0 6px; border-radius: 6px; background: var(--c); color: #fff;
+       text-align: center; font-size: 12px; font-weight: 900; letter-spacing: .05em; }
+.alors .mot { background: var(--encre); }
+.sym { white-space: nowrap; font-weight: 800; letter-spacing: .02em; }
+ol.etapes { list-style: none; margin: 2px 0 0; padding: 0; counter-reset: e; }
+ol.etapes li { counter-increment: e; position: relative; margin: 4px 0 0; padding: 0 0 0 27px; }
+ol.etapes li::before { content: counter(e); position: absolute; left: 0; top: 0; width: 20px; height: 20px;
+                       border-radius: 50%; display: grid; place-items: center; background: var(--c); color: #fff;
+                       font-size: 12px; font-weight: 900; }
+.renvoi { margin: 5px 0 0; color: var(--c); font-weight: 700; font-size: 14px; }
+.conseil { margin: 6px 0 0; padding: 3px 8px; border: 1.5px solid var(--c); border-radius: 8px; background: #fff; font-size: 14px; }
+.conseil b { color: var(--c); }
+/* \0000e0 retenir */
+.retenir { margin: 10px 0 0; padding: 10px 12px; border: 2px solid var(--bleu); border-radius: 14px; background: #eff6ff; }
+.retenir h2 { display: inline-block; margin: 0 0 6px; padding: 3px 12px; border-radius: 8px; background: var(--bleu);
+              color: #fff; font-size: 17px; font-weight: 900; text-transform: uppercase; letter-spacing: .03em;
+              transform: rotate(-2deg); }
+.colonnes { display: grid; grid-template-columns: 1fr; gap: 8px 16px; }
+.colonnes h3 { margin: 0 0 3px; color: var(--bleu); font-size: 14px; text-transform: uppercase; letter-spacing: .04em; }
+.ok { list-style: none; margin: 0; padding: 0; }
+.ok li { position: relative; margin: 3px 0 0; padding: 0 0 0 24px; }
+.ok li::before { content: "\2714"; position: absolute; left: 0; top: 1px; width: 17px; height: 17px; border-radius: 50%;
+                 display: grid; place-items: center; background: #16a34a; color: #fff; font-size: 10px; }
+.ok b { white-space: nowrap; }
+.ok [data-coeur]::before { content: "\2605  "; color: #d97706; }
+.imprimer { display: block; margin: 12px auto 24px; font: inherit; font-weight: 700; padding: 8px 18px; min-height: 44px;
+            border-radius: 999px; border: 1px solid #cbd5e1; background: #fff; color: var(--encre); cursor: pointer; }
+@media (min-width: 560px) {
+  .grille { grid-template-columns: 1fr 1fr; }
+  .colonnes { grid-template-columns: 1fr 1fr; }
+}
+/* L'affiche : \0000e9cran large, image et impression (794 px = 210 mm). */
+@media (min-width: 780px), print {
+  body { font-size: 12px; line-height: 1.26; }
+  .affiche { width: 794px; min-height: 1123px; padding: 20px 22px 12px; margin: 16px auto 0;
+             box-shadow: 0 2px 14px rgba(15, 23, 42, .12); display: flex; flex-direction: column; }
+  .grille { flex: 1 1 auto; }
+  .bandeau { padding: 8px 16px; border-radius: 14px; }
+  .bandeau h1 { font-size: 31px; }
+  .bandeau .sous { font-size: 12px; margin-top: 4px; padding: 1px 10px; }
+  .bandeau .badge { font-size: 13px; padding: 4px 10px; }
+  .bandeau svg { width: 44px; height: 44px; }
+  .grille { grid-template-columns: repeat(3, 1fr); gap: 6px; margin-top: 6px; }
+  .carte { padding: 5px 8px 6px; border-radius: 12px; }
+  .carte h2 { font-size: 14px; margin: 0 0 3px; gap: 6px; }
+  .num { width: 21px; height: 21px; font-size: 11.5px; }
+  .fig { margin: 0 0 3px; padding: 1px; border-radius: 8px; }
+  .fig svg { max-height: 66px; }
+  .nota { font-size: 19px; }
+  .nota.petite { font-size: 15px; }
+  .ligne { margin: 1px 0 0; font-size: 11.6px; }
+  .coeur { margin: 4px 0 0; padding: 2px 6px 2px 19px; font-size: 10.6px; line-height: 1.22; border-left-width: 3px; }
+  .coeur::before { left: 5px; top: 2px; }
+  .piege { margin: 4px 0 0; padding: 2px 6px; font-size: 10.6px; line-height: 1.22; }
+  .si, .alors { margin: 1px 0 0; font-size: 11.8px; }
+  .mot { font-size: 10px; }
+  ol.etapes li { margin: 2px 0 0; padding-left: 22px; font-size: 11.2px; line-height: 1.22; }
+  ol.etapes li::before { width: 16px; height: 16px; font-size: 10px; }
+  .renvoi { font-size: 11.2px; margin: 2px 0 0; }
+  .conseil { margin: 4px 0 0; padding: 2px 6px; font-size: 10.6px; line-height: 1.22; }
+  .retenir { margin: 6px 0 0; padding: 5px 12px 7px; }
+  .retenir h2 { font-size: 13.5px; margin: 0 0 3px; padding: 2px 10px; }
+  .colonnes { grid-template-columns: 1.2fr .85fr 1.1fr; gap: 2px 16px; font-size: 11.4px; }
+  .colonnes h3 { font-size: 11px; margin: 0 0 1px; }
+  .ok li { margin: 1px 0 0; padding-left: 20px; }
+  .ok li::before { width: 14px; height: 14px; font-size: 8.5px; }
+  .pied { margin: 5px 2px 0; font-size: 10px; }
+}
+@page { size: A4; margin: 0; }
+@media print {
+  * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  body { background: #fff; }
+  .affiche { margin: 0; box-shadow: none; width: 210mm; height: 297mm; min-height: 0; overflow: hidden; }
+  .imprimer { display: none; }
+}
+</style>
+</head>
+<body data-fiche="omar-6e-fiche-sciences-technologie-biodiversite">
+<main class="affiche" id="affiche">
+<header class="bandeau">
+<div class="titres"><h1>La biodiversit&#233; actuelle et pass&#233;e</h1><span class="sous">L'essentiel du chapitre</span></div>
+<div class="qui"><span class="badge">Omar &#183; 6e</span><svg viewBox="0 0 64 64" width="50" height="50" aria-hidden="true"><rect x="5" y="5" width="54" height="54" rx="14" fill="#ecfdf5" stroke="#0f766e" stroke-width="3"/><path d="M18 44 Q18 20 32 20 Q46 20 46 38 Q46 48 36 48 Q28 48 28 40 Q28 34 34 34 Q38 34 38 38" fill="none" stroke="#0f766e" stroke-width="3" stroke-linecap="round"/><circle cx="24" cy="44" r="3" fill="#0f766e"/></svg></div>
+</header>
+<div class="grille">
+<section class="carte" style="--c:#4338ca;--bg:#eef2ff"><h2><span class="num">1</span>Qu'est-ce qu'une esp&#232;ce ?</h2><p class="coeur" data-coeur>Une esp&#232;ce : des individus qui se ressemblent, se reproduisent entre eux, et ont des petits fertiles.</p><p class="ligne">Un cheval et une &#226;nesse : leur petit (le mulet) n'a jamais de petit : ce sont deux esp&#232;ces diff&#233;rentes.</p></section>
+<section class="carte" style="--c:#4338ca;--bg:#eef2ff"><h2><span class="num">2</span>La biodiversit&#233;</h2><p class="coeur" data-coeur>La biodiversit&#233; : toute la diversit&#233; du vivant (environnements, esp&#232;ces, individus &#224; l'int&#233;rieur d'une esp&#232;ce).</p><p class="ligne">Diversit&#233; intrasp&#233;cifique : deux chats de la m&#234;me port&#233;e n'ont jamais exactement le m&#234;me pelage.</p><p class="ligne">Actuelle (aujourd'hui) : gast&#233;ropodes, insectes, primates, plantes &#224; fleurs. Pass&#233;e (fossiles) : ammonites, rudistes, gast&#233;ropodes, belemnites.</p></section>
+<section class="carte" style="--c:#0f766e;--bg:#ecfdf5"><h2><span class="num">3</span>Fossile et pal&#233;oenvironnement</h2><p class="coeur" data-coeur>Un fossile : un reste ou une trace d'un &#234;tre vivant, conserv&#233; dans une roche (actualisme : comparer avec aujourd'hui).</p><p class="ligne">Gr&#226;ce aux fossiles, on reconstitue le milieu de vie ancien (pal&#233;oenvironnement).</p></section>
+<section class="carte" style="--c:#0f766e;--bg:#ecfdf5"><h2><span class="num">4</span>Le principe de l'actualisme</h2><p class="ligne">On compare le fossile &#224; des esp&#232;ces qui vivent aujourd'hui, dans un milieu connu.</p><p class="ligne">Un fossile de poisson en haut d'une montagne : autrefois, la mer recouvrait cet endroit.</p></section>
+<section class="carte" style="--c:#c2410c;--bg:#fff7ed"><h2><span class="num">5</span>L'attribut</h2><p class="coeur" data-coeur>Un attribut : un caract&#232;re que l'on peut observer chez un &#234;tre vivant.</p><p class="ligne">&#171; A des plumes &#187; est un attribut ; &#171; est joli &#187; n'en est pas un : ce n'est pas observable de la m&#234;me fa&#231;on par tout le monde.</p></section>
+<section class="carte" style="--c:#c2410c;--bg:#fff7ed"><h2><span class="num">6</span>La cl&#233; de d&#233;termination</h2><p class="ligne">Forme allong&#233;e + aiguillon : limule. Forme allong&#233;e + 3 parties : trilobite.</p><p class="ligne">Forme arrondie, diam&#232;tre &lt; 2 cm : nummulite. Diam&#232;tre &gt; 2 cm : ammonite.</p><p class="ligne">Forme conique + surface lisse : c&#244;ne. Surface irr&#233;guli&#232;re : rudiste.</p></section>
+<section class="carte" style="--c:#7c3aed;--bg:#f5f3ff"><h2><span class="num">7</span>La crise biologique</h2><p class="coeur" data-coeur>Une crise biologique : une disparition rapide et massive d'esp&#232;ces, suivie d'une diversification.</p><p class="ligne">Il y a 65 millions d'ann&#233;es : grande crise, les dinosaures disparaissent, puis les mammif&#232;res se diversifient.</p></section>
+<section class="carte" style="--c:#7c3aed;--bg:#f5f3ff"><h2><span class="num">8</span>Les grandes &#232;res g&#233;ologiques</h2><p class="ligne">Primaire (-542 &#224; -251) &#183; Secondaire (-251 &#224; -65, dinosaures) &#183; Tertiaire (depuis -65, jusqu'&#224; aujourd'hui).</p></section>
+<section class="carte" style="--c:#15803d;--bg:#f0fdf4"><h2><span class="num">9</span>La classification embo&#238;t&#233;e</h2><p class="coeur" data-coeur>Un grand groupe (ex. animaux) contient des groupes plus petits (ex. vert&#233;br&#233;s, puis mammif&#232;res), avec un attribut de plus &#224; chaque fois.</p><p class="ligne">Le chat : animal, vert&#233;br&#233; (colonne vert&#233;brale), mammif&#232;re (poils, mamelles) : trois groupes embo&#238;t&#233;s, du plus grand au plus petit.</p></section>
+</div>
+<section class="retenir"><h2>&#192; retenir</h2><div class="colonnes"><div><h3>Conna&#238;tre</h3><ul class="ok"><li>Esp&#232;ce : individus semblables, reproduction entre eux, petits fertiles</li><li>Fossile : reste ou trace d'un &#234;tre vivant dans une roche</li><li>Attribut : un caract&#232;re observable</li></ul></div><div><h3>Comprendre</h3><ul class="ok"><li>L'actualisme : comparer un fossile &#224; une esp&#232;ce actuelle, dans un milieu connu</li><li>Une crise biologique : rapide et massive, suivie d'une diversification</li><li>Un groupe plus petit a toujours un attribut de plus que le grand groupe</li></ul></div><div><h3>Appliquer</h3><ul class="ok"><li>Suivre la cl&#233; de d&#233;termination attribut par attribut</li><li>Ranger du plus grand groupe au plus petit : animaux, vert&#233;br&#233;s, mammif&#232;res</li><li>Trois &#232;res : Primaire, Secondaire (dinosaures), Tertiaire (aujourd'hui)</li></ul></div></div></section>
+<p class="pied legende"><span><b>&#9733;</b> phrase de la le&#231;on, &#224; savoir mot pour mot</span><span>SVT &#183; le&#231;on du 06-07/11/2026 : scans du professeur (cours, &#171; L'essentiel en sch&#233;ma &#187;, activit&#233; 1) ; classification embo&#238;t&#233;e d'apr&#232;s le programme officiel de SVT, cycle 3 (absente des scans, demand&#233;e par le parent)</span></p>
+</main>
+<button class="imprimer" type="button" onclick="window.print()">Imprimer la fiche</button>
+</body>
+</html>
