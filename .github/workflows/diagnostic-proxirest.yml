@@ -25,6 +25,7 @@ jobs:
               "https://proxirest.ma/epaiement/FR/traitement?action=ecoles"; do
               curl -sS -m 30 -A "Mozilla/5.0" -o /tmp/r.html -w "HTTP %{http_code} | %{size_download} octets | $URL\n" "$URL" || echo "ECHEC $URL"
               echo "  mentions captcha/cloudflare/blocage : $(grep -ciE 'captcha|cloudflare|just a moment|access denied|forbidden' /tmp/r.html || true)"
+              echo "  extrait blocage : $(grep -iE 'captcha|cloudflare|just a moment|access denied|forbidden' /tmp/r.html | head -2 | cut -c1-220)"
               echo "  mentions Descartes : $(grep -ci 'descartes' /tmp/r.html || true)"
             done
           } | tee "$OUT"
