@@ -1,0 +1,54 @@
+# Relevé quotidien du solde snack (Proxirest), chiffré avec la clé publique snack/cle-publique.pem.
+# Matricules et e-mail : secrets du dépôt. Aucun paiement. Sans PC allumé : tourne sur les serveurs de GitHub.
+name: Relevé du snack
+on:
+  schedule:
+    - cron: '17 5 * * *'   # relevé du matin (UTC)
+    - cron: '47 7 * * *'   # reprise si le premier a échoué
+  workflow_dispatch:
+  push:
+    paths:
+      - 'declencheurs/releve-snack.txt'
+permissions:
+  contents: write
+concurrency:
+  group: releve-snack
+jobs:
+  releve:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      MATRICULE_OMAR: ${{ secrets.PROXIREST_MATRICULE_OMAR }}
+      MATRICULE_ALI: ${{ secrets.PROXIREST_MATRICULE_ALI }}
+      EMAIL: ${{ secrets.PROXIREST_EMAIL }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Relevé déjà fait aujourd'hui ?
+        id: deja
+        run: |
+          if [ "${{ github.event_name }}" = "schedule" ] && [ -f "snack/$(date -u +%F).enc" ]; then echo "fait=oui" >> "$GITHUB_OUTPUT"; else echo "fait=non" >> "$GITHUB_OUTPUT"; fi
+      - uses: actions/setup-node@v4
+        if: steps.deja.outputs.fait == 'non'
+        with:
+          node-version: '20'
+      - name: Installer le navigateur
+        if: steps.deja.outputs.fait == 'non'
+        run: |
+          mkdir -p /tmp/pw && cd /tmp/pw && npm init -y >/dev/null && npm i playwright@1.49.0 >/dev/null
+          npx playwright install --with-deps chromium >/dev/null
+      - name: Relevé des soldes
+        if: steps.deja.outputs.fait == 'non'
+        run: |
+          cp .github/scripts/releve-snack.mjs /tmp/pw/ && cd /tmp/pw && node releve-snack.mjs
+      - name: Chiffrer et enregistrer
+        if: steps.deja.outputs.fait == 'non'
+        run: |
+          F="snack/$(date -u +%F).enc"
+          openssl pkeyutl -encrypt -pubin -inkey snack/cle-publique.pem \
+            -pkeyopt rsa_padding_mode:oaep -pkeyopt rsa_oaep_md:sha256 -in /tmp/releve.json | base64 -w0 > "$F"
+          rm -f /tmp/releve.json
+          git config user.name "Claude"
+          git config user.email "noreply@anthropic.com"
+          git add "$F"
+          git commit -m "Relevé du snack ($(date -u +%F))" || exit 0
+          git pull -q --rebase origin main && git push

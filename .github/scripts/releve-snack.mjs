@@ -1,13 +1,13 @@
-// Relevé de test des soldes snack (Proxirest). N'affiche ni matricule, ni nom, ni e-mail, ni solde.
-// Ne clique jamais sur VALIDER : le parcours s'arrête à l'affichage du solde.
+// Relevé quotidien des soldes snack (Proxirest). N'affiche ni matricule, ni nom, ni e-mail, ni solde.
+// S'arrête à l'affichage du solde : ne clique jamais sur VALIDER. Écrit /tmp/releve.json (clair, jamais publié).
 import { chromium } from 'playwright';
+import { writeFileSync } from 'node:fs';
 
 const URL_PARCOURS = 'https://proxirest.ma/epaiement/FR/parcours';
 const email = process.env.EMAIL;
-const attendus = (process.env.ATTENDUS || '').split(',').map(s => s.trim());
 const enfants = [
-  { tag: 'A', matricule: process.env.MATRICULE_A },
-  { tag: 'B', matricule: process.env.MATRICULE_B },
+  { tag: 'o', matricule: process.env.MATRICULE_OMAR },
+  { tag: 'a', matricule: process.env.MATRICULE_ALI },
 ];
 
 async function taper(champ, valeur) {
@@ -17,7 +17,7 @@ async function taper(champ, valeur) {
 }
 
 async function releve(browser, { tag, matricule }) {
-  const res = { tag, parcours: false, solde: null, etape: 'début' };
+  const res = { tag, solde: null, etape: 'début' };
   const ctx = await browser.newContext({ viewport: { width: 450, height: 900 }, locale: 'fr-FR' });
   const page = await ctx.newPage();
   try {
@@ -29,7 +29,6 @@ async function releve(browser, { tag, matricule }) {
     res.etape = 'recharge';
     await page.getByText('Recharger Snack').click();
     res.etape = 'matricule';
-    page.on('response', r => { if (r.url().includes('action=convive')) res.lookup = `HTTP ${r.status()}`; });
     await taper(page.getByPlaceholder('N° matricule'), matricule);
     await page.keyboard.press('Tab');
     await page.getByText('Convive trouvé').waitFor({ timeout: 20000 });
@@ -43,17 +42,16 @@ async function releve(browser, { tag, matricule }) {
     }
     res.etape = 'solde';
     await page.getByText('SOLDE').first().waitFor({ timeout: 20000 });
-    let texte = '';
     let m = null;
     for (let t = 0; t < 20 && !m; t++) {
-      texte = await page.innerText('body');
+      const texte = await page.innerText('body');
       m = texte.match(/SOLDE\s*([0-9][0-9\s.,]*?)\s*DH/i);
       if (!m) await page.waitForTimeout(1000);
     }
-    const i = texte.search(/SOLDE/i);
-    res.forme = i < 0 ? 'SOLDE absent' : JSON.stringify(texte.slice(i, i + 24).replace(/[0-9]/g, '9'));
-    res.parcours = true;
-    if (m) res.solde = m[1].replace(/\s/g, '');
+    if (m) {
+      const v = Number(m[1].replace(/\s/g, '').replace(',', '.'));
+      if (Number.isFinite(v) && v >= 0 && v < 100000) res.solde = v;
+    }
   } catch (e) {
     res.erreur = String(e.message).split('\n')[0].slice(0, 100);
   } finally {
@@ -62,16 +60,19 @@ async function releve(browser, { tag, matricule }) {
   return res;
 }
 
+if (!email || !enfants.every(e => e.matricule)) { console.log('Secrets manquants : relevé non lancé.'); process.exit(1); }
 const browser = await chromium.launch();
-const lignes = [`Date UTC : ${new Date().toISOString()}`];
+const sortie = {};
 let tout = true;
-for (const [i, enf] of enfants.entries()) {
+for (const enf of enfants) {
   const r = await releve(browser, enf);
-  const lu = r.solde !== null;
-  const conforme = lu && attendus[i] !== undefined && r.solde === attendus[i];
-  tout = tout && r.parcours && lu;
-  lignes.push(`Enfant ${r.tag} : parcours complet = ${r.parcours ? 'oui' : 'non (arrêt à : ' + r.etape + ')'} ; solde lu = ${lu ? 'oui' : 'non'} ; conforme au relevé manuel = ${conforme ? 'oui' : 'non'}${r.forme ? ' ; forme : ' + r.forme : ''}${r.lookup ? ' ; vérification matricule : ' + r.lookup : ' ; vérification matricule : aucune requête'}${r.erreur ? ' ; erreur : ' + r.erreur : ''}`);
+  const ok = r.solde !== null;
+  tout = tout && ok;
+  sortie[r.tag] = r.solde;
+  console.log(`Enfant ${r.tag.toUpperCase()} : solde lu = ${ok ? 'oui' : 'non (arrêt à : ' + r.etape + (r.erreur ? ' ; ' + r.erreur : '') + ')'}`);
 }
 await browser.close();
-console.log(lignes.join('\n'));
-process.exitCode = tout ? 0 : 1;
+if (!tout) process.exit(1);
+const maintenant = new Date().toISOString();
+writeFileSync('/tmp/releve.json', JSON.stringify({ d: maintenant.slice(0, 10), t: maintenant.slice(11, 16), o: sortie.o, a: sortie.a }));
+console.log('Relevé écrit (chiffré à l\'étape suivante).');
