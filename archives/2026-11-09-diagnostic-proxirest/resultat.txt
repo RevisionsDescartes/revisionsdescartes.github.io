@@ -1,0 +1,8 @@
+Date UTC : 2026-11-09T09:24:28Z
+Pays du serveur GitHub : US
+HTTP 200 | 30276 octets | https://proxirest.ma/epaiement/FR/parcours
+  mentions captcha/cloudflare/blocage : 1
+  mentions Descartes : 8
+HTTP 200 | 1732 octets | https://proxirest.ma/epaiement/FR/traitement?action=ecoles
+  mentions captcha/cloudflare/blocage : 0
+  mentions Descartes : 1
