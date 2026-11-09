@@ -1,0 +1,3 @@
+Date UTC : 2026-11-09T09:47:28.137Z
+Enfant A : parcours complet = oui ; solde lu = non ; conforme au relevé manuel = non ; vérification matricule : HTTP 200
+Enfant B : parcours complet = oui ; solde lu = non ; conforme au relevé manuel = non ; vérification matricule : HTTP 200
