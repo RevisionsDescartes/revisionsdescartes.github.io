@@ -3,8 +3,8 @@
 name: Relevé du snack
 on:
   schedule:
-    - cron: '17 5 * * *'   # relevé du matin (UTC)
-    - cron: '47 7 * * *'   # reprise si le premier a échoué
+    - cron: '47 15 * * *'  # relevé de l'après-midi (UTC), avant le passage de la tâche de 18 h
+    - cron: '17 16 * * *'  # reprise si le premier a échoué
   workflow_dispatch:
   push:
     paths:
