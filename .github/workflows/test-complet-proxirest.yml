@@ -15,7 +15,6 @@ jobs:
       MATRICULE_A: ${{ secrets.PROXIREST_MATRICULE_OMAR }}
       MATRICULE_B: ${{ secrets.PROXIREST_MATRICULE_ALI }}
       EMAIL: ${{ secrets.PROXIREST_EMAIL }}
-      ATTENDUS: '98,106'
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
