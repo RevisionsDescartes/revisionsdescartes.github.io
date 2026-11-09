@@ -43,8 +43,15 @@ async function releve(browser, { tag, matricule }) {
     }
     res.etape = 'solde';
     await page.getByText('SOLDE').first().waitFor({ timeout: 20000 });
-    const texte = await page.innerText('body');
-    const m = texte.match(/SOLDE\s*([\d\s.,]+?)\s*DH/i);
+    let texte = '';
+    let m = null;
+    for (let t = 0; t < 20 && !m; t++) {
+      texte = await page.innerText('body');
+      m = texte.match(/SOLDE\s*([0-9][0-9\s.,]*?)\s*DH/i);
+      if (!m) await page.waitForTimeout(1000);
+    }
+    const i = texte.search(/SOLDE/i);
+    res.forme = i < 0 ? 'SOLDE absent' : JSON.stringify(texte.slice(i, i + 24).replace(/[0-9]/g, '9'));
     res.parcours = true;
     if (m) res.solde = m[1].replace(/\s/g, '');
   } catch (e) {
@@ -63,7 +70,7 @@ for (const [i, enf] of enfants.entries()) {
   const lu = r.solde !== null;
   const conforme = lu && attendus[i] !== undefined && r.solde === attendus[i];
   tout = tout && r.parcours && lu;
-  lignes.push(`Enfant ${r.tag} : parcours complet = ${r.parcours ? 'oui' : 'non (arrêt à : ' + r.etape + ')'} ; solde lu = ${lu ? 'oui' : 'non'} ; conforme au relevé manuel = ${conforme ? 'oui' : 'non'}${r.lookup ? ' ; vérification matricule : ' + r.lookup : ' ; vérification matricule : aucune requête'}${r.erreur ? ' ; erreur : ' + r.erreur : ''}`);
+  lignes.push(`Enfant ${r.tag} : parcours complet = ${r.parcours ? 'oui' : 'non (arrêt à : ' + r.etape + ')'} ; solde lu = ${lu ? 'oui' : 'non'} ; conforme au relevé manuel = ${conforme ? 'oui' : 'non'}${r.forme ? ' ; forme : ' + r.forme : ''}${r.lookup ? ' ; vérification matricule : ' + r.lookup : ' ; vérification matricule : aucune requête'}${r.erreur ? ' ; erreur : ' + r.erreur : ''}`);
 }
 await browser.close();
 console.log(lignes.join('\n'));
