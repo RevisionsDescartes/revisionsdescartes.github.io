@@ -29,7 +29,9 @@ async function releve(browser, { tag, matricule }) {
     res.etape = 'recharge';
     await page.getByText('Recharger Snack').click();
     res.etape = 'matricule';
+    page.on('response', r => { if (r.url().includes('action=convive')) res.lookup = `HTTP ${r.status()}`; });
     await taper(page.getByPlaceholder('N° matricule'), matricule);
+    await page.keyboard.press('Tab');
     await page.getByText('Convive trouvé').waitFor({ timeout: 20000 });
     for (let essai = 1; essai <= 3; essai++) {
       res.etape = `formulaire (essai ${essai})`;
@@ -61,7 +63,7 @@ for (const [i, enf] of enfants.entries()) {
   const lu = r.solde !== null;
   const conforme = lu && attendus[i] !== undefined && r.solde === attendus[i];
   tout = tout && r.parcours && lu;
-  lignes.push(`Enfant ${r.tag} : parcours complet = ${r.parcours ? 'oui' : 'non (arrêt à : ' + r.etape + ')'} ; solde lu = ${lu ? 'oui' : 'non'} ; conforme au relevé manuel = ${conforme ? 'oui' : 'non'}${r.erreur ? ' ; erreur : ' + r.erreur : ''}`);
+  lignes.push(`Enfant ${r.tag} : parcours complet = ${r.parcours ? 'oui' : 'non (arrêt à : ' + r.etape + ')'} ; solde lu = ${lu ? 'oui' : 'non'} ; conforme au relevé manuel = ${conforme ? 'oui' : 'non'}${r.lookup ? ' ; vérification matricule : ' + r.lookup : ' ; vérification matricule : aucune requête'}${r.erreur ? ' ; erreur : ' + r.erreur : ''}`);
 }
 await browser.close();
 console.log(lignes.join('\n'));

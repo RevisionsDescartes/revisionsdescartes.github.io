@@ -1,3 +1,0 @@
-Date UTC : 2026-11-09T09:45:49.910Z
-Enfant A : parcours complet = non (arrêt à : matricule) ; solde lu = non ; conforme au relevé manuel = non ; erreur : locator.waitFor: Timeout 20000ms exceeded.
-Enfant B : parcours complet = non (arrêt à : matricule) ; solde lu = non ; conforme au relevé manuel = non ; erreur : locator.waitFor: Timeout 20000ms exceeded.
