@@ -1,0 +1,44 @@
+# Test complet, ponctuel : parcours Proxirest jusqu'à l'affichage du solde, depuis GitHub.
+# Matricules et e-mail : secrets du dépôt (jamais dans ce fichier). Aucun paiement.
+name: Test complet Proxirest
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'declencheurs/test-complet.txt'
+permissions:
+  contents: write
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    env:
+      MATRICULE_A: ${{ secrets.PROXIREST_MATRICULE_OMAR }}
+      MATRICULE_B: ${{ secrets.PROXIREST_MATRICULE_ALI }}
+      EMAIL: ${{ secrets.PROXIREST_EMAIL }}
+      ATTENDUS: '98,106'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Installer le navigateur de test
+        run: |
+          mkdir -p /tmp/pw && cd /tmp/pw && npm init -y >/dev/null && npm i playwright@1.49.0 >/dev/null
+          npx playwright install --with-deps chromium >/dev/null
+      - name: Relevé de test
+        run: |
+          OUT=archives/2026-11-09-diagnostic-proxirest/resultat-complet.txt
+          mkdir -p "$(dirname "$OUT")"
+          if [ -z "$MATRICULE_A" ] || [ -z "$MATRICULE_B" ] || [ -z "$EMAIL" ]; then
+            echo "Secrets manquants : test non lancé ($(date -u +%FT%TZ))" | tee "$OUT"; exit 1
+          fi
+          cp .github/scripts/releve-proxirest.mjs /tmp/pw/ && cd /tmp/pw
+          node releve-proxirest.mjs | tee "$GITHUB_WORKSPACE/$OUT"
+      - name: Enregistrer le résultat
+        if: always()
+        run: |
+          git config user.name "Claude"
+          git config user.email "noreply@anthropic.com"
+          git add archives/2026-11-09-diagnostic-proxirest/resultat-complet.txt
+          git commit -m "Test complet Proxirest (résultat)" || exit 0
+          git pull -q --rebase origin main && git push
