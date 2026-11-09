@@ -185,6 +185,29 @@
     if (Array.isArray(a)) MEALS.forEach(function (m) { if (a.indexOf(m.id) >= 0) out.push(m.id); });
     return out;
   }
+  // Associations (« Se marie avec ») : identifiants d'autres fiches. Le lien est enregistré d'un seul côté et affiché des deux.
+  function cleanPairs(a, selfId) {
+    var seen = Object.create(null), out = [];
+    (Array.isArray(a) ? a : []).forEach(function (x) {
+      if (typeof x === 'string' && /^[a-z0-9][a-z0-9-]{1,59}$/.test(x) && x !== selfId && !seen[x] && out.length < 40) { seen[x] = 1; out.push(x); }
+    });
+    return out;
+  }
+  function partnersOf(r) {
+    var seen = Object.create(null), out = [];
+    function add(x) { if (x && x.id !== r.id && !seen[x.id]) { seen[x.id] = 1; out.push(x); } }
+    r.pairs.forEach(function (id) { add(byId[id]); });
+    R.forEach(function (x) { if (x.pairs.indexOf(r.id) >= 0) add(x); });
+    return out;
+  }
+  function applyPair(list, op) {
+    var a = op.pair[0], b = op.pair[1], A = null, B = null;
+    var out = list.map(function (r) { var c = {}; Object.keys(r).forEach(function (k) { c[k] = r[k]; }); c.pairs = r.pairs.slice(); if (c.id === a) A = c; if (c.id === b) B = c; return c; });
+    if (!A || !B || a === b) throw new Error('invalide');
+    A.pairs = A.pairs.filter(function (x) { return x !== b; }); B.pairs = B.pairs.filter(function (x) { return x !== a; });
+    if (op.on) A.pairs.push(b);
+    return out;
+  }
   function normalize(o) {
     if (!o || typeof o !== 'object') return null;
     var id = typeof o.id === 'string' ? o.id : '';
@@ -199,7 +222,7 @@
       ing: ing, probable: cleanList(o.probable, 20, 100), ingNote: str(o.ingNote, 600),
       steps: cleanList(o.steps, 60, 600), stepsNote: str(o.stepsNote, 600), tips: cleanList(o.tips, 20, 400),
       sum: str(o.sum, 200) || ing.slice(0, 4).join(', '), ts: typeof o.ts === 'number' ? o.ts : 0,
-      meals: cleanMeals(o.meals), status: cleanStatus(o.status)
+      meals: cleanMeals(o.meals), status: cleanStatus(o.status), pairs: cleanPairs(o.pairs, id)
     };
   }
   function parseRecipes(data) {
@@ -276,6 +299,7 @@
     out.forEach(function (r, k) { if (r.id === op.id) i = k; });
     if (op.del) { if (i >= 0) out.splice(i, 1); return out; }
     var rec = normalize(op.rec); if (!rec) throw new Error('invalide');
+    rec.pairs = i >= 0 ? out[i].pairs.slice() : [];
     if (i >= 0) out[i] = rec; else out.unshift(rec);
     return out;
   }
@@ -287,6 +311,7 @@
         throw e;
       }).then(function (rm) {
         var list = op.id ? applyOp(rm.recipes, op) : rm.recipes;
+        if (op.pair) list = applyPair(list, op);
         var ord = op.order ? parseOrder(op.order) : rm.order;
         var dis = op.dismiss ? cleanDismissed(rm.dismissed.concat([op.dismiss])) : rm.dismissed;
         var body = { message: message.slice(0, 120), content: b64enc(JSON.stringify({ recipes: list, typeOrder: ord, dismissed: dis }, null, 1) + '\n'), branch: BRANCH };
@@ -801,6 +826,7 @@
     }
     if (r.url) s2.appendChild(ext(r.url, 'btn', r.btn || 'Ouvrir ↗'));
     view.appendChild(s2);
+    if (!tip) pairSection(r);
     if (canEdit()) {
       var rb = el('div', 'rowbtns');
       rb.appendChild(link('#modifier/' + r.id, 'btn ghost', tip ? 'Modifier cette astuce' : 'Modifier cette recette'));
@@ -817,6 +843,78 @@
     var dt = fmt(r.date);
     if (dt) m.appendChild(el('span', 'date', (r.src === 'Ajoutée' ? 'Ajoutée le ' : 'Partagée le ') + dt));
     view.appendChild(m);
+  }
+
+  /* « Se marie avec » : associations entre fiches */
+  var SIDE_TYPES = { accomp: 1, sauces: 1, salades: 1 };
+  function pairSection(r) {
+    var partners = partnersOf(r), edit = canEdit();
+    if (!partners.length && !edit) return;
+    var sec = el('section', 'sheet pairs'); sec.setAttribute('aria-labelledby', 'h-pair');
+    var h = el('h2', null, 'Se marie avec'); h.id = 'h-pair'; sec.appendChild(h);
+    var perr = el('p', 'perr'); perr.setAttribute('role', 'alert');
+    function thumbOf(x) {
+      var th = el('span', 'th'), ts = thumbSrc(x.url);
+      var ph = function () { th.className = 'th ph'; th.textContent = ''; th.appendChild(icon(x.type)); };
+      if (ts) { var im = thumbImg(ts, null); im.onerror = ph; th.appendChild(im); } else ph();
+      return th;
+    }
+    function rowFor(x) {
+      var inner = el('span', 'row prow t-' + x.type);
+      inner.appendChild(thumbOf(x)); inner.appendChild(el('span', 'rn', x.name)); inner.appendChild(el('span', 'ptype', tById[x.type].label));
+      return inner;
+    }
+    function send(other, on, btns) {
+      perr.textContent = ''; btns.forEach(function (b) { b.disabled = true; });
+      commit({ pair: [r.id, other.id], on: on }, (on ? 'Associe : ' : 'Dissocie : ') + r.name + ' + ' + other.name).then(function () { route(true); },
+        function (e) { btns.forEach(function (b) { b.disabled = false; }); perr.textContent = writeError(e); });
+    }
+    if (partners.length) {
+      var ul = el('ul', 'rows pairlist');
+      partners.forEach(function (x) {
+        var li = el('li', 'pairli'), a = link('#' + x.id, 'pairlink'); a.appendChild(rowFor(x)); li.appendChild(a);
+        if (edit) {
+          var rm = el('button', 'unpair', '×'); rm.type = 'button'; rm.setAttribute('aria-label', 'Retirer l’association avec ' + x.name);
+          rm.onclick = function () { send(x, false, [rm]); };
+          li.appendChild(rm);
+        }
+        ul.appendChild(li);
+      });
+      sec.appendChild(ul);
+    } else sec.appendChild(el('p', 'note', 'Aucune association pour l’instant.'));
+    if (edit) {
+      var add = el('button', 'btn ghost', 'Associer…'); add.type = 'button';
+      add.onclick = function () {
+        add.hidden = true;
+        var box = el('div', 'pairpick');
+        var inp = el('input'); inp.type = 'search'; inp.id = 'pq'; inp.placeholder = 'Chercher une recette à associer'; inp.autocomplete = 'off'; inp.setAttribute('aria-label', 'Chercher une recette à associer');
+        var res = el('ul', 'rows pairres'), hint = el('p', 'help');
+        var close = el('button', 'linkbtn', 'Fermer'); close.type = 'button';
+        close.onclick = function () { sec.removeChild(box); add.hidden = false; add.focus(); };
+        function fill() {
+          var taken = Object.create(null); taken[r.id] = 1; partnersOf(r).forEach(function (x) { taken[x.id] = 1; });
+          var ok = function (x) { return !taken[x.id] && !isTip(x); };
+          var found = searchRecipes(inp.value), list;
+          if (found) list = found.filter(ok).sort(function (a, b) { return (SIDE_TYPES[b.type] ? 1 : 0) - (SIDE_TYPES[a.type] ? 1 : 0); });   // tri stable : accompagnements, sauces, salades d'abord
+          else list = R.filter(function (x) { return ok(x) && SIDE_TYPES[x.type]; });
+          res.textContent = '';
+          list.slice(0, 8).forEach(function (x) {
+            var li = el('li'), b = el('button', 'pairadd'); b.type = 'button'; b.appendChild(rowFor(x));
+            b.onclick = function () { send(x, true, Array.prototype.slice.call(res.querySelectorAll('button'))); };
+            li.appendChild(b); res.appendChild(li);
+          });
+          hint.textContent = !list.length ? (found ? 'Aucune recette ne correspond.' : 'Tapez quelques lettres pour chercher dans tout le carnet.')
+            : found ? (list.length > 8 ? 'Les 8 premières sur ' + list.length + ' : précisez la recherche.' : '')
+            : 'Accompagnements, sauces et salades d’abord. Tapez pour chercher dans tout le carnet.';
+        }
+        inp.addEventListener('input', fill);
+        box.appendChild(inp); box.appendChild(hint); box.appendChild(res); box.appendChild(close);
+        sec.insertBefore(box, perr); fill(); inp.focus();
+      };
+      sec.appendChild(add);
+    }
+    sec.appendChild(perr);
+    view.appendChild(sec);
   }
 
   /* Ajouter / modifier */
@@ -1353,7 +1451,7 @@
       if (res && body) showResults(res, body);
       return;
     }
-    if (formActive || reorder || (h === '#a-identifier' && view.querySelector('.qask'))) return;   // pas de rafraîchissement pendant une confirmation
+    if (formActive || reorder || view.querySelector('.pairpick') || (h === '#a-identifier' && view.querySelector('.qask'))) return;   // pas de rafraîchissement pendant une confirmation
     route(true);
   }
   function route(quiet) {

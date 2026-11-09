@@ -81,3 +81,14 @@ body.hasbar { padding-bottom: calc(5.4rem + env(safe-area-inset-bottom, 0px)); }
 .rmzone .btn.danger { width: 100%; }
 .dupwarn { margin-top: 0.5rem; }
 .dupwarn a { font-weight: 700; }
+.pairs .pairlist, .pairs .pairres { margin: 0.2rem 0 0.7rem; }
+.pairli { display: flex; align-items: center; gap: 0.3rem; }
+.pairlink { flex: 1; min-width: 0; text-decoration: none; color: inherit; display: block; }
+.prow { width: 100%; box-sizing: border-box; }
+.prow .ptype { flex: none; margin-left: auto; font-size: 0.78rem; color: var(--c, var(--muted)); font-weight: 600; white-space: nowrap; }
+.unpair { flex: none; width: 2.75rem; height: 2.75rem; border: 0; background: none; color: var(--muted); font-size: 1.4rem; line-height: 1; border-radius: 50%; cursor: pointer; }
+.unpair:hover, .unpair:focus-visible { color: var(--danger); background: var(--tint); }
+.pairpick { margin: 0.2rem 0 0.6rem; }
+.pairpick input { width: 100%; box-sizing: border-box; min-height: 2.9rem; padding: 0.5rem 0.8rem; border: 1.5px solid var(--line, #c9cedb); border-radius: 0.7rem; font: inherit; background: var(--card, #fff); color: inherit; }
+.pairadd { display: block; width: 100%; padding: 0; border: 0; background: none; font: inherit; color: inherit; text-align: left; cursor: pointer; }
+.pairadd:disabled { opacity: 0.5; }
