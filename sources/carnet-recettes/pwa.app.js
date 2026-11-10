@@ -208,6 +208,16 @@
     if (op.on) A.pairs.push(b);
     return out;
   }
+  // Plusieurs associations d'une même fiche en un seul enregistrement : { id, add: [ids], del: [ids] }
+  function applyPairs(list, ch) {
+    var by = Object.create(null);
+    var out = list.map(function (r) { var c = {}; Object.keys(r).forEach(function (k) { c[k] = r[k]; }); c.pairs = r.pairs.slice(); by[c.id] = c; return c; });
+    var A = by[ch.id]; if (!A) throw new Error('invalide');
+    function unlink(b) { A.pairs = A.pairs.filter(function (x) { return x !== b; }); if (by[b]) by[b].pairs = by[b].pairs.filter(function (x) { return x !== A.id; }); }
+    cleanPairs(ch.del, A.id).forEach(unlink);
+    cleanPairs(ch.add, A.id).forEach(function (b) { if (by[b]) { unlink(b); A.pairs.push(b); } });   // une fiche retirée entre-temps est ignorée
+    return out;
+  }
   function normalize(o) {
     if (!o || typeof o !== 'object') return null;
     var id = typeof o.id === 'string' ? o.id : '';
@@ -312,6 +322,7 @@
       }).then(function (rm) {
         var list = op.id ? applyOp(rm.recipes, op) : rm.recipes;
         if (op.pair) list = applyPair(list, op);
+        if (op.pairs) list = applyPairs(list, op.pairs);
         var ord = op.order ? parseOrder(op.order) : rm.order;
         var dis = op.dismiss ? cleanDismissed(rm.dismissed.concat([op.dismiss])) : rm.dismissed;
         var body = { message: message.slice(0, 120), content: b64enc(JSON.stringify({ recipes: list, typeOrder: ord, dismissed: dis }, null, 1) + '\n'), branch: BRANCH };
@@ -847,6 +858,7 @@
 
   /* « Se marie avec » : associations entre fiches */
   var SIDE_TYPES = { accomp: 1, sauces: 1, salades: 1 };
+  var MAIN_TYPES = { plats: 1, tajines: 1, sandwichs: 1 };
   function pairSection(r) {
     var partners = partnersOf(r), edit = canEdit();
     if (!partners.length && !edit) return;
@@ -883,33 +895,76 @@
       sec.appendChild(ul);
     } else sec.appendChild(el('p', 'note', 'Aucune association pour l’instant.'));
     if (edit) {
-      var add = el('button', 'btn ghost', 'Associer…'); add.type = 'button';
+      var add = el('button', 'btn ghost', partners.length ? 'Modifier les associations…' : 'Associer…'); add.type = 'button';
       add.onclick = function () {
-        add.hidden = true;
+        add.hidden = true; perr.textContent = '';
+        var initial = Object.create(null), sel = Object.create(null);
+        partnersOf(r).forEach(function (x) { initial[x.id] = 1; sel[x.id] = 1; });
+        var groups = SIDE_TYPES[r.type] ? MAIN_TYPES : SIDE_TYPES;   // depuis un accompagnement : les plats ; sinon : accompagnements, sauces, salades
         var box = el('div', 'pairpick');
-        var inp = el('input'); inp.type = 'search'; inp.id = 'pq'; inp.placeholder = 'Chercher une recette à associer'; inp.autocomplete = 'off'; inp.setAttribute('aria-label', 'Chercher une recette à associer');
-        var res = el('ul', 'rows pairres'), hint = el('p', 'help');
-        var close = el('button', 'linkbtn', 'Fermer'); close.type = 'button';
-        close.onclick = function () { sec.removeChild(box); add.hidden = false; add.focus(); };
-        function fill() {
-          var taken = Object.create(null); taken[r.id] = 1; partnersOf(r).forEach(function (x) { taken[x.id] = 1; });
-          var ok = function (x) { return !taken[x.id] && !isTip(x); };
-          var found = searchRecipes(inp.value), list;
-          if (found) list = found.filter(ok).sort(function (a, b) { return (SIDE_TYPES[b.type] ? 1 : 0) - (SIDE_TYPES[a.type] ? 1 : 0); });   // tri stable : accompagnements, sauces, salades d'abord
-          else list = R.filter(function (x) { return ok(x) && SIDE_TYPES[x.type]; });
-          res.textContent = '';
-          list.slice(0, 8).forEach(function (x) {
-            var li = el('li'), b = el('button', 'pairadd'); b.type = 'button'; b.appendChild(rowFor(x));
-            b.onclick = function () { send(x, true, Array.prototype.slice.call(res.querySelectorAll('button'))); };
-            li.appendChild(b); res.appendChild(li);
-          });
-          hint.textContent = !list.length ? (found ? 'Aucune recette ne correspond.' : 'Tapez quelques lettres pour chercher dans tout le carnet.')
-            : found ? (list.length > 8 ? 'Les 8 premières sur ' + list.length + ' : précisez la recherche.' : '')
-            : 'Accompagnements, sauces et salades d’abord. Tapez pour chercher dans tout le carnet.';
+        box.appendChild(el('p', 'help', 'Cochez tout ce qui va avec « ' + r.name + ' », puis enregistrez.'));
+        var inp = el('input'); inp.type = 'search'; inp.id = 'pq'; inp.placeholder = 'Chercher dans tout le carnet'; inp.autocomplete = 'off'; inp.setAttribute('aria-label', 'Chercher une recette à associer');
+        var res = el('div', 'pairres'), hint = el('p', 'help');
+        var bar = el('div', 'pairbar');
+        var saveB = el('button', 'btn', 'Enregistrer'); saveB.type = 'button';
+        var cancel = el('button', 'btn ghost', 'Annuler'); cancel.type = 'button';
+        function changes() {
+          var addL = [], delL = [];
+          Object.keys(sel).forEach(function (id) { if (sel[id] && !initial[id]) addL.push(id); });
+          Object.keys(initial).forEach(function (id) { if (!sel[id]) delL.push(id); });
+          return { add: addL, del: delL };
         }
+        function sync() {
+          var c = changes(), n = c.add.length + c.del.length;
+          saveB.disabled = !n;
+          saveB.textContent = n ? 'Enregistrer (' + n + (n > 1 ? ' changements)' : ' changement)') : 'Enregistrer';
+        }
+        function item(x) {
+          var lab = el('label', 'pairchk t-' + x.type), cb = el('input'); cb.type = 'checkbox'; cb.value = x.id; cb.checked = !!sel[x.id];
+          cb.onchange = function () { sel[x.id] = cb.checked ? 1 : 0; sync(); };
+          lab.appendChild(cb); lab.appendChild(thumbOf(x)); lab.appendChild(el('span', 'rn', x.name));
+          return lab;
+        }
+        function block(title, items) {
+          if (!items.length) return;
+          if (title) res.appendChild(el('h3', 'pairh', title));
+          var ul = el('ul', 'rows'); items.forEach(function (x) { var li = el('li'); li.appendChild(item(x)); ul.appendChild(li); }); res.appendChild(ul);
+        }
+        function fill() {
+          var ok = function (x) { return x.id !== r.id && !isTip(x); };
+          var found = searchRecipes(inp.value), n = 0;
+          res.textContent = '';
+          if (found) {
+            var list = found.filter(ok); n = list.length;
+            block('', list.slice(0, 30));
+            hint.textContent = !n ? 'Aucune recette ne correspond.' : n > 30 ? 'Les 30 premières sur ' + n + ' : précisez la recherche.' : '';
+          } else {
+            var shown = Object.create(null);
+            order.forEach(function (tid) {
+              if (!groups[tid]) return;
+              var items = R.filter(function (x) { return x.type === tid && ok(x); }).sort(function (a, b) { return a.name.localeCompare(b.name, 'fr'); });
+              items.forEach(function (x) { shown[x.id] = 1; }); n += items.length;
+              block(tById[tid].label, items);
+            });
+            var others = partnersOf(r).filter(function (x) { return !shown[x.id]; });   // déjà associées, hors de ces types : restent visibles pour pouvoir les décocher
+            block('Autres associations', others); n += others.length;
+            hint.textContent = n ? '' : 'Rien à proposer ici : utilisez la recherche pour associer une autre recette.';
+          }
+        }
+        function shut() { sec.removeChild(box); add.hidden = false; }
+        cancel.onclick = function () { shut(); add.focus(); };
+        saveB.onclick = function () {
+          var c = changes(); if (!(c.add.length + c.del.length)) return;
+          perr.textContent = ''; saveB.disabled = true; cancel.disabled = true; saveB.textContent = 'Enregistrement…';
+          var msg = 'Associations de « ' + r.name + ' » :' + (c.add.length ? ' +' + c.add.length : '') + (c.del.length ? ' −' + c.del.length : '');
+          commit({ pairs: { id: r.id, add: c.add, del: c.del } }, msg).then(function () { shut(); route(true); },
+            function (e) { cancel.disabled = false; sync(); perr.textContent = writeError(e); });
+        };
         inp.addEventListener('input', fill);
-        box.appendChild(inp); box.appendChild(hint); box.appendChild(res); box.appendChild(close);
-        sec.insertBefore(box, perr); fill(); inp.focus();
+        bar.appendChild(saveB); bar.appendChild(cancel);
+        box.appendChild(inp); box.appendChild(hint); box.appendChild(res); box.appendChild(bar);
+        sec.insertBefore(box, perr); fill(); sync();
+        try { box.scrollIntoView({ block: 'start', behavior: 'smooth' }); } catch (e) {}
       };
       sec.appendChild(add);
     }

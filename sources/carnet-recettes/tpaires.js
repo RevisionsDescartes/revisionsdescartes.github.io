@@ -18,56 +18,76 @@ const sleep=ms=>new Promise(r=>setTimeout(r,ms)); const rec=id=>gh.file.recipes.
  await ctx.route('https://api.github.com/**',handler); await ctx.route(/fonts\.|i\.ytimg|noembed|youtube\.com\/oembed/,r=>r.abort());
  await ctx.addInitScript(()=>{ if(!localStorage.getItem('carnet:cfg')) localStorage.setItem('carnet:cfg',JSON.stringify({repo:'RevisionsDescartes/carnet-recettes',token:'good'})); });
  const p=await ctx.newPage(); const errs=[]; p.on('pageerror',e=>errs.push(String(e)));
+ const names=()=>p.locator('.pairres .rn').allTextContents();
+ const tick=async n=>{ await p.locator('.pairchk',{hasText:n}).locator('input').click(); };
  await p.goto('http://localhost:8765/#poulet'); await sleep(900);
- chk(/Se marie avec/.test(await p.locator('.pairs').textContent())&&/Aucune association/.test(await p.locator('.pairs').textContent()),'section « Se marie avec » vide au départ');
+ chk(/Aucune association/.test(await p.locator('.pairs').textContent()),'section vide au départ');
  await p.click('.pairs button:has-text("Associer")'); await sleep(200);
- let names=await p.locator('.pairres .rn').allTextContents();
- chk(names.length===3&&['Purée maison','Frites','Mayonnaise'].every(n=>names.includes(n)),'sans saisie : accompagnements et sauces proposés : '+names.join(', '));
- await p.fill('#pq','tarte'); await sleep(150); names=await p.locator('.pairres .rn').allTextContents();
- chk(names.join()==='Tarte aux pommes','la recherche couvre tout le carnet');
- await p.fill('#pq','colle'); await sleep(150); chk(await p.locator('.pairres li').count()===0,'astuces Brico exclues');
- await p.fill('#pq','poulet'); await sleep(150); chk(await p.locator('.pairres li').count()===0,'la fiche elle-même est exclue');
- await p.fill('#pq','pur'); await sleep(150); await p.click('.pairres button'); await sleep(900);
- chk(rec('poulet').pairs.join()==='puree'&&rec('puree').pairs.length===0,'lien enregistré une seule fois');
- chk(gh.msgs.slice(-1)[0]==='Associe : Poulet rôti + Purée maison','message de commit : '+gh.msgs.slice(-1)[0]);
- chk((await p.locator('.pairlist .rn').allTextContents()).join()==='Purée maison','affichée sur la fiche du plat');
- // réciprocité
- await p.click('.pairlist a'); await sleep(500);
- chk(p.url().endsWith('#puree')&&(await p.locator('.pairlist .rn').allTextContents()).join()==='Poulet rôti','réciproque : le plat apparaît sur la fiche de la purée');
- // associer depuis l'autre côté un 2e, puis déjà-associé exclu
- await p.click('.pairs button:has-text("Associer")'); await p.fill('#pq','poulet'); await sleep(150);
- chk(await p.locator('.pairres li').count()===0,'déjà associée : non reproposée');
- await p.fill('#pq','burger'); await sleep(150); await p.click('.pairres button'); await sleep(900);
- chk((await p.locator('.pairlist .rn').allTextContents()).length===2,'deux associations sur la purée');
- // modifier la fiche ne perd pas les associations
+ let n=await names();
+ chk(n.length===3&&['Purée maison','Frites','Mayonnaise'].every(x=>n.includes(x)),'depuis un plat : accompagnements et sauces listés : '+n.join(', '));
+ chk((await p.locator('.pairh').allTextContents()).join()==='Accompagnements,Sauces','regroupés par type');
+ chk(await p.locator('.pairbar .btn').first().isDisabled(),'Enregistrer inactif sans changement');
+ chk(await p.evaluate(()=>document.activeElement.id!=='pq'),'le clavier ne s’ouvre pas tout seul');
+ await tick('Purée maison'); await tick('Frites'); await tick('Mayonnaise');
+ chk(await p.locator('.pairbar .btn').first().textContent()==='Enregistrer (3 changements)','compteur : 3 changements');
+ // recherche : tout le carnet, les coches sont conservées
+ await p.fill('#pq','tarte'); await sleep(150); chk((await names()).join()==='Tarte aux pommes','recherche dans tout le carnet');
+ await tick('Tarte aux pommes');
+ await p.fill('#pq','colle'); await sleep(150); chk((await names()).length===0,'astuces Brico exclues');
+ await p.fill('#pq','poulet'); await sleep(150); chk((await names()).length===0,'la fiche elle-même est exclue');
+ await p.fill('#pq',''); await sleep(150);
+ chk(await p.locator('.pairchk input:checked').count()===3,'coches conservées après une recherche');
+ await tick('Mayonnaise');
+ chk(await p.locator('.pairbar .btn').first().textContent()==='Enregistrer (3 changements)','décocher avant d’enregistrer annule le changement');
+ const puts0=gh.msgs.length;
+ await p.locator('.pairbar .btn').first().click(); await sleep(1000);
+ chk(gh.msgs.length===puts0+1,'un seul enregistrement pour 3 associations');
+ chk(rec('poulet').pairs.slice().sort().join()==='frites,puree,tarte'&&rec('puree').pairs.length===0,'liens enregistrés une seule fois, côté plat');
+ chk(gh.msgs.slice(-1)[0]==='Associations de « Poulet rôti » : +3','message : '+gh.msgs.slice(-1)[0]);
+ chk((await p.locator('.pairlist .rn').allTextContents()).length===3&&await p.locator('.pairpick').count()===0,'fiche mise à jour, liste refermée');
+ // sens inverse : depuis l'accompagnement, les plats
+ await p.goto('http://localhost:8765/#puree'); await sleep(500);
+ chk((await p.locator('.pairlist .rn').allTextContents()).join()==='Poulet rôti','réciproque sur la fiche de la purée');
+ await p.click('.pairs button:has-text("Modifier les associations")'); await sleep(200);
+ n=await names(); chk(n.join()==='Burger,Poulet rôti','depuis un accompagnement : les plats listés : '+n.join(', '));
+ chk(await p.locator('.pairchk',{hasText:'Poulet rôti'}).locator('input').isChecked(),'association existante déjà cochée');
+ await tick('Burger'); await tick('Poulet rôti');
+ chk(await p.locator('.pairbar .btn').first().textContent()==='Enregistrer (2 changements)','ajout + retrait = 2 changements');
+ await p.locator('.pairbar .btn').first().click(); await sleep(1000);
+ chk(rec('puree').pairs.join()==='burger'&&!rec('poulet').pairs.includes('puree'),'ajout et retrait en un enregistrement (lien porté par l’autre fiche compris)');
+ chk(gh.msgs.slice(-1)[0]==='Associations de « Purée maison » : +1 −1','message : '+gh.msgs.slice(-1)[0]);
+ // association hors types habituels : reste visible pour être décochée
+ await p.goto('http://localhost:8765/#poulet'); await sleep(500); await p.click('.pairs button:has-text("Modifier les associations")'); await sleep(200);
+ chk((await p.locator('.pairh').allTextContents()).includes('Autres associations')&&(await names()).includes('Tarte aux pommes'),'« Autres associations » : le dessert associé reste décochable');
+ // annuler ne change rien
+ await tick('Mayonnaise'); await p.click('.pairbar button:has-text("Annuler")'); await sleep(300);
+ chk(gh.msgs.length===puts0+2&&await p.locator('.pairpick').count()===0,'Annuler : rien n’est enregistré');
+ // modifier la fiche / le statut conservent les associations
  await p.goto('http://localhost:8765/#modifier/poulet'); await sleep(500); await p.fill('#f-name','Poulet rôti au four'); await p.locator('button[type=submit]').last().click(); await sleep(900);
- chk(rec('poulet').name==='Poulet rôti au four'&&rec('poulet').pairs.join()==='puree','modifier une fiche conserve ses associations');
- // statut idem
+ chk(rec('poulet').name==='Poulet rôti au four'&&rec('poulet').pairs.length===2,'modifier une fiche conserve ses associations');
  await p.click('.statusrow button:has-text("Favorite")'); await sleep(900);
- chk(rec('poulet').status==='favorite'&&rec('poulet').pairs.join()==='puree','changer le statut conserve les associations');
- // dissocier depuis le côté qui ne porte pas le lien
- await p.goto('http://localhost:8765/#puree'); await sleep(500);
- await p.click('.pairli:has-text("Poulet") .unpair'); await sleep(900);
- chk(rec('poulet').pairs.length===0&&rec('puree').pairs.join()==='burger','dissociation depuis l’autre fiche');
- chk(/^Dissocie : /.test(gh.msgs.slice(-1)[0]),'message : '+gh.msgs.slice(-1)[0]);
+ chk(rec('poulet').status==='favorite'&&rec('poulet').pairs.length===2,'changer le statut conserve les associations');
+ // la croix reste disponible
+ await p.click('.pairli:has-text("Tarte") .unpair'); await sleep(900);
+ chk(!rec('poulet').pairs.includes('tarte'),'retrait rapide par la croix');
  // échec réseau
- gh.fail=true; await p.click('.pairli .unpair'); await sleep(1500);
- chk(rec('puree').pairs.join()==='burger'&&(await p.locator('.pairs .perr').textContent()).length>3&&await p.locator('.pairli .unpair').isEnabled(),'échec : message, rien de perdu');
- gh.fail=false;
- // retirer une recette associée : le lien disparaît
- await p.goto('http://localhost:8765/#burger'); await sleep(500);
- await p.click('button:has-text("Retirer cette recette")'); await p.click('.confirm button:has-text("Oui, retirer")'); await sleep(1000);
- await p.goto('http://localhost:8765/#puree'); await sleep(500);
- chk(/Aucune association/.test(await p.locator('.pairs').textContent()),'recette retirée : association disparue sans erreur');
- // astuce : pas de section ; lecture seule : section seulement si associations
+ gh.fail=true; await p.click('.pairs button:has-text("Modifier les associations")'); await sleep(200); await tick('Mayonnaise'); await p.locator('.pairbar .btn').first().click(); await sleep(1500);
+ chk(!rec('poulet').pairs.includes('mayo')&&(await p.locator('.pairs .perr').textContent()).length>3&&await p.locator('.pairbar .btn').first().isEnabled()&&await p.locator('.pairchk',{hasText:'Mayonnaise'}).locator('input').isChecked(),'échec : message, coches conservées, on peut réessayer');
+ gh.fail=false; await p.locator('.pairbar .btn').first().click(); await sleep(1000);
+ chk(rec('poulet').pairs.includes('mayo'),'nouvel essai réussi');
+ // une fiche retirée entre-temps est ignorée
+ await p.click('.pairs button:has-text("Modifier les associations")'); await sleep(200); await tick('Purée maison');
+ gh.file.recipes=gh.file.recipes.filter(r=>r.id!=='puree'); gh.sha++;
+ await p.locator('.pairbar .btn').first().click(); await sleep(1000);
+ chk(!rec('poulet').pairs.includes('puree')&&(await p.locator('.pairs .perr').textContent())==='','recette retirée entre-temps : ignorée sans erreur');
+ // astuce : pas de section ; lecture seule
  await p.goto('http://localhost:8765/#colle'); await sleep(400); chk(await p.locator('.pairs').count()===0,'astuce Brico : pas de section');
  gh.file.recipes.find(r=>r.id==='poulet').pairs=['frites','inconnu','poulet']; gh.sha++;
  const ro=await b.newContext({viewport:{width:390,height:844},serviceWorkers:'block'}); await ro.route('https://api.github.com/**',handler); await ro.route(/fonts\./,r=>r.abort());
  const p2=await ro.newPage(); p2.on('pageerror',e=>errs.push(String(e))); await p2.goto('http://localhost:8765/#poulet'); await sleep(900);
  chk((await p2.locator('.pairlist .rn').allTextContents()).join()==='Frites'&&await p2.locator('.pairs button').count()===0,'lecture seule : liste visible, sans boutons ; identifiants inconnus ignorés');
- await p2.goto('http://localhost:8765/#tarte'); await sleep(400); chk(await p2.locator('.pairs').count()===0,'lecture seule sans association : pas de section');
  await p.goto('http://localhost:8765/#accueil'); await p.reload(); await sleep(900); await p.goto('http://localhost:8765/#poulet'); await sleep(500);
- await p.click('.pairs button:has-text("Associer")'); await sleep(200); await p.screenshot({path:'paires.png',fullPage:true});
+ await p.click('.pairs button:has-text("Modifier les associations")'); await sleep(300); await tick('Mayonnaise'); await p.screenshot({path:'paires2.png',fullPage:true});
  chk(errs.length===0,'aucune erreur JS '+errs.join('|'));
  await b.close(); console.log(ok?'TOUT OK':'ECHEC'); process.exit(ok?0:1);
 })();
