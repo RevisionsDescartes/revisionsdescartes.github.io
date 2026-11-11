@@ -374,6 +374,15 @@ body.hasbar { padding-bottom: calc(5.4rem + env(safe-area-inset-bottom, 0px)); }
 .pairbar { position: sticky; bottom: 0; display: flex; gap: 0.6rem; flex-wrap: wrap; padding: 0.7rem 0 calc(0.7rem + env(safe-area-inset-bottom)); margin-top: 0.6rem; background: var(--surface); border-top: 1px solid var(--line); z-index: 2; }
 .pairbar .btn { flex: 1; }
 .pairbar .btn:first-child { flex: 2.2; white-space: nowrap; }
+.combo { display: flex; flex-wrap: wrap; align-items: center; gap: 0.35rem; padding: 0 0.6rem 0.55rem 0.85rem; margin-top: -0.2rem; }
+.combo.ind { padding-left: 4.55rem; }
+.cavec { font-size: 0.8rem; color: var(--muted); }
+.cchip { display: inline-block; max-width: 100%; padding: 0.22rem 0.6rem; border-radius: 999px; border: 1px solid var(--c, var(--line)); color: var(--c, inherit); background: var(--surface); font-size: 0.82rem; font-weight: 600; text-decoration: none; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; line-height: 1.35; }
+.cadd { border: 1px dashed var(--muted); background: none; color: var(--muted); border-radius: 999px; padding: 0.22rem 0.7rem; font: inherit; font-size: 0.82rem; font-weight: 600; min-height: 2.2rem; cursor: pointer; }
+.cadd:hover, .cadd:focus-visible { color: var(--accent); border-color: var(--accent); }
+.rows li > .pairpick { padding: 0 0.6rem 0.4rem; }
+.rows li > .perr { padding: 0 0.6rem 0.4rem; }
+.sidesnote { margin: 1.2rem 0 0.2rem; }
 html { -webkit-text-size-adjust: 100%; }
 body { margin: 0; }
 </style>
@@ -386,7 +395,7 @@ body { margin: 0; }
 <script type="application/json" id="data">{"types": [{"id": "plats", "label": "Plats"}, {"id": "accomp", "label": "Accompagnements"}, {"id": "sauces", "label": "Sauces"}, {"id": "petit-dej", "label": "Petit-déjeuner"}, {"id": "salades", "label": "Salades"}, {"id": "soupes", "label": "Soupes"}, {"id": "tajines", "label": "Tajines"}, {"id": "sandwichs", "label": "Sandwichs / Pizzas"}, {"id": "snacks", "label": "Snacks & apéro"}, {"id": "desserts", "label": "Desserts"}, {"id": "gateaux", "label": "Gâteaux"}, {"id": "brico", "label": "Astuces Brico"}, {"id": "aclasser", "label": "À classer"}], "recipes": [{"id": "u-mvz95y4zyqz", "name": "Taktouka : Tajine Oeufs & Tomates", "type": "tajines", "cook": "", "servings": "", "src": "Ajoutée", "date": "2026-11-02", "url": "", "btn": "Ouvrir le lien ↗", "lvl": "user", "ing": [], "probable": [], "ingNote": "", "steps": [], "stepsNote": "", "tips": [], "sum": "", "ts": 1793623572755}, {"id": "pancakes-ecrit", "name": "Pancakes à l'avoine", "type": "petit-dej", "cook": "Poêle", "servings": "Environ 2 personnes", "src": "Texte", "date": "2026-03-13", "url": "https://www.facebook.com/share/r/18BZzaHJXR/", "btn": "Voir le reel d'origine (probable) ↗", "lvl": "complete", "ing": ["90 g de flocons d'avoine", "2 œufs (environ 100 à 110 g)", "20 g de miel (1 c. à soupe)", "60 ml de lait (¼ de tasse)", "125 g de yaourt grec (½ tasse)", "2 à 3 g de cannelle (½ c. à café)", "1 pincée de sel", "2 à 3 g de levure chimique (½ c. à café)", "2,5 ml d'extrait de vanille (½ c. à café)", "1 c. à café de beurre ou d'huile de coco, pour la poêle"], "probable": [], "ingNote": "Recette écrite envoyée dans la discussion, version en grammes et millilitres.", "steps": ["Mixer les 90 g de flocons d'avoine pendant 10 à 15 secondes pour obtenir une farine.", "Ajouter les œufs, le miel, le lait, le yaourt, la vanille, la cannelle, le sel et la levure.", "Mixer jusqu'à ce que la pâte soit bien lisse.", "Faire chauffer une poêle graissée à feu moyen.", "Cuire de petites louches de pâte, 2 à 3 minutes par côté."], "stepsNote": "", "tips": ["Laisser reposer la pâte 5 minutes pour des pancakes plus moelleux : les flocons absorbent le liquide.", "Une banane écrasée dans la pâte fonctionne aussi.", "Garnitures possibles : miel, bananes ou fruits rouges, beurre de cacahuète.", "Peser les ingrédients directement dans le bol du mixeur posé sur une balance évite de la vaisselle."], "sum": "Flocons d'avoine, œufs, miel, yaourt grec, lait", "ts": 0}, {"id": "pancakes-yt", "name": "Pancakes avoine-œufs à la poêle", "type": "petit-dej", "cook": "Poêle", "servings": "", "src": "YouTube", "date": "2026-04-09", "url": "https://youtu.be/MC-Nqv_mLlY", "btn": "Voir la vidéo ↗", "lvl": "title", "ing": ["Flocons d'avoine", "Œufs"], "probable": [], "ingNote": "D'après le titre de la vidéo (en allemand). Les autres ingrédients ne sont pas connus. Cette version peut différer de la recette écrite ci-dessus.", "steps": [], "stepsNote": "", "tips": [], "sum": "Flocons d'avoine, œufs", "ts": 0}, {"id": "sandwich-oeuf-fromage", "name": "Sandwich croustillant œuf-fromage (5 min)", "type": "sandwichs", "cook": "", "servings": "", "src": "YouTube", "date": "2026-04-21", "url": "https://youtu.be/8WSZDvg1X44", "btn": "Voir la vidéo ↗", "lvl": "title", "ing": ["Œufs", "Fromage", "Pain"], "probable": [], "ingNote": "D'après le titre et le début de la description (en allemand). Le type de pain et les autres ingrédients ne sont pas connus.", "steps": [], "stepsNote": "", "tips": [], "sum": "Œufs, fromage", "ts": 0}, {"id": "salades-ete", "name": "3 salades-repas équilibrées pour l'été", "type": "salades", "cook": "", "servings": "", "src": "YouTube", "date": "2026-06-26", "url": "https://youtu.be/do2u-4H7Ce4", "btn": "Voir la vidéo ↗", "lvl": "none", "ing": [], "probable": [], "ingNote": "La vidéo présente 3 salades. Leurs ingrédients ne sont pas relevés ici.", "steps": [], "stepsNote": "", "tips": [], "sum": "3 salades composées", "ts": 0}, {"id": "guacamole", "name": "Guacamole sans avocat", "type": "snacks", "cook": "", "servings": "", "src": "Perplexity", "date": "2024-09-09", "url": "https://www.perplexity.ai/search/recette-de-guacamole-sans-avoc-m_n6xbxpT9qaRzQHXMYpVA#0", "btn": "Voir la recherche ↗", "lvl": "none", "ing": [], "probable": [], "ingNote": "Le lien mène à une recherche Perplexity, pas à une vidéo. Elle contient la réponse.", "steps": [], "stepsNote": "", "tips": [], "sum": "Ingrédients inconnus", "ts": 0}, {"id": "tajine-kefta", "name": "Tajine de kefta aux œufs", "type": "tajines", "cook": "Tajine", "servings": "", "src": "YouTube", "date": "2026-04-06", "url": "https://youtu.be/d69C2Bgr0Kk", "btn": "Voir la vidéo ↗", "lvl": "title", "ing": ["Kefta (viande hachée)", "Œufs"], "probable": ["Sauce tomate", "Oignon", "Épices"], "ingNote": "D'après le titre : « Tajine kefta et œufs ». La description annonce une liste d'ingrédients que je n'ai pas pu lire.", "steps": [], "stepsNote": "", "tips": [], "sum": "Kefta, œufs", "ts": 0}, {"id": "tenders", "name": "Tenders de poulet croustillants", "type": "plats", "cook": "Air Fryer", "servings": "", "src": "YouTube", "date": "2025-06-17", "url": "https://youtu.be/YPrWtuYedCI", "btn": "Voir la vidéo ↗", "lvl": "partial", "ing": ["Poulet (tenders)", "Chapelure panko", "Une sauce pour tremper"], "probable": [], "ingNote": "D'après la description de la vidéo. Les quantités ne sont pas connues.", "steps": [], "stepsNote": "", "tips": [], "sum": "Poulet, chapelure panko", "ts": 0}, {"id": "tortilla-oeufs", "name": "Tortilla aux œufs à la poêle", "type": "plats", "cook": "Poêle", "servings": "", "src": "YouTube", "date": "2026-04-28", "url": "https://youtu.be/A4lNzrENWQs", "btn": "Voir la vidéo ↗", "lvl": "partial", "ing": ["Tortilla", "2 œufs", "Eau"], "probable": [], "ingNote": "D'après la description de la vidéo.", "steps": ["Verser de l'eau dans un bol.", "Tremper une tortilla dans l'eau.", "La poser dans une poêle.", "Casser 2 œufs dessus."], "stepsNote": "Début de la description de la vidéo. La suite est dans la vidéo.", "tips": [], "sum": "Tortilla, œufs", "ts": 0}, {"id": "flatbread-viral", "name": "Recette virale à l'Air Fryer (10 min)", "type": "aclasser", "cook": "Air Fryer", "servings": "", "src": "YouTube", "date": "2026-03-29", "url": "https://youtu.be/D8Mx9i7KTyA", "btn": "Voir la vidéo ↗", "lvl": "partial", "ing": ["1 flatbread italien"], "probable": [], "ingNote": "La description commence par cet ingrédient, le reste n'est pas lisible. Le type de plat n'est pas connu.", "steps": [], "stepsNote": "", "tips": [], "sum": "Flatbread italien…", "ts": 0}, {"id": "poulet-soja-miel", "name": "Poulet caramélisé soja-miel", "type": "plats", "cook": "Poêle", "servings": "3 à 4 personnes", "src": "Texte", "date": "2026-03-18", "url": "", "btn": "", "lvl": "complete", "ing": ["500 g de blanc de poulet, en morceaux", "3 c. à soupe de sauce soja", "2 c. à soupe de miel", "1 c. à soupe de vinaigre (ou jus de citron)", "2 gousses d'ail hachées", "1 c. à café de gingembre (facultatif)", "1 c. à soupe d'huile", "1 c. à café de maïzena (facultatif, pour épaissir)", "Graines de sésame", "Poivre"], "probable": [], "ingNote": "Recette écrite envoyée dans la discussion. Style asiatique.", "steps": ["Marinade : mélanger la sauce soja, le miel, l'ail, le gingembre et le vinaigre. Ajouter le poulet et laisser mariner 15 à 30 minutes (10 minutes suffisent).", "Cuisson : chauffer l'huile dans une poêle et faire revenir le poulet à feu moyen-vif jusqu'à ce qu'il soit bien doré.", "Sauce : verser la marinade dans la poêle et laisser mijoter 5 à 8 minutes, jusqu'à ce que la sauce épaississe et devienne brillante.", "Finition : ajouter les graines de sésame. Ajuster : un peu de miel si c'est trop salé, un peu de sauce soja si c'est trop doux."], "stepsNote": "", "tips": [], "sum": "Poulet, sauce soja, miel, ail, gingembre", "ts": 0}, {"id": "hasselback", "name": "Pommes de terre Hasselback", "type": "accomp", "cook": "Air Fryer", "servings": "", "src": "YouTube", "date": "2025-04-06", "url": "https://youtu.be/77oVGat1jo8", "btn": "Voir la vidéo ↗", "lvl": "partial", "ing": ["Petites pommes de terre (6)"], "probable": [], "ingNote": "La vidéo annonce 3 ingrédients principaux. Seules les pommes de terre sont lisibles dans la description.", "steps": [], "stepsNote": "", "tips": [], "sum": "Pommes de terre…", "ts": 0}, {"id": "pain-pdt-fromage", "name": "Pain pomme de terre-fromage, sans four", "type": "snacks", "cook": "Poêle", "servings": "", "src": "YouTube", "date": "2026-05-06", "url": "https://youtu.be/d3sdpcaMbPk", "btn": "Voir la vidéo ↗", "lvl": "partial", "ing": ["90 g de farine de force (à pain)", "55 g de lait", "10 g de beurre non salé, fondu", "1 pincée de sel", "1 pomme de terre moyenne", "2 c. à soupe de mayonnaise", "Mozzarella", "Miel"], "probable": [], "ingNote": "Traduit de la description coréenne de la vidéo. Les quantités de mozzarella et de miel ne sont pas indiquées. Recette sans four, sans levure, sans œuf.", "steps": [], "stepsNote": "", "tips": [], "sum": "Pomme de terre, mozzarella, farine, lait", "ts": 0}, {"id": "mais-souffle", "name": "Maïs soufflé", "type": "snacks", "cook": "Air Fryer", "servings": "", "src": "YouTube", "date": "2025-12-28", "url": "https://youtube.com/shorts/oKLN7JO0iTY", "btn": "Voir la vidéo ↗", "lvl": "title", "ing": ["Maïs"], "probable": [], "ingNote": "D'après le titre : « Air fryer pop! ». Aucune autre information.", "steps": [], "stepsNote": "", "tips": [], "sum": "Maïs", "ts": 0}, {"id": "sandwich-oeuf-mayo", "name": "Sandwich œuf-mayo et concombre", "type": "sandwichs", "cook": "", "servings": "", "src": "YouTube", "date": "2026-04-25", "url": "https://youtube.com/shorts/xl3RLl3LM7g", "btn": "Voir la vidéo ↗", "lvl": "title", "ing": ["Œufs", "Mayonnaise", "Concombre", "Pain"], "probable": [], "ingNote": "D'après le titre : « Egg mayo & Cucumber Sandwich ».", "steps": [], "stepsNote": "", "tips": [], "sum": "Œufs, mayonnaise, concombre", "ts": 0}, {"id": "gateau-yaourt", "name": "Gâteau au yaourt", "type": "desserts", "cook": "Air Fryer", "servings": "", "src": "YouTube", "date": "2026-05-23", "url": "https://youtu.be/9Rt4rOXlEnc", "btn": "Voir la vidéo ↗", "lvl": "title", "ing": ["Yaourt"], "probable": [], "ingNote": "La vidéo annonce 3 ingrédients. Seul le yaourt ressort du titre. L'auteur propose la recette imprimable via la description YouTube.", "steps": [], "stepsNote": "", "tips": [], "sum": "Yaourt…", "ts": 0}, {"id": "noix-caramel", "name": "Noix caramélisées au miel", "type": "snacks", "cook": "Air Fryer", "servings": "", "src": "YouTube", "date": "2025-03-21", "url": "https://youtu.be/NRoyZyDchCQ", "btn": "Voir la vidéo ↗", "lvl": "partial", "ing": ["200 g de noix", "Eau", "2 c. à soupe de miel"], "probable": [], "ingNote": "La description est coupée après le miel : il manque au moins un ingrédient (1 c. à soupe).", "steps": [], "stepsNote": "", "tips": [], "sum": "Noix, miel", "ts": 0}, {"id": "recette-simple", "name": "« Recette simple et… » (titre tronqué)", "type": "aclasser", "cook": "", "servings": "", "src": "Perplexity", "date": "2024-09-22", "url": "https://www.perplexity.ai/search/donne-une-recette-simple-et-de-Aru7yegPR7Srj7Ugey_GfA", "btn": "Voir la recherche ↗", "lvl": "none", "ing": [], "probable": [], "ingNote": "Le titre est coupé dans le lien Perplexity. Ni le plat ni le type ne sont connus.", "steps": [], "stepsNote": "", "tips": [], "sum": "Ingrédients inconnus", "ts": 0}], "pendingYt": [{"date": "2024-07-02", "url": "https://youtube.com/shorts/eKu7M6lC_ic", "note": ""}, {"date": "2025-04-13", "url": "https://youtube.com/shorts/3IPFU1A96oU", "note": "Introuvable, probablement supprimée"}, {"date": "2025-05-24", "url": "https://youtu.be/63_fJ6Nes6I", "note": ""}, {"date": "2026-01-12", "url": "https://youtu.be/obD_g4yNEhc", "note": ""}, {"date": "2026-02-26", "url": "https://youtube.com/shorts/dhDDw-07Sss", "note": ""}, {"date": "2026-04-13", "url": "https://youtube.com/shorts/UpFmRTipY5k", "note": ""}, {"date": "2026-04-25", "url": "https://youtube.com/shorts/2iTVS16CzXM", "note": ""}, {"date": "2026-04-25", "url": "https://youtube.com/shorts/eBsgfQgEACY", "note": ""}, {"date": "2026-06-20", "url": "https://youtu.be/mAOOTlplW9E", "note": ""}], "pendingFb": {"2024": [{"date": "2024-03-01", "url": "https://www.facebook.com/share/r/qij37Yn9ZbawDAt3/"}, {"date": "2024-03-01", "url": "https://www.facebook.com/reel/1408123533154733/"}, {"date": "2024-04-05", "url": "https://www.facebook.com/share/v/2e844H4X7x1Axn7x/"}, {"date": "2024-04-05", "url": "https://www.facebook.com/share/r/mv4V4R6abSfkChtg/"}, {"date": "2024-04-05", "url": "https://www.facebook.com/share/r/MSLKtAbi1XQTpzFF/"}, {"date": "2024-04-05", "url": "https://www.facebook.com/share/r/pG7WvSsjKENQgnra/"}, {"date": "2024-04-05", "url": "https://www.facebook.com/share/r/3NDDmLYufPvnyjYF/"}, {"date": "2024-04-06", "url": "https://www.facebook.com/share/r/FQQ5ZA3VhYVZsFbg/"}, {"date": "2024-04-20", "url": "https://www.facebook.com/share/r/8AWWS9gVWgSHc32R/"}, {"date": "2024-04-20", "url": "https://www.facebook.com/share/r/1o6DUHA6zZ5HXB3B/"}, {"date": "2024-04-24", "url": "https://www.facebook.com/share/r/g4SQQ89DuMrKy1qt/"}, {"date": "2024-07-23", "url": "https://www.facebook.com/share/r/aaZVpPVpS1xDu3VQ/"}, {"date": "2024-07-24", "url": "https://www.facebook.com/share/r/jSr1exfP6rtvUkeZ/"}, {"date": "2024-07-24", "url": "https://www.facebook.com/share/r/9K9Fibv9FAqsTWyD/"}, {"date": "2024-07-27", "url": "https://www.facebook.com/share/r/eQ4TYqzgRp9PvqRr/"}, {"date": "2024-08-01", "url": "https://www.facebook.com/share/r/6Dd7jHwLYBwFytdV/"}, {"date": "2024-08-11", "url": "https://www.facebook.com/share/v/poGxpeF3UJ8ymGHc/"}, {"date": "2024-08-28", "url": "https://www.facebook.com/share/r/THK95Dm2PJZ3EVg6/"}, {"date": "2024-08-28", "url": "https://www.facebook.com/share/r/fj1Xw6Gi2vqugx5K/"}, {"date": "2024-09-12", "url": "https://www.facebook.com/share/r/UkafthKBcueoicoD/"}, {"date": "2024-09-12", "url": "https://www.facebook.com/share/r/i4U8v9gyYGBkQAPU/"}, {"date": "2024-09-15", "url": "https://www.facebook.com/share/r/ev6UgZmHQxj5Fx6Z/"}, {"date": "2024-09-15", "url": "https://www.facebook.com/share/r/Eh5yyUPNkNJnKWiG/"}, {"date": "2024-09-20", "url": "https://www.facebook.com/share/r/YZrQFnus3ZRj72c5/"}, {"date": "2024-09-28", "url": "https://www.facebook.com/share/r/k6wtcBY4kN8RNpPW/"}, {"date": "2024-10-02", "url": "https://www.facebook.com/share/r/4vrzxPjrYeWaD1nH/"}, {"date": "2024-10-04", "url": "https://www.facebook.com/share/r/LdDKdYENiF8PDNWr/"}, {"date": "2024-10-11", "url": "https://www.facebook.com/share/r/Cbr9pXAHEoSaRfUi/"}, {"date": "2024-10-11", "url": "https://www.facebook.com/share/r/iamoxV58MF9fQTri/"}, {"date": "2024-10-11", "url": "https://www.facebook.com/share/r/qcQmQL9Qua1HQVyb/"}, {"date": "2024-10-16", "url": "https://www.facebook.com/share/r/cGFkoZWVtrmVRi3Z/"}, {"date": "2024-10-16", "url": "https://www.facebook.com/share/r/KYtBa48nBHYS7fs9/"}, {"date": "2024-10-16", "url": "https://www.facebook.com/share/r/ekGKRi8116zoZ5hC/"}, {"date": "2024-10-19", "url": "https://www.facebook.com/share/v/c6ACTKZQmy5Ke49e/"}, {"date": "2024-10-26", "url": "https://www.facebook.com/share/r/obfouxzkPx7RdiKC/"}, {"date": "2024-10-28", "url": "https://www.facebook.com/share/v/EPXG5SKmssJJcqDW/"}, {"date": "2024-11-04", "url": "https://www.facebook.com/share/v/JxpvyapVhgruehbs/"}, {"date": "2024-11-13", "url": "https://www.facebook.com/share/r/14ih2ixRko/"}, {"date": "2024-11-13", "url": "https://www.facebook.com/share/r/1AnT8qEcoi/"}, {"date": "2024-11-15", "url": "https://www.facebook.com/share/v/18Fsv3hLZa/"}, {"date": "2024-11-15", "url": "https://www.facebook.com/share/v/19dyEpERQ6/"}, {"date": "2024-11-15", "url": "https://www.facebook.com/share/v/1GmKJwvfg2/"}, {"date": "2024-11-15", "url": "https://www.facebook.com/share/v/18F1UEK288/"}, {"date": "2024-11-15", "url": "https://www.facebook.com/share/r/15etC8YyZK/"}, {"date": "2024-11-15", "url": "https://www.facebook.com/share/r/18tuXFje7a/"}, {"date": "2024-11-22", "url": "https://www.facebook.com/share/v/19WJw8Pywt/"}, {"date": "2024-11-22", "url": "https://www.facebook.com/share/r/1B8PNRBB8H/"}, {"date": "2024-11-22", "url": "https://www.facebook.com/share/r/14XphPVaoq/"}, {"date": "2024-11-27", "url": "https://www.facebook.com/share/r/15Kk9wHdGN/"}, {"date": "2024-11-27", "url": "https://www.facebook.com/share/r/1ANmEjgDiR/"}, {"date": "2024-11-27", "url": "https://www.facebook.com/share/r/1CoWCbV6mb/"}, {"date": "2024-11-27", "url": "https://www.facebook.com/share/r/1B1Py6BrS7/"}, {"date": "2024-11-27", "url": "https://www.facebook.com/share/r/18YN3TS8k4/"}, {"date": "2024-11-27", "url": "https://www.facebook.com/share/r/144GzXf22g/"}, {"date": "2024-11-27", "url": "https://www.facebook.com/share/r/1YX8dMoJiv/"}, {"date": "2024-11-27", "url": "https://www.facebook.com/share/r/1DaLvooVK8/"}, {"date": "2024-11-27", "url": "https://www.facebook.com/share/r/15BqSQgje1/"}, {"date": "2024-11-27", "url": "https://www.facebook.com/share/r/1ApuPRwBEk/"}, {"date": "2024-11-27", "url": "https://www.facebook.com/reel/497049043236092/"}, {"date": "2024-11-27", "url": "https://www.facebook.com/share/v/1DQA7pdYHX/"}, {"date": "2024-11-29", "url": "https://www.facebook.com/share/r/1DXE4kJNtC/"}, {"date": "2024-11-29", "url": "https://www.facebook.com/share/v/1K1obugKen/"}, {"date": "2024-12-07", "url": "https://www.facebook.com/share/v/1AiCVtHNCK/"}, {"date": "2024-12-13", "url": "https://www.facebook.com/share/r/1BE75TcNh5/"}, {"date": "2024-12-13", "url": "https://www.facebook.com/share/r/19c6LPSrKv/"}, {"date": "2024-12-14", "url": "https://www.facebook.com/share/r/15Qq2gV3cj/"}, {"date": "2024-12-14", "url": "https://www.facebook.com/share/r/1G5jue3y4A/"}, {"date": "2024-12-20", "url": "https://www.facebook.com/share/r/14REx7d2E3/"}], "2025": [{"date": "2025-01-05", "url": "https://www.facebook.com/share/v/18tRXRUfV7/"}, {"date": "2025-01-08", "url": "https://www.facebook.com/share/r/15zMA3wkkM/"}, {"date": "2025-01-08", "url": "https://www.facebook.com/share/v/1AsW8pXBxA/"}, {"date": "2025-01-08", "url": "https://www.facebook.com/share/r/1A3utZu2sB/"}, {"date": "2025-01-24", "url": "https://www.facebook.com/reel/3878564385692670/"}, {"date": "2025-01-25", "url": "https://www.facebook.com/share/r/1Gf3Kc7nNJ/"}, {"date": "2025-01-29", "url": "https://www.facebook.com/share/v/19tgAqVVgz/"}, {"date": "2025-02-01", "url": "https://www.facebook.com/share/r/1BzbL5fzdi/"}, {"date": "2025-02-17", "url": "https://www.facebook.com/share/r/15XNT4iL5R/"}, {"date": "2025-03-11", "url": "https://www.facebook.com/share/v/1Dk1S2yMHr/"}, {"date": "2025-03-14", "url": "https://www.facebook.com/share/r/15FKVt7zxC/"}, {"date": "2025-03-28", "url": "https://www.facebook.com/share/v/1NZjUY352N/"}, {"date": "2025-03-28", "url": "https://www.facebook.com/share/v/1AM32TkdmL/"}, {"date": "2025-04-01", "url": "https://www.facebook.com/share/r/18sxL7weRs/"}, {"date": "2025-04-04", "url": "https://www.facebook.com/share/r/1FJceWD7hA/"}, {"date": "2025-04-04", "url": "https://www.facebook.com/share/r/167dKtoNQm/"}, {"date": "2025-04-04", "url": "https://www.facebook.com/share/r/16XVYhSuRo/"}, {"date": "2025-04-04", "url": "https://www.facebook.com/share/r/1DATaWFWke/"}, {"date": "2025-04-04", "url": "https://www.facebook.com/share/r/16GPN3bxqe/"}, {"date": "2025-04-04", "url": "https://www.facebook.com/share/r/1EeaqoJW8R/"}, {"date": "2025-04-04", "url": "https://www.facebook.com/share/r/159vQR7XhA/"}, {"date": "2025-04-04", "url": "https://www.facebook.com/share/r/1C4J6xFZ7r/"}, {"date": "2025-04-23", "url": "https://www.facebook.com/share/v/1XwNmzJrTm/"}, {"date": "2025-04-25", "url": "https://www.facebook.com/share/r/1YJHX5Kh8u/"}, {"date": "2025-04-29", "url": "https://www.facebook.com/share/r/15f8e1RPxt/"}, {"date": "2025-04-29", "url": "https://www.facebook.com/share/r/18fmTPd3aA/"}, {"date": "2025-05-30", "url": "https://www.facebook.com/share/r/1BUSqRaa3U/"}, {"date": "2025-05-30", "url": "https://www.facebook.com/share/r/19CWxBXW3z/"}, {"date": "2025-05-30", "url": "https://www.facebook.com/share/r/12Kt3c6Efa9/"}, {"date": "2025-05-30", "url": "https://www.facebook.com/share/r/1ApjuVUt6y/"}, {"date": "2025-06-12", "url": "https://www.facebook.com/share/r/19CpU2VHXn/"}, {"date": "2025-07-01", "url": "https://www.facebook.com/share/r/16cmie7Asp/"}, {"date": "2025-07-01", "url": "https://www.facebook.com/share/p/1Bsgf1o9oz/"}, {"date": "2025-08-04", "url": "https://www.facebook.com/share/r/179yyzVJyu/"}, {"date": "2025-08-04", "url": "https://www.facebook.com/share/r/19pqm8HYhG/"}, {"date": "2025-08-06", "url": "https://www.facebook.com/share/r/16t79mnWUq/"}, {"date": "2025-08-06", "url": "https://www.facebook.com/share/r/16vMV1F2Hn/"}, {"date": "2025-08-06", "url": "https://www.facebook.com/share/r/16xwg2ZS7L/"}, {"date": "2025-08-14", "url": "https://www.facebook.com/share/r/16QkLbJB8H/"}, {"date": "2025-08-17", "url": "https://www.facebook.com/share/r/179KK8JGcS/"}, {"date": "2025-08-17", "url": "https://www.facebook.com/share/r/19WWikVLRP/"}, {"date": "2025-08-17", "url": "https://www.facebook.com/share/r/1B5zuxJj1m/"}, {"date": "2025-08-17", "url": "https://www.facebook.com/share/r/19xwJU8HJA/"}, {"date": "2025-08-17", "url": "https://www.facebook.com/share/r/16ngsPKGLJ/"}, {"date": "2025-08-25", "url": "https://www.facebook.com/share/r/1JwoRmXzjx/"}, {"date": "2025-08-27", "url": "https://www.facebook.com/share/r/1BcUWh5f4i/"}, {"date": "2025-09-01", "url": "https://www.facebook.com/share/v/1ABfAFzez4/"}, {"date": "2025-09-01", "url": "https://www.facebook.com/share/r/1AvePGb3db/"}, {"date": "2025-09-01", "url": "https://www.facebook.com/share/r/16ttrvAPFr/"}, {"date": "2025-09-02", "url": "https://www.facebook.com/share/r/1KMJbpmVbY/"}, {"date": "2025-09-02", "url": "https://www.facebook.com/share/r/1A8nJKg3Sr/"}, {"date": "2025-09-02", "url": "https://www.facebook.com/share/r/1CJErJ16N1/"}, {"date": "2025-09-02", "url": "https://www.facebook.com/share/r/1YPvftLkuw/"}, {"date": "2025-09-02", "url": "https://www.facebook.com/share/r/1EhChD57RN/"}, {"date": "2025-09-03", "url": "https://www.facebook.com/share/v/19xvqPFWxG/"}, {"date": "2025-09-12", "url": "https://www.facebook.com/share/r/1CnVx2GsGe/"}, {"date": "2025-09-12", "url": "https://www.facebook.com/share/r/1CPQkhVRAk/"}, {"date": "2025-09-12", "url": "https://www.facebook.com/reel/1838104027137176/"}, {"date": "2025-09-17", "url": "https://www.facebook.com/share/r/1CzZKNNig3/"}, {"date": "2025-09-17", "url": "https://www.facebook.com/share/v/1CVHdEJk8d/"}, {"date": "2025-09-17", "url": "https://www.facebook.com/share/r/1DbFNXqH8U/"}, {"date": "2025-09-17", "url": "https://www.facebook.com/share/r/1FvPAjyx52/"}, {"date": "2025-09-17", "url": "https://www.facebook.com/share/r/1aAHSVHmZX/"}, {"date": "2025-09-17", "url": "https://www.facebook.com/share/r/1J9HT8iks6/"}, {"date": "2025-09-19", "url": "https://www.facebook.com/share/r/14Qi5zHuHCP/"}, {"date": "2025-09-24", "url": "https://www.facebook.com/share/r/1G3NZjEKEj/"}, {"date": "2025-10-01", "url": "https://www.facebook.com/share/r/1AHpk6WHcH/"}, {"date": "2025-10-02", "url": "https://www.facebook.com/share/r/169e7uvJxS/"}, {"date": "2025-10-02", "url": "https://www.facebook.com/share/r/19MSBJj9r9/"}, {"date": "2025-10-03", "url": "https://www.facebook.com/share/r/15nF5EaaEZ/"}, {"date": "2025-10-03", "url": "https://www.facebook.com/share/r/1Byw91bfnX/"}, {"date": "2025-10-03", "url": "https://www.facebook.com/share/r/1FCjgfop8g/"}, {"date": "2025-10-03", "url": "https://www.facebook.com/share/r/1CEWQR5wjE/"}, {"date": "2025-10-03", "url": "https://www.facebook.com/share/r/1AngwPD2S2/"}, {"date": "2025-10-10", "url": "https://www.facebook.com/share/v/1AhkNg3JMi/"}, {"date": "2025-10-10", "url": "https://www.facebook.com/share/v/1BfCKRQCBk/"}, {"date": "2025-10-13", "url": "https://www.facebook.com/share/r/1Gpcro26dv/"}, {"date": "2025-10-13", "url": "https://www.facebook.com/share/r/16JJ1MkB94/"}, {"date": "2025-10-13", "url": "https://www.facebook.com/share/r/1BiA6EEpi8/"}, {"date": "2025-10-13", "url": "https://www.facebook.com/share/r/1BMdtCd7PR/"}, {"date": "2025-10-17", "url": "https://www.facebook.com/share/r/17HYpP8AAX/"}, {"date": "2025-10-17", "url": "https://www.facebook.com/share/r/1AMKobGwHi/"}, {"date": "2025-10-17", "url": "https://www.facebook.com/share/r/1FYyHQXMZq/"}, {"date": "2025-10-17", "url": "https://www.facebook.com/share/r/17VnaUD8aZ/"}, {"date": "2025-10-24", "url": "https://www.facebook.com/share/r/1RZQM8RaMj/"}, {"date": "2025-11-04", "url": "https://www.facebook.com/share/v/1BBkY2vUH6/"}, {"date": "2025-11-05", "url": "https://www.facebook.com/share/r/17EH7PpXaY/"}, {"date": "2025-11-05", "url": "https://www.facebook.com/share/r/1Kmd1gizB2/"}, {"date": "2025-12-05", "url": "https://www.facebook.com/share/r/17cyXfNKC5/"}, {"date": "2025-12-05", "url": "https://www.facebook.com/share/r/1BXH4bB2HF/"}, {"date": "2025-12-05", "url": "https://www.facebook.com/share/r/181m6XLPEx/"}, {"date": "2025-12-05", "url": "https://www.facebook.com/share/r/1DNEhwFSCf/"}, {"date": "2025-12-05", "url": "https://www.facebook.com/share/r/1AEcTjFs3G/"}, {"date": "2025-12-05", "url": "https://www.facebook.com/share/r/1DHvqRCyfz/"}, {"date": "2025-12-05", "url": "https://www.facebook.com/share/r/1DPWSJJ5qb/"}, {"date": "2025-12-12", "url": "https://www.facebook.com/share/r/1CwjqSzZ59/"}, {"date": "2025-12-28", "url": "https://www.facebook.com/share/v/1BioyKKiad/"}], "2026": [{"date": "2026-01-07", "url": "https://www.facebook.com/share/v/184mjExssT/"}, {"date": "2026-01-15", "url": "https://www.facebook.com/share/r/17kTQYwZ3M/"}, {"date": "2026-01-17", "url": "https://www.facebook.com/share/r/1C7VXLFSn9/"}, {"date": "2026-01-17", "url": "https://www.facebook.com/share/r/1Bz94ydgEs/"}, {"date": "2026-01-17", "url": "https://www.facebook.com/share/r/1Ahwmnw8Fr/"}, {"date": "2026-01-19", "url": "https://www.facebook.com/share/r/1Z2GHbNRb3/"}, {"date": "2026-01-31", "url": "https://www.facebook.com/share/r/19oQs8urLk/"}, {"date": "2026-01-31", "url": "https://www.facebook.com/share/v/1E2r5ToR1r/"}, {"date": "2026-01-31", "url": "https://www.facebook.com/share/r/1aj1etg9f4/"}, {"date": "2026-02-11", "url": "https://www.facebook.com/share/v/181vQBMJWq/"}, {"date": "2026-02-12", "url": "https://www.facebook.com/share/r/1ANs9WC45V/"}, {"date": "2026-02-12", "url": "https://www.facebook.com/share/r/18NJ3uHPJD/"}, {"date": "2026-02-13", "url": "https://www.facebook.com/share/r/1AA2wYVzkS/"}, {"date": "2026-02-13", "url": "https://www.facebook.com/share/r/17xSyFDXKU/"}, {"date": "2026-02-14", "url": "https://www.facebook.com/share/r/1B2TX7P4Be/"}, {"date": "2026-02-14", "url": "https://www.facebook.com/share/r/14aPqKdMhEF/"}, {"date": "2026-02-15", "url": "https://www.facebook.com/share/r/1AgdfvAjhe/"}, {"date": "2026-02-15", "url": "https://www.facebook.com/share/v/17y4ozGV6C/"}, {"date": "2026-02-28", "url": "https://www.facebook.com/share/r/1Dc6UmLBiW/"}, {"date": "2026-03-05", "url": "https://www.facebook.com/share/r/1B1wnupf6w/"}, {"date": "2026-03-05", "url": "https://www.facebook.com/share/r/17wo4kZJHw/"}, {"date": "2026-03-08", "url": "https://www.facebook.com/share/r/1DWRBRpGJa/"}, {"date": "2026-03-13", "url": "https://www.facebook.com/share/r/1DeB7bzqDx/"}, {"date": "2026-03-14", "url": "https://www.facebook.com/share/r/1Amj7LtqYR/"}, {"date": "2026-03-14", "url": "https://www.facebook.com/share/r/1H2BodeLgn/"}, {"date": "2026-03-17", "url": "https://www.facebook.com/share/r/1AG8ogNxWJ/"}, {"date": "2026-03-17", "url": "https://www.facebook.com/share/r/1CXM1qZ7YF/"}, {"date": "2026-03-17", "url": "https://www.facebook.com/share/r/1BEn634XWY/"}, {"date": "2026-03-17", "url": "https://www.facebook.com/share/v/1NYG971e3m/"}, {"date": "2026-03-25", "url": "https://www.facebook.com/share/r/1HgMGtfd4k/"}, {"date": "2026-03-28", "url": "https://www.facebook.com/share/r/1GmPwVivBZ/"}, {"date": "2026-04-05", "url": "https://www.facebook.com/share/r/1896itiXDV/"}, {"date": "2026-04-05", "url": "https://www.facebook.com/share/r/1HQBUBWVwp/"}, {"date": "2026-04-05", "url": "https://www.facebook.com/share/r/1Gh1ztiL99/"}, {"date": "2026-04-15", "url": "https://www.facebook.com/share/r/14ZgXQkqQK5/"}, {"date": "2026-04-24", "url": "https://www.facebook.com/share/r/1CHWEP5TYG/"}, {"date": "2026-04-24", "url": "https://www.facebook.com/share/r/1BGU6BzMSr/"}, {"date": "2026-04-24", "url": "https://www.facebook.com/share/r/18aeybwbNm/"}, {"date": "2026-04-24", "url": "https://www.facebook.com/share/r/1EGfYtUMdq/"}, {"date": "2026-04-24", "url": "https://www.facebook.com/share/r/18XXgHrCmM/"}, {"date": "2026-04-28", "url": "https://www.facebook.com/share/r/1DCRa9u91S/"}, {"date": "2026-04-28", "url": "https://www.facebook.com/share/r/1AhzFzXPeM/"}, {"date": "2026-05-13", "url": "https://www.facebook.com/share/r/1D6KtsmVDU/"}, {"date": "2026-05-13", "url": "https://www.facebook.com/share/r/14dpRF6o39A/"}, {"date": "2026-05-13", "url": "https://www.facebook.com/share/r/18rsHZNvez/"}, {"date": "2026-05-16", "url": "https://www.facebook.com/share/r/1Swe3F3hVW/"}, {"date": "2026-05-18", "url": "https://www.facebook.com/share/r/1H879Q61ny/"}, {"date": "2026-05-21", "url": "https://www.facebook.com/share/r/1E58nah15m/"}, {"date": "2026-05-21", "url": "https://www.facebook.com/share/r/1BfbieTTPX/"}, {"date": "2026-06-04", "url": "https://www.facebook.com/share/r/1BKT9dJuWX/"}, {"date": "2026-06-12", "url": "https://www.facebook.com/reel/984352087534594/"}, {"date": "2026-06-17", "url": "https://www.facebook.com/share/v/17nawXjMc2/"}, {"date": "2026-06-17", "url": "https://www.facebook.com/share/r/18cde8HZvA/"}, {"date": "2026-06-19", "url": "https://www.facebook.com/share/r/1BAxSZjCPa/"}, {"date": "2026-07-01", "url": "https://www.facebook.com/share/v/17b4KMJ1Ww/"}, {"date": "2026-07-06", "url": "https://www.facebook.com/share/r/18tGqW29Cw/"}]}}</script>
 <script>
 (function () {
-  var BUILD = '28 · 10 nov. 2026';
+  var BUILD = '29 · 11 nov. 2026';
   var D = JSON.parse(document.getElementById('data').textContent);
   var T = D.types;
   var R = [], byId = Object.create(null), tById = Object.create(null);
@@ -1066,7 +1075,7 @@ body { margin: 0; }
   function byStatus(items) { return fstat ? items.filter(function (r) { return r.status === fstat; }) : items; }
   var expanded = Object.create(null);   // groupes dépliés (vue Repas), conservés tant que l'appli reste ouverte
   var GROUP_MAX = 3;
-  function rowList(items, showMeals, key) {
+  function rowList(items, showMeals, key, combo) {
     var ul = el('ul', 'rows');
     var extra = [];
     var anyThumb = items.some(function (r) { return !!thumbSrc(r.url); });   // si au moins une miniature, les autres lignes gardent la même place
@@ -1089,7 +1098,9 @@ body { margin: 0; }
         a.appendChild(d);
       }
       a.appendChild(el('span', 'chev', '›'));
-      li.appendChild(a); ul.appendChild(li);
+      li.appendChild(a);
+      if (combo) comboLine(r, li, anyThumb);
+      ul.appendChild(li);
     });
     if (extra.length) {
       var more = el('li'), btn = el('button', 'more', '');
@@ -1107,6 +1118,28 @@ body { margin: 0; }
     return ul;
   }
 
+  // Onglet Repas : sous chaque plat, ses accompagnements en pastilles et un « + » pour en associer sans quitter la liste
+  function comboLine(r, li, indent) {
+    var partners = partnersOf(r).filter(function (x) { return !isTip(x); });
+    var canAdd = canEdit() && !!MAIN_TYPES[r.type];
+    if (!partners.length && !canAdd) return;
+    var line = el('div', 'combo' + (indent ? ' ind' : ''));
+    if (partners.length) {
+      line.appendChild(el('span', 'cavec', 'avec'));
+      partners.forEach(function (x) { var c = link('#' + x.id, 'cchip t-' + x.type, x.name); c.title = tById[x.type].label + ' : ' + x.name; line.appendChild(c); });
+    }
+    li.appendChild(line);
+    if (!canAdd) return;
+    var perr = el('p', 'perr'); perr.setAttribute('role', 'alert');
+    var add = el('button', 'cadd', partners.length ? '+' : '+ accompagnement'); add.type = 'button';
+    add.setAttribute('aria-label', 'Associer des accompagnements à ' + r.name);
+    add.onclick = function () {
+      add.hidden = true;
+      pairPicker(r, perr, function (box) { li.insertBefore(box, perr); }, function () { add.hidden = false; add.focus(); });
+    };
+    line.appendChild(add); li.appendChild(perr);
+  }
+
   /* Niveau 2 (vue Repas) : recettes d'un repas, groupées par type */
   function mealScreen(id) {
     var sans = id === 'sans';
@@ -1119,7 +1152,8 @@ body { margin: 0; }
     ban.appendChild(icon(sans ? 'aclasser' : id));
     var bt = el('div');
     bt.appendChild(el('h1', null, m.label));
-    bt.appendChild(el('p', 'sub', fstat ? items.length + ' sur ' + plural(all.length, 'recette', 'recettes') : (items.length ? plural(items.length, 'recette', 'recettes') : 'Aucune recette pour l’instant')));
+    var subP = el('p', 'sub', fstat ? items.length + ' sur ' + plural(all.length, 'recette', 'recettes') : (items.length ? plural(items.length, 'recette', 'recettes') : 'Aucune recette pour l’instant'));
+    bt.appendChild(subP);
     ban.appendChild(bt);
     view.appendChild(ban);
     if (canEdit()) showBar([sans ? barAdd('#ajouter', '+ Ajouter une recette') : barAdd('#ajouter/repas-' + id, '+ Ajouter à ' + m.label)]);
@@ -1137,19 +1171,35 @@ body { margin: 0; }
       view.appendChild(box);
       return;
     }
-    TS().forEach(function (t) {
-      var g = items.filter(function (r) { return r.type === t.id; });
-      if (!g.length) return;
-      g.sort(function (a, b) { return a.name.localeCompare(b.name, 'fr', { sensitivity: 'base' }); });
-      var sec = el('section', 'grp themed ' + tcls(t.id));
-      var gh = el('div', 'grp-head');
-      gh.appendChild(icon(t.id));
-      gh.appendChild(el('h2', null, t.label));
-      gh.appendChild(el('span', 'grp-n', String(g.length)));
-      sec.appendChild(gh);
-      sec.appendChild(rowList(g, false, sans ? '' : id + '/' + t.id));
-      view.appendChild(sec);
-    });
+    // Déjeuner / Dîner : d'abord les plats (avec leurs accompagnements), puis les accompagnements, sauces et salades qui ne vont avec aucun plat de ce repas
+    var covered = Object.create(null);
+    if (!sans) all.forEach(function (r) { if (!SIDE_TYPES[r.type]) partnersOf(r).forEach(function (x) { covered[x.id] = 1; }); });
+    var mains = sans ? items : items.filter(function (r) { return !SIDE_TYPES[r.type]; });
+    var sides = sans ? [] : items.filter(function (r) { return SIDE_TYPES[r.type] && !covered[r.id]; });
+    function groups(list, combo, suffix) {
+      TS().forEach(function (t) {
+        var g = list.filter(function (r) { return r.type === t.id; });
+        if (!g.length) return;
+        g.sort(function (a, b) { return a.name.localeCompare(b.name, 'fr', { sensitivity: 'base' }); });
+        var sec = el('section', 'grp themed ' + tcls(t.id));
+        var gh = el('div', 'grp-head');
+        gh.appendChild(icon(t.id));
+        gh.appendChild(el('h2', null, t.label + (suffix || '')));
+        gh.appendChild(el('span', 'grp-n', String(g.length)));
+        sec.appendChild(gh);
+        sec.appendChild(rowList(g, false, sans ? '' : id + '/' + t.id, combo));
+        view.appendChild(sec);
+      });
+    }
+    if (!sans && !fstat && mains.length + sides.length) subP.textContent = plural(mains.length + sides.length, 'recette', 'recettes');   // les accompagnements rattachés à un plat ne sont pas comptés à part
+    groups(mains, !sans);
+    if (sides.length) {
+      if (mains.length) view.appendChild(el('p', 'sub sidesnote', 'Sans plat associé dans ce repas :'));
+      groups(sides, false);
+    }
+    if (!mains.length && !sides.length) {   // tout est déjà rattaché à un plat masqué par le filtre
+      var fe2 = el('div', 'emptybox'); fe2.appendChild(el('p', null, 'Aucune recette à afficher avec ce statut.')); view.appendChild(fe2);
+    }
   }
 
   /* Niveau 3 : fiche d'un plat */
@@ -1245,22 +1295,93 @@ body { margin: 0; }
 
   /* « Se marie avec » : associations entre fiches */
   var SIDE_TYPES = { accomp: 1, sauces: 1, salades: 1 };
-  var MAIN_TYPES = { plats: 1, tajines: 1, sandwichs: 1 };
+  var MAIN_TYPES = { plats: 1, tajines: 1, sandwichs: 1, soupes: 1 };
+  // Liste à cocher des associations d'une fiche ; utilisée sur la fiche et dans l'onglet Repas.
+  function pairPicker(r, perr, mount, onClose) {
+    perr.textContent = '';
+    var initial = Object.create(null), sel = Object.create(null);
+    partnersOf(r).forEach(function (x) { initial[x.id] = 1; sel[x.id] = 1; });
+    var groups = SIDE_TYPES[r.type] ? MAIN_TYPES : SIDE_TYPES;   // depuis un accompagnement : les plats ; sinon : accompagnements, sauces, salades
+    var box = el('div', 'pairpick');
+    box.appendChild(el('p', 'help', 'Cochez tout ce qui va avec « ' + r.name + ' », puis enregistrez.'));
+    var inp = el('input'); inp.type = 'search'; inp.id = 'pq'; inp.placeholder = 'Chercher dans tout le carnet'; inp.autocomplete = 'off'; inp.setAttribute('aria-label', 'Chercher une recette à associer');
+    var res = el('div', 'pairres'), hint = el('p', 'help');
+    var bar = el('div', 'pairbar');
+    var saveB = el('button', 'btn', 'Enregistrer'); saveB.type = 'button';
+    var cancel = el('button', 'btn ghost', 'Annuler'); cancel.type = 'button';
+    function changes() {
+      var addL = [], delL = [];
+      Object.keys(sel).forEach(function (id) { if (sel[id] && !initial[id]) addL.push(id); });
+      Object.keys(initial).forEach(function (id) { if (!sel[id]) delL.push(id); });
+      return { add: addL, del: delL };
+    }
+    function sync() {
+      var c = changes(), n = c.add.length + c.del.length;
+      saveB.disabled = !n;
+      saveB.textContent = n ? 'Enregistrer (' + n + (n > 1 ? ' changements)' : ' changement)') : 'Enregistrer';
+    }
+    function item(x) {
+      var lab = el('label', 'pairchk t-' + x.type), cb = el('input'); cb.type = 'checkbox'; cb.value = x.id; cb.checked = !!sel[x.id];
+      cb.onchange = function () { sel[x.id] = cb.checked ? 1 : 0; sync(); };
+      lab.appendChild(cb); lab.appendChild(thumbBox(x)); lab.appendChild(el('span', 'rn', x.name));
+      return lab;
+    }
+    function block(title, items) {
+      if (!items.length) return;
+      if (title) res.appendChild(el('h3', 'pairh', title));
+      var ul = el('ul', 'rows'); items.forEach(function (x) { var li = el('li'); li.appendChild(item(x)); ul.appendChild(li); }); res.appendChild(ul);
+    }
+    function fill() {
+      var ok = function (x) { return x.id !== r.id && !isTip(x); };
+      var found = searchRecipes(inp.value), n = 0;
+      res.textContent = '';
+      if (found) {
+        var list = found.filter(ok); n = list.length;
+        block('', list.slice(0, 30));
+        hint.textContent = !n ? 'Aucune recette ne correspond.' : n > 30 ? 'Les 30 premières sur ' + n + ' : précisez la recherche.' : '';
+      } else {
+        var shown = Object.create(null);
+        order.forEach(function (tid) {
+          if (!groups[tid]) return;
+          var items = R.filter(function (x) { return x.type === tid && ok(x); }).sort(function (a, b) { return a.name.localeCompare(b.name, 'fr'); });
+          items.forEach(function (x) { shown[x.id] = 1; }); n += items.length;
+          block(tById[tid].label, items);
+        });
+        var others = partnersOf(r).filter(function (x) { return !shown[x.id]; });   // déjà associées, hors de ces types : restent visibles pour pouvoir les décocher
+        block('Autres associations', others); n += others.length;
+        hint.textContent = n ? '' : 'Rien à proposer ici : utilisez la recherche pour associer une autre recette.';
+      }
+    }
+    function shut() { if (box.parentNode) box.parentNode.removeChild(box); }
+    cancel.onclick = function () { shut(); onClose(); };
+    saveB.onclick = function () {
+      var c = changes(); if (!(c.add.length + c.del.length)) return;
+      perr.textContent = ''; saveB.disabled = true; cancel.disabled = true; saveB.textContent = 'Enregistrement…';
+      var msg = 'Associations de « ' + r.name + ' » :' + (c.add.length ? ' +' + c.add.length : '') + (c.del.length ? ' −' + c.del.length : '');
+      commit({ pairs: { id: r.id, add: c.add, del: c.del } }, msg).then(function () { shut(); route(true); },
+        function (e) { cancel.disabled = false; sync(); perr.textContent = writeError(e); });
+    };
+    inp.addEventListener('input', fill);
+    bar.appendChild(saveB); bar.appendChild(cancel);
+    box.appendChild(inp); box.appendChild(hint); box.appendChild(res); box.appendChild(bar);
+    mount(box); fill(); sync();
+    try { box.scrollIntoView({ block: 'nearest', behavior: 'smooth' }); } catch (e) {}
+  }
+  function thumbBox(x) {
+    var th = el('span', 'th'), ts = thumbSrc(x.url);
+    var ph = function () { th.className = 'th ph'; th.textContent = ''; th.appendChild(icon(x.type)); };
+    if (ts) { var im = thumbImg(ts, null); im.onerror = ph; th.appendChild(im); } else ph();
+    return th;
+  }
   function pairSection(r) {
     var partners = partnersOf(r), edit = canEdit();
     if (!partners.length && !edit) return;
     var sec = el('section', 'sheet pairs'); sec.setAttribute('aria-labelledby', 'h-pair');
     var h = el('h2', null, 'Se marie avec'); h.id = 'h-pair'; sec.appendChild(h);
     var perr = el('p', 'perr'); perr.setAttribute('role', 'alert');
-    function thumbOf(x) {
-      var th = el('span', 'th'), ts = thumbSrc(x.url);
-      var ph = function () { th.className = 'th ph'; th.textContent = ''; th.appendChild(icon(x.type)); };
-      if (ts) { var im = thumbImg(ts, null); im.onerror = ph; th.appendChild(im); } else ph();
-      return th;
-    }
     function rowFor(x) {
       var inner = el('span', 'row prow t-' + x.type);
-      inner.appendChild(thumbOf(x)); inner.appendChild(el('span', 'rn', x.name)); inner.appendChild(el('span', 'ptype', tById[x.type].label));
+      inner.appendChild(thumbBox(x)); inner.appendChild(el('span', 'rn', x.name)); inner.appendChild(el('span', 'ptype', tById[x.type].label));
       return inner;
     }
     function send(other, on, btns) {
@@ -1284,74 +1405,8 @@ body { margin: 0; }
     if (edit) {
       var add = el('button', 'btn ghost', partners.length ? 'Modifier les associations…' : 'Associer…'); add.type = 'button';
       add.onclick = function () {
-        add.hidden = true; perr.textContent = '';
-        var initial = Object.create(null), sel = Object.create(null);
-        partnersOf(r).forEach(function (x) { initial[x.id] = 1; sel[x.id] = 1; });
-        var groups = SIDE_TYPES[r.type] ? MAIN_TYPES : SIDE_TYPES;   // depuis un accompagnement : les plats ; sinon : accompagnements, sauces, salades
-        var box = el('div', 'pairpick');
-        box.appendChild(el('p', 'help', 'Cochez tout ce qui va avec « ' + r.name + ' », puis enregistrez.'));
-        var inp = el('input'); inp.type = 'search'; inp.id = 'pq'; inp.placeholder = 'Chercher dans tout le carnet'; inp.autocomplete = 'off'; inp.setAttribute('aria-label', 'Chercher une recette à associer');
-        var res = el('div', 'pairres'), hint = el('p', 'help');
-        var bar = el('div', 'pairbar');
-        var saveB = el('button', 'btn', 'Enregistrer'); saveB.type = 'button';
-        var cancel = el('button', 'btn ghost', 'Annuler'); cancel.type = 'button';
-        function changes() {
-          var addL = [], delL = [];
-          Object.keys(sel).forEach(function (id) { if (sel[id] && !initial[id]) addL.push(id); });
-          Object.keys(initial).forEach(function (id) { if (!sel[id]) delL.push(id); });
-          return { add: addL, del: delL };
-        }
-        function sync() {
-          var c = changes(), n = c.add.length + c.del.length;
-          saveB.disabled = !n;
-          saveB.textContent = n ? 'Enregistrer (' + n + (n > 1 ? ' changements)' : ' changement)') : 'Enregistrer';
-        }
-        function item(x) {
-          var lab = el('label', 'pairchk t-' + x.type), cb = el('input'); cb.type = 'checkbox'; cb.value = x.id; cb.checked = !!sel[x.id];
-          cb.onchange = function () { sel[x.id] = cb.checked ? 1 : 0; sync(); };
-          lab.appendChild(cb); lab.appendChild(thumbOf(x)); lab.appendChild(el('span', 'rn', x.name));
-          return lab;
-        }
-        function block(title, items) {
-          if (!items.length) return;
-          if (title) res.appendChild(el('h3', 'pairh', title));
-          var ul = el('ul', 'rows'); items.forEach(function (x) { var li = el('li'); li.appendChild(item(x)); ul.appendChild(li); }); res.appendChild(ul);
-        }
-        function fill() {
-          var ok = function (x) { return x.id !== r.id && !isTip(x); };
-          var found = searchRecipes(inp.value), n = 0;
-          res.textContent = '';
-          if (found) {
-            var list = found.filter(ok); n = list.length;
-            block('', list.slice(0, 30));
-            hint.textContent = !n ? 'Aucune recette ne correspond.' : n > 30 ? 'Les 30 premières sur ' + n + ' : précisez la recherche.' : '';
-          } else {
-            var shown = Object.create(null);
-            order.forEach(function (tid) {
-              if (!groups[tid]) return;
-              var items = R.filter(function (x) { return x.type === tid && ok(x); }).sort(function (a, b) { return a.name.localeCompare(b.name, 'fr'); });
-              items.forEach(function (x) { shown[x.id] = 1; }); n += items.length;
-              block(tById[tid].label, items);
-            });
-            var others = partnersOf(r).filter(function (x) { return !shown[x.id]; });   // déjà associées, hors de ces types : restent visibles pour pouvoir les décocher
-            block('Autres associations', others); n += others.length;
-            hint.textContent = n ? '' : 'Rien à proposer ici : utilisez la recherche pour associer une autre recette.';
-          }
-        }
-        function shut() { sec.removeChild(box); add.hidden = false; }
-        cancel.onclick = function () { shut(); add.focus(); };
-        saveB.onclick = function () {
-          var c = changes(); if (!(c.add.length + c.del.length)) return;
-          perr.textContent = ''; saveB.disabled = true; cancel.disabled = true; saveB.textContent = 'Enregistrement…';
-          var msg = 'Associations de « ' + r.name + ' » :' + (c.add.length ? ' +' + c.add.length : '') + (c.del.length ? ' −' + c.del.length : '');
-          commit({ pairs: { id: r.id, add: c.add, del: c.del } }, msg).then(function () { shut(); route(true); },
-            function (e) { cancel.disabled = false; sync(); perr.textContent = writeError(e); });
-        };
-        inp.addEventListener('input', fill);
-        bar.appendChild(saveB); bar.appendChild(cancel);
-        box.appendChild(inp); box.appendChild(hint); box.appendChild(res); box.appendChild(bar);
-        sec.insertBefore(box, perr); fill(); sync();
-        try { box.scrollIntoView({ block: 'start', behavior: 'smooth' }); } catch (e) {}
+        add.hidden = true;
+        pairPicker(r, perr, function (box) { sec.insertBefore(box, perr); }, function () { add.hidden = false; add.focus(); });
       };
       sec.appendChild(add);
     }

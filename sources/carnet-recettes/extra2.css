@@ -103,3 +103,12 @@ body.hasbar { padding-bottom: calc(5.4rem + env(safe-area-inset-bottom, 0px)); }
 .pairbar { position: sticky; bottom: 0; display: flex; gap: 0.6rem; flex-wrap: wrap; padding: 0.7rem 0 calc(0.7rem + env(safe-area-inset-bottom)); margin-top: 0.6rem; background: var(--surface); border-top: 1px solid var(--line); z-index: 2; }
 .pairbar .btn { flex: 1; }
 .pairbar .btn:first-child { flex: 2.2; white-space: nowrap; }
+.combo { display: flex; flex-wrap: wrap; align-items: center; gap: 0.35rem; padding: 0 0.6rem 0.55rem 0.85rem; margin-top: -0.2rem; }
+.combo.ind { padding-left: 4.55rem; }
+.cavec { font-size: 0.8rem; color: var(--muted); }
+.cchip { display: inline-block; max-width: 100%; padding: 0.22rem 0.6rem; border-radius: 999px; border: 1px solid var(--c, var(--line)); color: var(--c, inherit); background: var(--surface); font-size: 0.82rem; font-weight: 600; text-decoration: none; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; line-height: 1.35; }
+.cadd { border: 1px dashed var(--muted); background: none; color: var(--muted); border-radius: 999px; padding: 0.22rem 0.7rem; font: inherit; font-size: 0.82rem; font-weight: 600; min-height: 2.2rem; cursor: pointer; }
+.cadd:hover, .cadd:focus-visible { color: var(--accent); border-color: var(--accent); }
+.rows li > .pairpick { padding: 0 0.6rem 0.4rem; }
+.rows li > .perr { padding: 0 0.6rem 0.4rem; }
+.sidesnote { margin: 1.2rem 0 0.2rem; }

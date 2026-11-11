@@ -679,7 +679,7 @@
   function byStatus(items) { return fstat ? items.filter(function (r) { return r.status === fstat; }) : items; }
   var expanded = Object.create(null);   // groupes dépliés (vue Repas), conservés tant que l'appli reste ouverte
   var GROUP_MAX = 3;
-  function rowList(items, showMeals, key) {
+  function rowList(items, showMeals, key, combo) {
     var ul = el('ul', 'rows');
     var extra = [];
     var anyThumb = items.some(function (r) { return !!thumbSrc(r.url); });   // si au moins une miniature, les autres lignes gardent la même place
@@ -702,7 +702,9 @@
         a.appendChild(d);
       }
       a.appendChild(el('span', 'chev', '›'));
-      li.appendChild(a); ul.appendChild(li);
+      li.appendChild(a);
+      if (combo) comboLine(r, li, anyThumb);
+      ul.appendChild(li);
     });
     if (extra.length) {
       var more = el('li'), btn = el('button', 'more', '');
@@ -720,6 +722,28 @@
     return ul;
   }
 
+  // Onglet Repas : sous chaque plat, ses accompagnements en pastilles et un « + » pour en associer sans quitter la liste
+  function comboLine(r, li, indent) {
+    var partners = partnersOf(r).filter(function (x) { return !isTip(x); });
+    var canAdd = canEdit() && !!MAIN_TYPES[r.type];
+    if (!partners.length && !canAdd) return;
+    var line = el('div', 'combo' + (indent ? ' ind' : ''));
+    if (partners.length) {
+      line.appendChild(el('span', 'cavec', 'avec'));
+      partners.forEach(function (x) { var c = link('#' + x.id, 'cchip t-' + x.type, x.name); c.title = tById[x.type].label + ' : ' + x.name; line.appendChild(c); });
+    }
+    li.appendChild(line);
+    if (!canAdd) return;
+    var perr = el('p', 'perr'); perr.setAttribute('role', 'alert');
+    var add = el('button', 'cadd', partners.length ? '+' : '+ accompagnement'); add.type = 'button';
+    add.setAttribute('aria-label', 'Associer des accompagnements à ' + r.name);
+    add.onclick = function () {
+      add.hidden = true;
+      pairPicker(r, perr, function (box) { li.insertBefore(box, perr); }, function () { add.hidden = false; add.focus(); });
+    };
+    line.appendChild(add); li.appendChild(perr);
+  }
+
   /* Niveau 2 (vue Repas) : recettes d'un repas, groupées par type */
   function mealScreen(id) {
     var sans = id === 'sans';
@@ -732,7 +756,8 @@
     ban.appendChild(icon(sans ? 'aclasser' : id));
     var bt = el('div');
     bt.appendChild(el('h1', null, m.label));
-    bt.appendChild(el('p', 'sub', fstat ? items.length + ' sur ' + plural(all.length, 'recette', 'recettes') : (items.length ? plural(items.length, 'recette', 'recettes') : 'Aucune recette pour l’instant')));
+    var subP = el('p', 'sub', fstat ? items.length + ' sur ' + plural(all.length, 'recette', 'recettes') : (items.length ? plural(items.length, 'recette', 'recettes') : 'Aucune recette pour l’instant'));
+    bt.appendChild(subP);
     ban.appendChild(bt);
     view.appendChild(ban);
     if (canEdit()) showBar([sans ? barAdd('#ajouter', '+ Ajouter une recette') : barAdd('#ajouter/repas-' + id, '+ Ajouter à ' + m.label)]);
@@ -750,19 +775,35 @@
       view.appendChild(box);
       return;
     }
-    TS().forEach(function (t) {
-      var g = items.filter(function (r) { return r.type === t.id; });
-      if (!g.length) return;
-      g.sort(function (a, b) { return a.name.localeCompare(b.name, 'fr', { sensitivity: 'base' }); });
-      var sec = el('section', 'grp themed ' + tcls(t.id));
-      var gh = el('div', 'grp-head');
-      gh.appendChild(icon(t.id));
-      gh.appendChild(el('h2', null, t.label));
-      gh.appendChild(el('span', 'grp-n', String(g.length)));
-      sec.appendChild(gh);
-      sec.appendChild(rowList(g, false, sans ? '' : id + '/' + t.id));
-      view.appendChild(sec);
-    });
+    // Déjeuner / Dîner : d'abord les plats (avec leurs accompagnements), puis les accompagnements, sauces et salades qui ne vont avec aucun plat de ce repas
+    var covered = Object.create(null);
+    if (!sans) all.forEach(function (r) { if (!SIDE_TYPES[r.type]) partnersOf(r).forEach(function (x) { covered[x.id] = 1; }); });
+    var mains = sans ? items : items.filter(function (r) { return !SIDE_TYPES[r.type]; });
+    var sides = sans ? [] : items.filter(function (r) { return SIDE_TYPES[r.type] && !covered[r.id]; });
+    function groups(list, combo, suffix) {
+      TS().forEach(function (t) {
+        var g = list.filter(function (r) { return r.type === t.id; });
+        if (!g.length) return;
+        g.sort(function (a, b) { return a.name.localeCompare(b.name, 'fr', { sensitivity: 'base' }); });
+        var sec = el('section', 'grp themed ' + tcls(t.id));
+        var gh = el('div', 'grp-head');
+        gh.appendChild(icon(t.id));
+        gh.appendChild(el('h2', null, t.label + (suffix || '')));
+        gh.appendChild(el('span', 'grp-n', String(g.length)));
+        sec.appendChild(gh);
+        sec.appendChild(rowList(g, false, sans ? '' : id + '/' + t.id, combo));
+        view.appendChild(sec);
+      });
+    }
+    if (!sans && !fstat && mains.length + sides.length) subP.textContent = plural(mains.length + sides.length, 'recette', 'recettes');   // les accompagnements rattachés à un plat ne sont pas comptés à part
+    groups(mains, !sans);
+    if (sides.length) {
+      if (mains.length) view.appendChild(el('p', 'sub sidesnote', 'Sans plat associé dans ce repas :'));
+      groups(sides, false);
+    }
+    if (!mains.length && !sides.length) {   // tout est déjà rattaché à un plat masqué par le filtre
+      var fe2 = el('div', 'emptybox'); fe2.appendChild(el('p', null, 'Aucune recette à afficher avec ce statut.')); view.appendChild(fe2);
+    }
   }
 
   /* Niveau 3 : fiche d'un plat */
@@ -858,22 +899,93 @@
 
   /* « Se marie avec » : associations entre fiches */
   var SIDE_TYPES = { accomp: 1, sauces: 1, salades: 1 };
-  var MAIN_TYPES = { plats: 1, tajines: 1, sandwichs: 1 };
+  var MAIN_TYPES = { plats: 1, tajines: 1, sandwichs: 1, soupes: 1 };
+  // Liste à cocher des associations d'une fiche ; utilisée sur la fiche et dans l'onglet Repas.
+  function pairPicker(r, perr, mount, onClose) {
+    perr.textContent = '';
+    var initial = Object.create(null), sel = Object.create(null);
+    partnersOf(r).forEach(function (x) { initial[x.id] = 1; sel[x.id] = 1; });
+    var groups = SIDE_TYPES[r.type] ? MAIN_TYPES : SIDE_TYPES;   // depuis un accompagnement : les plats ; sinon : accompagnements, sauces, salades
+    var box = el('div', 'pairpick');
+    box.appendChild(el('p', 'help', 'Cochez tout ce qui va avec « ' + r.name + ' », puis enregistrez.'));
+    var inp = el('input'); inp.type = 'search'; inp.id = 'pq'; inp.placeholder = 'Chercher dans tout le carnet'; inp.autocomplete = 'off'; inp.setAttribute('aria-label', 'Chercher une recette à associer');
+    var res = el('div', 'pairres'), hint = el('p', 'help');
+    var bar = el('div', 'pairbar');
+    var saveB = el('button', 'btn', 'Enregistrer'); saveB.type = 'button';
+    var cancel = el('button', 'btn ghost', 'Annuler'); cancel.type = 'button';
+    function changes() {
+      var addL = [], delL = [];
+      Object.keys(sel).forEach(function (id) { if (sel[id] && !initial[id]) addL.push(id); });
+      Object.keys(initial).forEach(function (id) { if (!sel[id]) delL.push(id); });
+      return { add: addL, del: delL };
+    }
+    function sync() {
+      var c = changes(), n = c.add.length + c.del.length;
+      saveB.disabled = !n;
+      saveB.textContent = n ? 'Enregistrer (' + n + (n > 1 ? ' changements)' : ' changement)') : 'Enregistrer';
+    }
+    function item(x) {
+      var lab = el('label', 'pairchk t-' + x.type), cb = el('input'); cb.type = 'checkbox'; cb.value = x.id; cb.checked = !!sel[x.id];
+      cb.onchange = function () { sel[x.id] = cb.checked ? 1 : 0; sync(); };
+      lab.appendChild(cb); lab.appendChild(thumbBox(x)); lab.appendChild(el('span', 'rn', x.name));
+      return lab;
+    }
+    function block(title, items) {
+      if (!items.length) return;
+      if (title) res.appendChild(el('h3', 'pairh', title));
+      var ul = el('ul', 'rows'); items.forEach(function (x) { var li = el('li'); li.appendChild(item(x)); ul.appendChild(li); }); res.appendChild(ul);
+    }
+    function fill() {
+      var ok = function (x) { return x.id !== r.id && !isTip(x); };
+      var found = searchRecipes(inp.value), n = 0;
+      res.textContent = '';
+      if (found) {
+        var list = found.filter(ok); n = list.length;
+        block('', list.slice(0, 30));
+        hint.textContent = !n ? 'Aucune recette ne correspond.' : n > 30 ? 'Les 30 premières sur ' + n + ' : précisez la recherche.' : '';
+      } else {
+        var shown = Object.create(null);
+        order.forEach(function (tid) {
+          if (!groups[tid]) return;
+          var items = R.filter(function (x) { return x.type === tid && ok(x); }).sort(function (a, b) { return a.name.localeCompare(b.name, 'fr'); });
+          items.forEach(function (x) { shown[x.id] = 1; }); n += items.length;
+          block(tById[tid].label, items);
+        });
+        var others = partnersOf(r).filter(function (x) { return !shown[x.id]; });   // déjà associées, hors de ces types : restent visibles pour pouvoir les décocher
+        block('Autres associations', others); n += others.length;
+        hint.textContent = n ? '' : 'Rien à proposer ici : utilisez la recherche pour associer une autre recette.';
+      }
+    }
+    function shut() { if (box.parentNode) box.parentNode.removeChild(box); }
+    cancel.onclick = function () { shut(); onClose(); };
+    saveB.onclick = function () {
+      var c = changes(); if (!(c.add.length + c.del.length)) return;
+      perr.textContent = ''; saveB.disabled = true; cancel.disabled = true; saveB.textContent = 'Enregistrement…';
+      var msg = 'Associations de « ' + r.name + ' » :' + (c.add.length ? ' +' + c.add.length : '') + (c.del.length ? ' −' + c.del.length : '');
+      commit({ pairs: { id: r.id, add: c.add, del: c.del } }, msg).then(function () { shut(); route(true); },
+        function (e) { cancel.disabled = false; sync(); perr.textContent = writeError(e); });
+    };
+    inp.addEventListener('input', fill);
+    bar.appendChild(saveB); bar.appendChild(cancel);
+    box.appendChild(inp); box.appendChild(hint); box.appendChild(res); box.appendChild(bar);
+    mount(box); fill(); sync();
+    try { box.scrollIntoView({ block: 'nearest', behavior: 'smooth' }); } catch (e) {}
+  }
+  function thumbBox(x) {
+    var th = el('span', 'th'), ts = thumbSrc(x.url);
+    var ph = function () { th.className = 'th ph'; th.textContent = ''; th.appendChild(icon(x.type)); };
+    if (ts) { var im = thumbImg(ts, null); im.onerror = ph; th.appendChild(im); } else ph();
+    return th;
+  }
   function pairSection(r) {
     var partners = partnersOf(r), edit = canEdit();
     if (!partners.length && !edit) return;
     var sec = el('section', 'sheet pairs'); sec.setAttribute('aria-labelledby', 'h-pair');
     var h = el('h2', null, 'Se marie avec'); h.id = 'h-pair'; sec.appendChild(h);
     var perr = el('p', 'perr'); perr.setAttribute('role', 'alert');
-    function thumbOf(x) {
-      var th = el('span', 'th'), ts = thumbSrc(x.url);
-      var ph = function () { th.className = 'th ph'; th.textContent = ''; th.appendChild(icon(x.type)); };
-      if (ts) { var im = thumbImg(ts, null); im.onerror = ph; th.appendChild(im); } else ph();
-      return th;
-    }
     function rowFor(x) {
       var inner = el('span', 'row prow t-' + x.type);
-      inner.appendChild(thumbOf(x)); inner.appendChild(el('span', 'rn', x.name)); inner.appendChild(el('span', 'ptype', tById[x.type].label));
+      inner.appendChild(thumbBox(x)); inner.appendChild(el('span', 'rn', x.name)); inner.appendChild(el('span', 'ptype', tById[x.type].label));
       return inner;
     }
     function send(other, on, btns) {
@@ -897,74 +1009,8 @@
     if (edit) {
       var add = el('button', 'btn ghost', partners.length ? 'Modifier les associations…' : 'Associer…'); add.type = 'button';
       add.onclick = function () {
-        add.hidden = true; perr.textContent = '';
-        var initial = Object.create(null), sel = Object.create(null);
-        partnersOf(r).forEach(function (x) { initial[x.id] = 1; sel[x.id] = 1; });
-        var groups = SIDE_TYPES[r.type] ? MAIN_TYPES : SIDE_TYPES;   // depuis un accompagnement : les plats ; sinon : accompagnements, sauces, salades
-        var box = el('div', 'pairpick');
-        box.appendChild(el('p', 'help', 'Cochez tout ce qui va avec « ' + r.name + ' », puis enregistrez.'));
-        var inp = el('input'); inp.type = 'search'; inp.id = 'pq'; inp.placeholder = 'Chercher dans tout le carnet'; inp.autocomplete = 'off'; inp.setAttribute('aria-label', 'Chercher une recette à associer');
-        var res = el('div', 'pairres'), hint = el('p', 'help');
-        var bar = el('div', 'pairbar');
-        var saveB = el('button', 'btn', 'Enregistrer'); saveB.type = 'button';
-        var cancel = el('button', 'btn ghost', 'Annuler'); cancel.type = 'button';
-        function changes() {
-          var addL = [], delL = [];
-          Object.keys(sel).forEach(function (id) { if (sel[id] && !initial[id]) addL.push(id); });
-          Object.keys(initial).forEach(function (id) { if (!sel[id]) delL.push(id); });
-          return { add: addL, del: delL };
-        }
-        function sync() {
-          var c = changes(), n = c.add.length + c.del.length;
-          saveB.disabled = !n;
-          saveB.textContent = n ? 'Enregistrer (' + n + (n > 1 ? ' changements)' : ' changement)') : 'Enregistrer';
-        }
-        function item(x) {
-          var lab = el('label', 'pairchk t-' + x.type), cb = el('input'); cb.type = 'checkbox'; cb.value = x.id; cb.checked = !!sel[x.id];
-          cb.onchange = function () { sel[x.id] = cb.checked ? 1 : 0; sync(); };
-          lab.appendChild(cb); lab.appendChild(thumbOf(x)); lab.appendChild(el('span', 'rn', x.name));
-          return lab;
-        }
-        function block(title, items) {
-          if (!items.length) return;
-          if (title) res.appendChild(el('h3', 'pairh', title));
-          var ul = el('ul', 'rows'); items.forEach(function (x) { var li = el('li'); li.appendChild(item(x)); ul.appendChild(li); }); res.appendChild(ul);
-        }
-        function fill() {
-          var ok = function (x) { return x.id !== r.id && !isTip(x); };
-          var found = searchRecipes(inp.value), n = 0;
-          res.textContent = '';
-          if (found) {
-            var list = found.filter(ok); n = list.length;
-            block('', list.slice(0, 30));
-            hint.textContent = !n ? 'Aucune recette ne correspond.' : n > 30 ? 'Les 30 premières sur ' + n + ' : précisez la recherche.' : '';
-          } else {
-            var shown = Object.create(null);
-            order.forEach(function (tid) {
-              if (!groups[tid]) return;
-              var items = R.filter(function (x) { return x.type === tid && ok(x); }).sort(function (a, b) { return a.name.localeCompare(b.name, 'fr'); });
-              items.forEach(function (x) { shown[x.id] = 1; }); n += items.length;
-              block(tById[tid].label, items);
-            });
-            var others = partnersOf(r).filter(function (x) { return !shown[x.id]; });   // déjà associées, hors de ces types : restent visibles pour pouvoir les décocher
-            block('Autres associations', others); n += others.length;
-            hint.textContent = n ? '' : 'Rien à proposer ici : utilisez la recherche pour associer une autre recette.';
-          }
-        }
-        function shut() { sec.removeChild(box); add.hidden = false; }
-        cancel.onclick = function () { shut(); add.focus(); };
-        saveB.onclick = function () {
-          var c = changes(); if (!(c.add.length + c.del.length)) return;
-          perr.textContent = ''; saveB.disabled = true; cancel.disabled = true; saveB.textContent = 'Enregistrement…';
-          var msg = 'Associations de « ' + r.name + ' » :' + (c.add.length ? ' +' + c.add.length : '') + (c.del.length ? ' −' + c.del.length : '');
-          commit({ pairs: { id: r.id, add: c.add, del: c.del } }, msg).then(function () { shut(); route(true); },
-            function (e) { cancel.disabled = false; sync(); perr.textContent = writeError(e); });
-        };
-        inp.addEventListener('input', fill);
-        bar.appendChild(saveB); bar.appendChild(cancel);
-        box.appendChild(inp); box.appendChild(hint); box.appendChild(res); box.appendChild(bar);
-        sec.insertBefore(box, perr); fill(); sync();
-        try { box.scrollIntoView({ block: 'start', behavior: 'smooth' }); } catch (e) {}
+        add.hidden = true;
+        pairPicker(r, perr, function (box) { sec.insertBefore(box, perr); }, function () { add.hidden = false; add.focus(); });
       };
       sec.appendChild(add);
     }
