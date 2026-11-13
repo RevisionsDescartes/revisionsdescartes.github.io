@@ -612,6 +612,7 @@
       var li = el('li'), a = link('#' + r.id, 'row themed ' + tcls(r.type));
       a.appendChild(icon(r.type));
       a.appendChild(el('span', 'rn', r.name));
+      var sb = srcBadge(r); if (sb) a.appendChild(sb);
       if (r.status) a.appendChild(statusChip(r.status));
       var why = incompleteWhy(r);
       if (why) { var d = el('span', 'dot'); d.title = why; d.setAttribute('role', 'img'); d.setAttribute('aria-label', 'Recette incomplète : ' + why); a.appendChild(d); }
@@ -694,6 +695,7 @@
         a.appendChild(th);
       }
       a.appendChild(el('span', 'rn', r.name));
+      var sb = srcBadge(r); if (sb) a.appendChild(sb);
       if (r.status) a.appendChild(statusChip(r.status));
       if (showMeals) mealsOf(r).forEach(function (id) { a.appendChild(el('span', 'mchip', mById[id].short)); });
       var why = incompleteWhy(r);
@@ -1044,6 +1046,22 @@
     if (/(^|\.)instagram\.com$/.test(h)) return { label: 'Instagram', btn: 'Voir le reel ↗' };
     if (/(^|\.)tiktok\.com$/.test(h)) return { label: 'TikTok', btn: 'Voir la vidéo ↗' };
     return { label: h ? 'sur ' + h : 'sur un site', btn: 'Ouvrir le lien ↗' };
+  }
+  // Origine de la recette (pastille dans les listes) : pictogrammes génériques aux couleurs de chaque source, pas les logos officiels
+  var SRC_SVG = {
+    YouTube: '<circle cx="12" cy="12" r="12" fill="var(--src-yt)"/><path d="M9.5 7.6v8.8l7.2-4.4z" fill="var(--src-on)"/>',
+    Facebook: '<circle cx="12" cy="12" r="12" fill="var(--src-fb)"/><path d="M6.8 8.4a2 2 0 0 1 2-2h6.4a2 2 0 0 1 2 2v4.4a2 2 0 0 1-2 2h-3.6l-3 2.6v-2.6h-.2a2 2 0 0 1-1.6-2z" fill="var(--src-on)"/>'
+  };
+  function srcOf(r) {
+    var l = r.url ? linkInfo(r.url).label : '';
+    if (SRC_SVG[l]) return l;
+    return SRC_SVG[r.src] ? r.src : '';
+  }
+  function srcBadge(r) {
+    var s = srcOf(r); if (!s) return null;
+    var b = el('span', 'src'); b.title = s; b.setAttribute('role', 'img'); b.setAttribute('aria-label', 'Origine : ' + s);
+    b.innerHTML = '<svg viewBox="0 0 24 24" focusable="false" aria-hidden="true">' + SRC_SVG[s] + '</svg>';
+    return b;
   }
   // Miniature d'une vidéo YouTube (image publique, sans clé ni compte). Autres sites : pas de miniature.
   function ytId(u) {
