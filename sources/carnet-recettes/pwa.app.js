@@ -1471,14 +1471,37 @@
     if (!items.length) { var b = el('div', 'emptybox'); b.appendChild(el('p', null, 'Toutes les recettes ont leurs ingrédients.')); view.appendChild(b); return; }
     view.appendChild(rowList(items, true));
   }
-  var flash = '', qOpen = Object.create(null);
+  var flash = '', qOpen = Object.create(null), qBack = null, qToast = '', prevH = '';
+  /* Position dans la liste « Liens à identifier » : mémorisée quand on ouvre un lien ou le formulaire, retrouvée au retour */
+  function ssGet(k) { try { return sessionStorage.getItem(k); } catch (e) { return null; } }
+  function ssSet(k, v) { try { sessionStorage.setItem(k, v); } catch (e) {} }
+  try {
+    var q0 = JSON.parse(ssGet('carnet:q') || 'null');
+    if (q0 && typeof q0.y === 'number' && q0.y >= 0 && q0.y < 1e6) {
+      qBack = { y: Math.round(q0.y) };
+      Object.keys(q0.open || {}).slice(0, 10).forEach(function (t) { if (q0.open[t] === true) qOpen[String(t).slice(0, 40)] = true; });
+    }
+  } catch (e) {}
+  function rememberQ() {
+    qBack = { y: Math.round(window.pageYOffset || 0) };
+    var o = {}; Object.keys(qOpen).forEach(function (t) { if (qOpen[t]) o[t] = true; });
+    ssSet('carnet:q', JSON.stringify({ y: qBack.y, open: o }));
+  }
+  var toastEl = null, toastT = 0;
+  function showToast(msg) {
+    if (toastEl && toastEl.parentNode) toastEl.parentNode.removeChild(toastEl);
+    toastEl = el('div', 'toast', msg); toastEl.setAttribute('role', 'status');
+    document.body.appendChild(toastEl);
+    clearTimeout(toastT); toastT = setTimeout(function () { if (toastEl && toastEl.parentNode) toastEl.parentNode.removeChild(toastEl); toastEl = null; }, 4500);
+  }
+  function queueToast() { if (qToast && (window.pageYOffset || 0) > 150) showToast(qToast); qToast = ''; }
   function queueScreen() {
     searchQ = '';
     view.appendChild(back('#a-traiter', 'À traiter'));
     view.appendChild(el('h1', null, 'Liens à identifier'));
     var left = pendingList();
     view.appendChild(el('p', 'qintro', 'Ces liens ont été partagés comme recettes, mais leur nom n’est pas connu. Le numéro permet de les citer dans le chat.' + (canEdit() ? ' Ouvrez un lien, puis classez-le en recette ou retirez-le de la liste.' : '')));
-    if (flash) { var fl = el('p', 'status', flash + ' ' + plural(left.length, 'lien restant', 'liens restants') + '.'); fl.setAttribute('role', 'status'); view.appendChild(fl); flash = ''; }
+    if (flash) { var fmsg = flash + ' ' + plural(left.length, 'lien restant', 'liens restants') + '.'; var fl = el('p', 'status', fmsg); fl.setAttribute('role', 'status'); view.appendChild(fl); qToast = fmsg; flash = ''; }
     var errBox = el('p', 'err'); errBox.setAttribute('role', 'alert');
     function group(title, rows) {
       var d = el('details', 'qgroup');
@@ -1492,10 +1515,10 @@
         var dd = el('span', 'qdate', fmt(r.date));
         if (r.note) dd.appendChild(el('small', null, r.note));
         li.appendChild(dd);
-        li.appendChild(ext(r.url, null, 'Ouvrir ↗'));
+        var op = ext(r.url, null, 'Ouvrir ↗'); op.addEventListener('click', rememberQ); li.appendChild(op);
         if (canEdit()) {
           var act = el('div', 'qact');
-          var cl = link('#classer/' + r.id, 'btn small', 'Classer');
+          var cl = link('#classer/' + r.id, 'btn small', 'Classer'); cl.addEventListener('click', rememberQ);
           var rm = el('button', 'linkbtn dng', 'Retirer'); rm.type = 'button';
           rm.onclick = function () {
             act.textContent = '';
@@ -1506,7 +1529,7 @@
             yes.onclick = function () {
               yes.disabled = true; no.disabled = true; errBox.textContent = '';
               commit({ dismiss: r.key }, 'Retire le lien ' + r.id).then(function () {
-                flash = 'Lien ' + r.id + ' retiré.'; view.textContent = ''; view.className = ''; queueScreen();
+                flash = 'Lien ' + r.id + ' retiré.'; view.textContent = ''; view.className = ''; queueScreen(); queueToast();
               }, function (e) { yes.disabled = false; no.disabled = false; errBox.textContent = writeError(e); });
             };
             act.appendChild(yes); act.appendChild(no); yes.focus();
@@ -1557,6 +1580,8 @@
   }
   function route(quiet) {
     var h = (location.hash || '').replace(/^#/, '');
+    var restoreQ = (quiet !== true && h === 'a-identifier' && /^classer\//.test(prevH) && qBack) ? qBack.y : null;   // retour du formulaire « Classer » : même position dans la liste
+    if (quiet !== true) prevH = h;
     formActive = false;
     clearBar();
     view.textContent = '';
@@ -1580,7 +1605,8 @@
     else if (h === 'accueil') home('types');
     else home(lsGet('carnet:view'));
     if (quiet === true) return;
-    try { window.scrollTo(0, 0); } catch (e) {}
+    try { window.scrollTo(0, restoreQ || 0); } catch (e) {}
+    queueToast();
     if (!firstRoute) {
       var t = view.querySelector('h1');
       if (t) { t.tabIndex = -1; try { t.focus({ preventScroll: true }); } catch (e) {} }
