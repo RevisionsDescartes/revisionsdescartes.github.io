@@ -124,3 +124,4 @@ body.hasbar { padding-bottom: calc(5.4rem + env(safe-area-inset-bottom, 0px)); }
 :root[data-theme="dark"] { --src-yt: #FF7A70; --src-fb: #7FAAFF; --src-on: #14182B; }
 .src { flex: none; display: inline-grid; width: 1.2rem; height: 1.2rem; }
 .src svg { width: 100%; height: 100%; display: block; }
+.src img { width: 100%; height: 100%; display: block; border-radius: 0.28rem; }
