@@ -136,3 +136,9 @@ body.hasbar { padding-bottom: calc(5.4rem + env(safe-area-inset-bottom, 0px)); }
 .fillrow .td2 { color: var(--muted); font-size: 0.85rem; }
 .fillsee { margin: 0.2rem 0 0 1.9rem; font-size: 0.88rem; }
 .fillpre { white-space: pre-wrap; margin: 0.3rem 0 0; color: var(--muted); }
+.filllinks { margin-left: -1.3rem; }
+.filllink { display: flex; flex-wrap: wrap; gap: 0.6rem; align-items: center; }
+.filllink .btn { flex: none; min-width: 5.6rem; }
+.filllink .btn.done { opacity: 0.6; }
+.filllink .fillname { flex: 1; min-width: 0; font-size: 0.9rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.filllink .filltxt { flex-basis: 100%; margin: 0; }

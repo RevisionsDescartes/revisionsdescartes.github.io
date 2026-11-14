@@ -20,9 +20,12 @@ const sleep=ms=>new Promise(r=>setTimeout(r,ms));
  await p.goto('http://localhost:8765/#accueil'); await sleep(1200); await p.goto('http://localhost:8765/#reglages'); await sleep(500);
  const sec=p.locator('section.fill'); chk(await sec.count()===1,'section présente');
  const N1=+(/(\d+) recettes YouTube/.exec(await sec.textContent())||[])[1]; chk(N1>=10&&N1<=N0,'compte : '+N1+' recettes sans ingrédients');
- await sec.locator('button:has-text("Copier les 10 liens")').click(); await sleep(200);
- const links=await p.evaluate(()=>navigator.clipboard.readText()); const L=links.trim().split(/\s+/);
- chk(links.replace(/\n/g,'').split(' ').length===10&&L.length===10&&L.every(x=>/^https:\/\/www\.youtube\.com\/watch\?v=[\w-]{11}$/.test(x)),'10 liens propres copiés, ex. '+L[0]);
+ await sec.locator('.filllink button').nth(1).click(); await sleep(200);
+ const one=await p.evaluate(()=>navigator.clipboard.readText());
+ chk(/^https:\/\/www\.youtube\.com\/watch\?v=[\w-]{11}$/.test(one)&&await sec.locator('.filllink button').count()===10&&/Copié/.test(await sec.locator('.filllink button').nth(1).textContent()),'lien 2 copié seul : '+one);
+ await sec.locator('details.fillsee summary').first().click(); await sec.locator('button:has-text("Copier les 10 liens")').click(); await sleep(200);
+ const links=await p.evaluate(()=>navigator.clipboard.readText()); const L=links.trim().split('\n');
+ chk(L.length===10&&L[1]===one,'copie groupée : 10 lignes');
  await sec.locator('button:has-text("Copier la consigne")').click(); await sleep(200);
  const pr=await p.evaluate(()=>navigator.clipboard.readText());
  chk(/r-mwemc7xlpsf = Comment faire du pop-corn/.test(pr)&&/INTROUVABLE/.test(pr)&&(pr.match(/^r-\w+ = /gm)||[]).length===10,'consigne avec les 10 codes ('+pr.length+' caractères)');
@@ -61,7 +64,7 @@ INGREDIENTS:
 - x
 `;
  await p.fill('#fill-in',rep); await sec.locator('button:has-text("Analyser")').click(); await sleep(300);
- chk(await sec.locator('.fillrows li').count()===3,'3 fiches reconnues');
+ chk(await sec.locator('.fillprev .fillrows li').count()===3,'3 fiches reconnues');
  const st=await sec.locator('.fillrows .td2').allTextContents(); console.log('   ',st);
  chk(/3 ingrédients · 2 étapes · liste complète/.test(st[0])&&/2 ingrédients · 1 étape · liste partielle/.test(st[1])&&/introuvable/i.test(st[2]),'aperçus corrects');
  chk(/1 bloc ignoré/.test(await sec.textContent()),'code inconnu ignoré');

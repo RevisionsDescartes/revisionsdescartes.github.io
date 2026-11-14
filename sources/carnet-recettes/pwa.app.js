@@ -1524,7 +1524,23 @@
       body.appendChild(el('p', 'note', plural(todo.length, 'recette YouTube n’a', 'recettes YouTube n’ont') + ' pas encore d’ingrédients. NotebookLM (notebooklm.google.com) peut les lire à votre place, par lots de ' + FILL_LOT + '.'));
       var ol = el('ol', 'fillsteps');
       var l1 = el('li'); l1.appendChild(el('p', null, 'Dans NotebookLM, créez un carnet et ajoutez ces ' + lot.length + ' liens comme sources (« YouTube » ou « Site web »).'));
-      l1.appendChild(copyBtn('Copier les ' + lot.length + ' liens', function () { return lot.map(function (r) { return 'https://www.youtube.com/watch?v=' + ytId(r.url); }).join(' \n'); }, 'Liens copiés.'));
+      l1.appendChild(el('p', 'help', 'Sur tablette ou téléphone, NotebookLM n’accepte qu’un lien à la fois : copiez-les un par un. Le bouton passe à « Copié ✓ » pour vous repérer.'));
+      var one = el('ul', 'fillrows filllinks');
+      lot.forEach(function (r, k) {
+        var li = el('li', 'filllink'), b = el('button', 'btn small', 'Copier ' + (k + 1)); b.type = 'button';
+        var u = 'https://www.youtube.com/watch?v=' + ytId(r.url);
+        b.setAttribute('aria-label', 'Copier le lien ' + (k + 1) + ' : ' + r.name);
+        var inp = el('input', 'filltxt'); inp.type = 'text'; inp.readOnly = true; inp.value = u; inp.hidden = true; inp.setAttribute('aria-label', 'Lien ' + (k + 1));
+        b.onclick = function () {
+          var fb = function () { inp.hidden = false; try { inp.focus(); inp.select(); } catch (e) {} };
+          try { navigator.clipboard.writeText(u).then(function () { b.textContent = 'Copié ✓'; b.classList.add('done'); }, fb); } catch (e) { fb(); }
+        };
+        li.appendChild(b); li.appendChild(el('span', 'fillname', r.name)); li.appendChild(inp); one.appendChild(li);
+      });
+      l1.appendChild(one);
+      var all = el('details', 'fillsee'); all.appendChild(el('summary', null, 'Sur ordinateur : copier les ' + lot.length + ' liens d’un coup'));
+      all.appendChild(copyBtn('Copier les ' + lot.length + ' liens', function () { return lot.map(function (r) { return 'https://www.youtube.com/watch?v=' + ytId(r.url); }).join('\n') + '\n'; }, 'Liens copiés (un par ligne).'));
+      l1.appendChild(all);
       var l2 = el('li'); l2.appendChild(el('p', null, 'Collez cette consigne dans la discussion de NotebookLM.'));
       l2.appendChild(copyBtn('Copier la consigne', function () { return fillPrompt(lot); }, 'Consigne copiée.'));
       var l3 = el('li'); l3.appendChild(el('p', null, 'Copiez la réponse de NotebookLM et collez-la ici.'));
