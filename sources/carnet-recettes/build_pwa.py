@@ -1,5 +1,5 @@
 import datetime as _dt
-OLD_SW, NEW_SW = "carnet-v31", "carnet-v32"   # à chaque publication : NEW_SW devient OLD_SW et le numéro augmente
+OLD_SW, NEW_SW = "carnet-v32", "carnet-v33"   # à chaque publication : NEW_SW devient OLD_SW et le numéro augmente
 _MOIS = ["janv.", "févr.", "mars", "avr.", "mai", "juin", "juil.", "août", "sept.", "oct.", "nov.", "déc."]
 _d = _dt.date.today()
 BUILD = NEW_SW.split("-v")[1] + " · " + str(_d.day) + " " + _MOIS[_d.month - 1] + " " + str(_d.year)

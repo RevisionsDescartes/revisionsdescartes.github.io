@@ -125,3 +125,14 @@ body.hasbar { padding-bottom: calc(5.4rem + env(safe-area-inset-bottom, 0px)); }
 .src { flex: none; display: inline-grid; width: 1.2rem; height: 1.2rem; }
 .src svg { width: 100%; height: 100%; display: block; }
 .src img { width: 100%; height: 100%; display: block; border-radius: 0.28rem; }
+/* Fiches depuis les vidéos (Réglages) */
+.fill .fillsteps { margin: 0.6rem 0 0; padding-left: 1.3rem; display: grid; gap: 1rem; }
+.fill .fillsteps p { margin: 0 0 0.5rem; }
+.filltxt { width: 100%; box-sizing: border-box; margin: 0.4rem 0 0.6rem; padding: 0.6rem; border: 1px solid var(--line); border-radius: 0.6rem; background: var(--surface); color: var(--fg); font: inherit; font-size: 0.9rem; }
+.fillrows { list-style: none; margin: 0.6rem 0; padding: 0; display: grid; gap: 0.5rem; }
+.fillrow { display: flex; gap: 0.6rem; align-items: flex-start; }
+.fillrow input { flex: none; width: 1.3rem; height: 1.3rem; margin-top: 0.15rem; }
+.fillrow .dtx { display: grid; }
+.fillrow .td2 { color: var(--muted); font-size: 0.85rem; }
+.fillsee { margin: 0.2rem 0 0 1.9rem; font-size: 0.88rem; }
+.fillpre { white-space: pre-wrap; margin: 0.3rem 0 0; color: var(--muted); }

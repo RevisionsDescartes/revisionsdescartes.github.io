@@ -313,6 +313,21 @@
     if (i >= 0) out[i] = rec; else out.unshift(rec);
     return out;
   }
+  /* Remplit plusieurs fiches d'un coup (import depuis NotebookLM) : seuls les champs de contenu changent */
+  function applyFill(list, items) {
+    var out = list.slice(), at = Object.create(null);
+    out.forEach(function (r, k) { at[r.id] = k; });
+    (Array.isArray(items) ? items : []).slice(0, 60).forEach(function (it) {
+      if (!it || at[it.id] === undefined) return;
+      var o = out[at[it.id]], c = {}; Object.keys(o).forEach(function (k) { c[k] = o[k]; });
+      c.ing = it.ing; c.steps = it.steps; c.tips = it.tips && it.tips.length ? it.tips : o.tips;
+      if (it.cook) c.cook = it.cook; if (it.servings) c.servings = it.servings;
+      c.lvl = it.lvl === 'complete' ? 'complete' : 'partial'; c.probable = [];
+      c.ingNote = 'Fiche tirée de la transcription de la vidéo (NotebookLM) : à vérifier.'; c.stepsNote = ''; c.sum = '';
+      var n = normalize(c); if (n) out[at[it.id]] = n;
+    });
+    return out;
+  }
   /* Écrit une modification : relit toujours la dernière version avant d'appliquer, et réessaie si un autre appareil a écrit entre-temps. */
   function commit(op, message) {
     function attempt(n) {
@@ -323,6 +338,7 @@
         var list = op.id ? applyOp(rm.recipes, op) : rm.recipes;
         if (op.pair) list = applyPair(list, op);
         if (op.pairs) list = applyPairs(list, op.pairs);
+        if (op.fill) list = applyFill(list, op.fill);
         var ord = op.order ? parseOrder(op.order) : rm.order;
         var dis = op.dismiss ? cleanDismissed(rm.dismissed.concat([op.dismiss])) : rm.dismissed;
         var body = { message: message.slice(0, 120), content: b64enc(JSON.stringify({ recipes: list, typeOrder: ord, dismissed: dis }, null, 1) + '\n'), branch: BRANCH };
@@ -1446,7 +1462,112 @@
     bk.appendChild(bb); bk.appendChild(bm);
     bk.appendChild(el('p', 'help', 'Pour restaurer : remplacez le fichier recettes.json du dépôt GitHub par cette copie, ou demandez-moi dans Claude. GitHub garde aussi l’historique des versions du fichier.'));
     view.appendChild(bk);
+    if (canEdit()) view.appendChild(fillSection());
     view.appendChild(el('p', 'help buildno', 'Version ' + BUILD));
+  }
+
+  /* Fiches depuis les vidéos : l'appli prépare les liens et la consigne pour NotebookLM, puis lit sa réponse */
+  var FILL_LOT = 10;
+  function fillTodo() { return R.filter(function (r) { return !r.ing.length && !isTip(r) && !!ytId(r.url); }); }
+  function fillPrompt(lot) {
+    return 'Pour chacune des vidéos listées ci-dessous, rédige une fiche recette en français à partir de la transcription de la source dont le titre correspond.\n' +
+      'Respecte exactement ce format, en texte simple, sans gras, sans tableau, sans rien écrire avant ni après :\n\n' +
+      '### CODE\nCUISSON: durée totale si elle est dite, sinon rien\nPORTIONS: nombre si il est dit, sinon rien\nFIABILITE: complète ou partielle\nINGREDIENTS:\n- un ingrédient par ligne, avec sa quantité si elle est dite\nETAPES:\n1. une étape par ligne\nASTUCES:\n- facultatif\n\n' +
+      'Règles :\n- CODE est le code donné devant chaque vidéo (il commence par r-), recopié tel quel.\n- N’invente aucune quantité : si la vidéo ne la donne pas, écris l’ingrédient seul.\n- FIABILITE vaut « complète » seulement si les quantités principales sont données dans la vidéo.\n- Traduis en français si la vidéo est dans une autre langue.\n- Si aucune source ne correspond ou si la transcription est vide, écris la ligne ### CODE puis INTROUVABLE.\n\nVidéos :\n' +
+      lot.map(function (r) { return r.id + ' = ' + r.name + ' (https://www.youtube.com/watch?v=' + ytId(r.url) + ')'; }).join('\n') + '\n';
+  }
+  function parseFill(txt) {
+    var out = [], cur = null, sec = '';
+    var empty = /^(rien|vide|aucun|aucune|non précisé|non précisée|non indiqué|non indiquée|n\/a|-|—)?\.?$/i;
+    function clean(x) { return x.replace(/\*\*|__|`/g, '').replace(/\s*\[\d+(?:\s*[-,–]\s*\d+)*\]/g, '').trim(); }
+    function item(x) { return x.replace(/^(\d+\s*[.)]\s*|[-•*·]\s+)/, '').trim(); }
+    String(txt || '').slice(0, 200000).split(/\r?\n/).forEach(function (raw) {
+      var l = clean(raw); if (!l) return;
+      var h = /^[#=\s]*\b(r-[a-z0-9]{6,20})\b\s*$/.exec(l) || /^#{2,}\s*(r-[a-z0-9]{6,20})\b/.exec(l);
+      if (h) { cur = { id: h[1], ing: [], steps: [], tips: [], cook: '', servings: '', lvl: 'partial', missing: false }; out.push(cur); sec = ''; return; }
+      if (!cur) return;
+      if (/^introuvable\b/i.test(l)) { cur.missing = true; return; }
+      var m = /^(cuisson|portions?|fiabilit[ée]|ingr[ée]dients?|[ée]tapes?|astuces?)\s*:\s*(.*)$/i.exec(l);
+      if (m) {
+        var k = m[1].toLowerCase().charAt(0), v = m[2].trim(); if (empty.test(v)) v = '';
+        if (k === 'c') { cur.cook = v.slice(0, 60); sec = ''; }
+        else if (k === 'p') { cur.servings = v.slice(0, 60); sec = ''; }
+        else if (k === 'f') { cur.lvl = /compl/i.test(v) ? 'complete' : 'partial'; sec = ''; }
+        else { sec = k === 'i' ? 'ing' : k === 'a' ? 'tips' : 'steps'; if (v) cur[sec].push(item(v)); }
+        return;
+      }
+      if (sec) { var it = item(l); if (it && !empty.test(it) && !/^facultatif$/i.test(it)) cur[sec].push(it.slice(0, sec === 'ing' ? 400 : 600)); }
+    });
+    out.forEach(function (c) { c.ing = c.ing.slice(0, 60); c.steps = c.steps.slice(0, 60); c.tips = c.tips.slice(0, 20); });
+    return out;
+  }
+  function fillSection() {
+    var sec = el('section', 'sheet fill'); sec.setAttribute('aria-labelledby', 'h-fill');
+    var h = el('h2', null, 'Fiches depuis les vidéos'); h.id = 'h-fill'; sec.appendChild(h);
+    var body = el('div'); sec.appendChild(body);
+    function copyBtn(label, getText, done) {
+      var b = el('button', 'btn', label); b.type = 'button';
+      var st = el('p', 'status'); st.setAttribute('aria-live', 'polite');
+      var ta = el('textarea', 'filltxt'); ta.readOnly = true; ta.rows = 4; ta.hidden = true; ta.setAttribute('aria-label', label);
+      b.onclick = function () {
+        var t = getText();
+        var fb = function () { ta.hidden = false; ta.value = t; try { ta.focus(); ta.select(); } catch (e) {} st.textContent = 'Copie automatique impossible : sélectionnez le texte ci-dessous et copiez-le.'; };
+        try { navigator.clipboard.writeText(t).then(function () { st.textContent = done; }, fb); } catch (e) { fb(); }
+      };
+      var w = el('div', 'fillstep'); w.appendChild(b); w.appendChild(st); w.appendChild(ta); return w;
+    }
+    function draw(msg) {
+      body.textContent = '';
+      var todo = fillTodo(), lot = todo.slice(0, FILL_LOT);
+      if (msg) { var ok = el('p', 'status', msg); ok.setAttribute('role', 'status'); body.appendChild(ok); }
+      if (!todo.length) { body.appendChild(el('p', 'note', 'Toutes les recettes YouTube ont déjà leurs ingrédients.')); return; }
+      body.appendChild(el('p', 'note', plural(todo.length, 'recette YouTube n’a', 'recettes YouTube n’ont') + ' pas encore d’ingrédients. NotebookLM (notebooklm.google.com) peut les lire à votre place, par lots de ' + FILL_LOT + '.'));
+      var ol = el('ol', 'fillsteps');
+      var l1 = el('li'); l1.appendChild(el('p', null, 'Dans NotebookLM, créez un carnet et ajoutez ces ' + lot.length + ' liens comme sources (« YouTube » ou « Site web »).'));
+      l1.appendChild(copyBtn('Copier les ' + lot.length + ' liens', function () { return lot.map(function (r) { return 'https://www.youtube.com/watch?v=' + ytId(r.url); }).join('\n') + '\n'; }, 'Liens copiés.'));
+      var l2 = el('li'); l2.appendChild(el('p', null, 'Collez cette consigne dans la discussion de NotebookLM.'));
+      l2.appendChild(copyBtn('Copier la consigne', function () { return fillPrompt(lot); }, 'Consigne copiée.'));
+      var l3 = el('li'); l3.appendChild(el('p', null, 'Copiez la réponse de NotebookLM et collez-la ici.'));
+      var ta = el('textarea', 'filltxt'); ta.rows = 6; ta.id = 'fill-in'; ta.setAttribute('aria-label', 'Réponse de NotebookLM'); ta.placeholder = '### r-…';
+      var an = el('button', 'btn', 'Analyser la réponse'); an.type = 'button';
+      var err = el('p', 'err'); err.setAttribute('role', 'alert');
+      var prev = el('div', 'fillprev');
+      l3.appendChild(ta); l3.appendChild(an); l3.appendChild(err); l3.appendChild(prev);
+      ol.appendChild(l1); ol.appendChild(l2); ol.appendChild(l3); body.appendChild(ol);
+      an.onclick = function () {
+        err.textContent = ''; prev.textContent = '';
+        var found = parseFill(ta.value), seen = Object.create(null), rows = [], unknown = 0;
+        found.forEach(function (c) { var r = byId[c.id]; if (!r || seen[c.id]) { unknown++; return; } seen[c.id] = 1; rows.push({ c: c, r: r }); });
+        if (!rows.length) { err.textContent = 'Aucune fiche reconnue. La réponse doit contenir des lignes « ### r-… » comme demandé dans la consigne.'; return; }
+        var ul = el('ul', 'fillrows'), boxes = [];
+        rows.forEach(function (x) {
+          var li = el('li'), lab = el('label', 'fillrow'), cb = el('input'); cb.type = 'checkbox';
+          var usable = !x.c.missing && x.c.ing.length > 0;
+          cb.checked = usable && !x.r.ing.length; cb.disabled = !usable;
+          var tx = el('span', 'dtx'); tx.appendChild(el('span', 'tn2', x.r.name));
+          tx.appendChild(el('span', 'td2', !usable ? (x.c.missing ? 'Vidéo introuvable ou sans transcription' : 'Aucun ingrédient dans la réponse')
+            : plural(x.c.ing.length, 'ingrédient', 'ingrédients') + ' · ' + plural(x.c.steps.length, 'étape', 'étapes') + ' · ' + (x.c.lvl === 'complete' ? 'liste complète' : 'liste partielle') + (x.r.ing.length ? ' · remplacerait la liste actuelle' : '')));
+          lab.appendChild(cb); lab.appendChild(tx); li.appendChild(lab);
+          if (usable) { var dt = el('details', 'fillsee'); dt.appendChild(el('summary', null, 'Voir')); var pre = el('p', 'fillpre', x.c.ing.join('\n') + (x.c.steps.length ? '\n\n' + x.c.steps.map(function (s, i) { return (i + 1) + '. ' + s; }).join('\n') : '')); dt.appendChild(pre); li.appendChild(dt); }
+          ul.appendChild(li); boxes.push({ cb: cb, x: x });
+        });
+        prev.appendChild(ul);
+        if (unknown) prev.appendChild(el('p', 'help', plural(unknown, 'bloc ignoré', 'blocs ignorés') + ' (code inconnu ou en double).'));
+        var go = el('button', 'btn primary', ''); go.type = 'button';
+        var sync = function () { var n = boxes.filter(function (b) { return b.cb.checked; }).length; go.textContent = 'Enregistrer ' + plural(n, 'fiche', 'fiches'); go.disabled = !n; };
+        boxes.forEach(function (b) { b.cb.onchange = sync; }); sync();
+        go.onclick = function () {
+          var items = boxes.filter(function (b) { return b.cb.checked; }).map(function (b) { return b.x.c; });
+          go.disabled = true; err.textContent = ''; go.textContent = 'Enregistrement…';
+          commit({ fill: items }, 'Remplit ' + plural(items.length, 'fiche', 'fiches') + ' depuis les vidéos').then(function () {
+            draw(plural(items.length, 'fiche enregistrée', 'fiches enregistrées') + '.'); try { sec.scrollIntoView({ block: 'start' }); } catch (e) {}
+          }, function (e) { sync(); err.textContent = writeError(e); });
+        };
+        prev.appendChild(go);
+      };
+    }
+    draw('');
+    return sec;
   }
 
   function missingScreen() {
