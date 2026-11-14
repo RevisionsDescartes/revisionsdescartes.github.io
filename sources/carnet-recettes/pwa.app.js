@@ -1470,7 +1470,7 @@
   var FILL_LOT = 10;
   function fillTodo() { return R.filter(function (r) { return !r.ing.length && !isTip(r) && !!ytId(r.url); }); }
   function fillPrompt(lot) {
-    return 'Pour chacune des vidéos listées ci-dessous, rédige une fiche recette en français à partir de la transcription de la source dont le titre correspond.\n' +
+    return 'Pour chacune des vidéos listées ci-dessous, rédige une fiche recette en français à partir de la transcription de la source qui lui correspond. Le titre de la source peut être dans une autre langue ou légèrement différent : associe-les par le sens. Ignore les vidéos de la liste qui n’ont pas de source.\n' +
       'Respecte exactement ce format, en texte simple, sans gras, sans tableau, sans rien écrire avant ni après :\n\n' +
       '### CODE\nCUISSON: durée totale si elle est dite, sinon rien\nPORTIONS: nombre si il est dit, sinon rien\nFIABILITE: complète ou partielle\nINGREDIENTS:\n- un ingrédient par ligne, avec sa quantité si elle est dite\nETAPES:\n1. une étape par ligne\nASTUCES:\n- facultatif\n\n' +
       'Règles :\n- CODE est le code donné devant chaque vidéo (il commence par r-), recopié tel quel.\n- N’invente aucune quantité : si la vidéo ne la donne pas, écris l’ingrédient seul.\n- FIABILITE vaut « complète » seulement si les quantités principales sont données dans la vidéo.\n- Traduis en français si la vidéo est dans une autre langue.\n- Si aucune source ne correspond ou si la transcription est vide, écris la ligne ### CODE puis INTROUVABLE.\n\nVidéos :\n' +
