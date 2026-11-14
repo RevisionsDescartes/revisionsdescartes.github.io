@@ -1524,7 +1524,7 @@
       body.appendChild(el('p', 'note', plural(todo.length, 'recette YouTube n’a', 'recettes YouTube n’ont') + ' pas encore d’ingrédients. NotebookLM (notebooklm.google.com) peut les lire à votre place, par lots de ' + FILL_LOT + '.'));
       var ol = el('ol', 'fillsteps');
       var l1 = el('li'); l1.appendChild(el('p', null, 'Dans NotebookLM, créez un carnet et ajoutez ces ' + lot.length + ' liens comme sources (« YouTube » ou « Site web »).'));
-      l1.appendChild(copyBtn('Copier les ' + lot.length + ' liens', function () { return lot.map(function (r) { return 'https://www.youtube.com/watch?v=' + ytId(r.url); }).join('\n') + '\n'; }, 'Liens copiés.'));
+      l1.appendChild(copyBtn('Copier les ' + lot.length + ' liens', function () { return lot.map(function (r) { return 'https://www.youtube.com/watch?v=' + ytId(r.url); }).join(' \n'); }, 'Liens copiés.'));
       var l2 = el('li'); l2.appendChild(el('p', null, 'Collez cette consigne dans la discussion de NotebookLM.'));
       l2.appendChild(copyBtn('Copier la consigne', function () { return fillPrompt(lot); }, 'Consigne copiée.'));
       var l3 = el('li'); l3.appendChild(el('p', null, 'Copiez la réponse de NotebookLM et collez-la ici.'));
