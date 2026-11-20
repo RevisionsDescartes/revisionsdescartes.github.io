@@ -52,7 +52,7 @@ const sleep=ms=>new Promise(r=>setTimeout(r,ms));
  // modification d'une recette existante : lui donner Déjeuner
  await p.goto('http://localhost:8765/#plats'); await sleep(300);
  chk(await p.locator('.row').count()===4,'type Plats : 4 lignes');
- const h=await p.locator('.row').first().evaluate(e=>e.getBoundingClientRect().height);
+ const h=Math.min(...await p.locator('.row').evaluateAll(es=>es.map(e=>e.getBoundingClientRect().height)));
  chk(h>=44&&h<=50,'ligne condensée : hauteur '+Math.round(h)+' px');
  chk(await p.locator('.row .mchip').count()===2,'puces Déj./Dîn. sur la recette étiquetée');
  await p.locator('.row').nth(1).click(); await sleep(200);

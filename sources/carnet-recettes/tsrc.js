@@ -6,12 +6,12 @@ const sleep=ms=>new Promise(r=>setTimeout(r,ms));
  const ctx=await b.newContext({viewport:{width:390,height:844},serviceWorkers:'block'});
  await ctx.route(/fonts\./,r=>r.abort()); await ctx.route('https://api.github.com/**',r=>r.abort());
  const p=await ctx.newPage(); p.errs=[]; p.on('pageerror',e=>p.errs.push(String(e)));
- const exp={}; seed.recipes.forEach(r=>{ let l=''; try{const h=new URL(r.url).hostname.replace(/^(www|m)\./,''); if(/youtube\.com$|^youtu\.be$/.test(h))l='YouTube'; else if(/facebook\.com$|^fb\.watch$|^fb\.com$/.test(h))l='Facebook';}catch(e){} exp[r.name]=l||(r.src==='YouTube'||r.src==='Facebook'?r.src:''); });
+ const exp={}; seed.recipes.forEach(r=>{ let l=''; try{const h=new URL(r.url).hostname.replace(/^(www|m)\./,''); if(/youtube\.com$|^youtu\.be$/.test(h))l='YouTube'; else if(/facebook\.com$|^fb\.watch$|^fb\.com$/.test(h))l='Facebook';}catch(e){} exp[r.name]=l||(r.src==='YouTube'||r.src==='Facebook'?r.src:'Maison'); });
  let nYT=0,nFB=0,nNone=0,bad=0,total=0;
  for(const t of ['plats','accomp','desserts','petit-dej','salades']){
   await p.goto('http://localhost:8765/#'+t); await sleep(250);
   const rows=await p.locator('ul.rows li a.row').all();
-  for(const r of rows){ total++; const nm=(await r.locator('.rn').textContent()).trim(); const lab=await r.locator('.src').count()?(await r.locator('.src').getAttribute('title')):''; if(lab==='YouTube')nYT++; else if(lab==='Facebook')nFB++; else nNone++; if(exp[nm]!==undefined&&exp[nm]!==lab){bad++;console.log('  écart',nm,exp[nm],lab);} }
+  for(const r of rows){ total++; const nm=(await r.locator('.rn').textContent()).trim(); const lab=await r.locator('.src').count()?(await r.locator('.src').getAttribute('title')):''; if(lab==='YouTube')nYT++; else if(lab==='Facebook')nFB++; else if(lab==='Maison')nNone++; if(exp[nm]!==undefined&&exp[nm]!==lab){bad++;console.log('  écart',nm,exp[nm],lab);} }
  }
  chk(total>0&&bad===0,'badge conforme à l’origine sur '+total+' lignes (YT '+nYT+', FB '+nFB+', sans '+nNone+')');
  chk(nYT>0&&nFB>0,'les deux origines apparaissent');
