@@ -832,13 +832,18 @@
     else if (cameFrom === '#a-completer' && incompleteWhy(r)) view.appendChild(back('#a-completer', 'À compléter'));
     else view.appendChild(backMeal ? back(cameFrom, backMeal) : back('#' + t.id, t.label));
     var h = el('div', 'hero'), hs = thumbSrc(r.url);
+    var heroArt = function () {   // même image que dans les listes : vignette illustrée, sinon icône du type
+      h.textContent = ''; var vg = vignetteOf(r);
+      if (vg) { h.className = 'hero vg'; h.setAttribute('data-vg', vg); h.innerHTML = '<svg viewBox="7 4 50 34.4" preserveAspectRatio="xMidYMid slice" aria-hidden="true" focusable="false">' + VG[vg] + '</svg>'; }
+      else { h.className = 'hero'; h.appendChild(icon(r.type)); }
+    };
     if (hs) {
       h.className = 'hero hasphoto';
       var ha = el('a', 'herolink'); ha.href = r.url; ha.target = '_blank'; ha.rel = 'noopener noreferrer'; ha.setAttribute('aria-label', 'Ouvrir la vidéo');
       var hi = thumbImg(hs, 'heroimg'); hi.loading = 'eager';
-      hi.onerror = function () { h.className = 'hero'; h.textContent = ''; h.appendChild(icon(r.type)); };
+      hi.onerror = heroArt;
       ha.appendChild(hi); ha.appendChild(el('span', 'play', '▶')); h.appendChild(ha);
-    } else h.appendChild(icon(r.type));
+    } else heroArt();
     view.appendChild(h);
     view.appendChild(el('h1', null, r.name));
     if (r.cook) { var mc = el('div', 'meta'); mc.appendChild(el('span', 'tag', r.cook)); view.appendChild(mc); }

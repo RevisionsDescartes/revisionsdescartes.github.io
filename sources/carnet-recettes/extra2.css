@@ -144,3 +144,6 @@ body.hasbar { padding-bottom: calc(5.4rem + env(safe-area-inset-bottom, 0px)); }
 .filllink .filltxt { flex-basis: 100%; margin: 0; }
 /* Vignettes illustrées (recettes sans miniature) */
 .th.vg svg { width: 100%; height: 100%; display: block; }
+/* Fiche : la vignette illustrée en grand, comme dans la liste */
+.hero.vg { height: auto; border: 0; background: none; }
+.hero.vg svg { display: block; width: 100%; aspect-ratio: 50 / 34.4; max-height: 14rem; border-radius: 1.1rem; }

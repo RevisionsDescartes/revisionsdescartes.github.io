@@ -35,7 +35,7 @@ const sleep=ms=>new Promise(r=>setTimeout(r,ms));
  await p.goto('http://localhost:8765/#t4'); await sleep(500);
  chk(await p.locator('.hero.hasphoto').count()===0&&await p.locator('.hero .ic-box').count()===1,'fiche Facebook : pictogramme');
  await p.goto('http://localhost:8765/#t6'); await sleep(900);
- chk(await p.locator('.hero.hasphoto').count()===0&&await p.locator('.hero .ic-box').count()===1,'fiche : miniature 404 → pictogramme');
+ chk(await p.locator('.hero.hasphoto').count()===0&&(await p.locator('.hero .ic-box').count()===1||await p.locator('.hero.vg svg').count()===1),'fiche : miniature 404 → vignette ou pictogramme');
  // version
  await p.goto('http://localhost:8765/#reglages'); await sleep(400);
  const v=await p.locator('.buildno').textContent();
