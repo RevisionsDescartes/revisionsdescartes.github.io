@@ -22,6 +22,6 @@ const sleep=ms=>new Promise(r=>setTimeout(r,ms));
  Object.keys(by).sort().forEach(k=>console.log('['+k+'] '+by[k].length+' : '+by[k].join(' ; ')));
  chk(rows.filter(x=>x[1]==='YouTube').every(x=>x[2]==='IMG'||x[2]!=='aucune'),'YouTube : case miniature présente');
  chk(nonYT.filter(x=>x[2]!=='icone'&&x[2]!=='aucune').length>nonYT.length*0.6,'majorité des recettes Facebook/maison avec vignette ('+nonYT.filter(x=>x[2]!=='icone'&&x[2]!=='aucune').length+'/'+nonYT.length+')');
- await p.goto('http://localhost:8765/#desserts'); await sleep(300); await p.screenshot({path:__dirname+'/shot_vg_'+(process.argv[2]||'light')+'.png'});
+ await p.goto('http://localhost:8765/#'+(process.argv[3]||'desserts')); await sleep(300); await p.screenshot({path:__dirname+'/shot_vg_'+(process.argv[2]||'light')+'.png'});
  chk(p.errs.length===0,'aucune erreur JS '+p.errs.join('|'));
  await b.close(); console.log(ok?'TOUT OK':'ECHEC'); process.exit(ok?0:1);})();
