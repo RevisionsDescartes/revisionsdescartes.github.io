@@ -25,7 +25,7 @@ const sleep=ms=>new Promise(r=>setTimeout(r,ms));
  chk(!reqs.some(u=>/EEEEEEEEEEE|court/.test(u)),'aucune requête pour un faux domaine ou un identifiant invalide');
  const nRows=await p.locator('.row').count(), nTh=await p.locator('.row .th').count();
  chk(nRows>=8&&nTh===nRows,'chaque ligne a sa vignette ou son pictogramme ('+nTh+'/'+nRows+')');
- chk(await p.locator('.row .th.ph').count()>=5,'lignes sans miniature : pictogramme du type (dont lien cassé 404)');
+ chk(await p.locator('.row .th.ph, .row .th.vg').count()>=5,'lignes sans miniature : vignette illustrée ou pictogramme du type (dont lien cassé 404)');
  const h=await p.evaluate(()=>[...document.querySelectorAll('.row')].map(r=>r.getBoundingClientRect().height));
  chk(Math.max(...h)<=62,'lignes toujours condensées (hauteur max '+Math.round(Math.max(...h))+' px)');
  // fiche
