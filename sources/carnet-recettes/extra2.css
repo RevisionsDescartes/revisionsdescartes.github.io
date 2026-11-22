@@ -122,7 +122,7 @@ body.hasbar { padding-bottom: calc(5.4rem + env(safe-area-inset-bottom, 0px)); }
 :root { --src-yt: #D93025; --src-fb: #2F6FDB; --src-home: #2E7D4F; --src-on: #FFFFFF; }
 @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --src-yt: #FF7A70; --src-fb: #7FAAFF; --src-home: #6FD39A; --src-on: #14182B; } }
 :root[data-theme="dark"] { --src-yt: #FF7A70; --src-fb: #7FAAFF; --src-home: #6FD39A; --src-on: #14182B; }
-.src { flex: none; display: inline-grid; width: 1.2rem; height: 1.2rem; }
+.src:not(.tag) { flex: none; display: inline-grid; width: 1.2rem; height: 1.2rem; }
 .src svg { width: 100%; height: 100%; display: block; }
 .src img { width: 100%; height: 100%; display: block; border-radius: 0.28rem; }
 /* Fiches depuis les vidéos (Réglages) */
@@ -147,3 +147,10 @@ body.hasbar { padding-bottom: calc(5.4rem + env(safe-area-inset-bottom, 0px)); }
 /* Fiche : la vignette illustrée en grand, comme dans la liste */
 .hero.vg { height: auto; border: 0; background: none; }
 .hero.vg svg { display: block; width: 100%; aspect-ratio: 50 / 34.4; max-height: 14rem; border-radius: 1.1rem; }
+
+/* Fiche sans contenu écrit : juste le lien, détail repliable */
+.sheet.bare { display: grid; gap: 0.75rem; justify-items: start; }
+.bare-note { margin: 0; color: var(--muted); }
+.bare-more { width: 100%; }
+.bare-more > summary { cursor: pointer; color: var(--accent, inherit); font-weight: 600; padding: 0.3rem 0; }
+.bare-more > .sheet { margin: 0.6rem 0 0; box-shadow: none; }

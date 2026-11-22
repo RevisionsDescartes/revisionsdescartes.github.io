@@ -880,7 +880,18 @@
       s1.appendChild(el('p', 'probable', 'Probablement aussi, sans confirmation : ' + r.probable.join(', ').toLowerCase() + '.'));
     }
     if (r.ingNote) s1.appendChild(el('p', 'note', r.ingNote));
-    if (!tip || r.ing.length) view.appendChild(s1);
+    // Fiche sans contenu écrit (juste une vidéo, ou rien) : seulement le lien, le détail se déplie à la demande
+    var bare = !r.ing.length && !r.steps.length && !(r.tips && r.tips.length) && !(r.probable && r.probable.length) && !r.ingNote;
+    var sb = null, more = null;
+    if (bare) {
+      sb = el('section', 'sheet bare'); sb.setAttribute('aria-label', tip ? 'Astuce' : 'Recette');
+      sb.appendChild(el('p', 'bare-note', r.url ? (tip ? 'Astuce pas encore écrite : tout est dans la vidéo.' : 'Recette pas encore écrite : tout est dans la vidéo.')
+        : (tip ? 'Astuce pas encore écrite.' : 'Recette pas encore écrite.')));
+      if (r.url) sb.appendChild(ext(r.url, 'btn', r.btn || 'Ouvrir ↗'));
+      more = el('details', 'bare-more'); more.appendChild(el('summary', null, 'Voir le détail'));
+      sb.appendChild(more); view.appendChild(sb);
+    }
+    if (!tip || r.ing.length) (more || view).appendChild(s1);
 
     var s2 = el('section', 'sheet'); s2.setAttribute('aria-labelledby', 'h-rec');
     var h3 = el('h2', null, tip ? 'Astuce' : 'Recette'); h3.id = 'h-rec'; s2.appendChild(h3);
@@ -897,8 +908,8 @@
       s2.appendChild(el('p', 'tips-title', 'Astuces'));
       var tl = el('ul', 'tips'); r.tips.forEach(function (x) { tl.appendChild(el('li', null, x)); }); s2.appendChild(tl);
     }
-    if (r.url) s2.appendChild(ext(r.url, 'btn', r.btn || 'Ouvrir ↗'));
-    view.appendChild(s2);
+    if (r.url && !bare) s2.appendChild(ext(r.url, 'btn', r.btn || 'Ouvrir ↗'));
+    (more || view).appendChild(s2);
     if (!tip) pairSection(r);
     if (canEdit()) {
       var rb = el('div', 'rowbtns');
