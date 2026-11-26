@@ -158,3 +158,16 @@ body.hasbar { padding-bottom: calc(5.4rem + env(safe-area-inset-bottom, 0px)); }
 .photorow { display: flex; flex-wrap: wrap; gap: 0.5rem; margin: 0.6rem 0 0; }
 .fphoto-prev img { display: block; width: 100%; max-width: 22rem; aspect-ratio: 16 / 9; object-fit: cover; border-radius: 0.9rem; background: var(--tint); }
 .hero.own .heroimg { border-radius: 1.1rem; }
+/* Réorganiser les fiches d'un type */
+.reordbar { display: flex; flex-wrap: wrap; gap: 0.5rem; margin: 0.4rem 0 0.8rem; }
+.rows.reord .rrow { display: flex; align-items: center; gap: 0.7rem; padding: 0.55rem 0.8rem; }
+.rows.reord .rn { flex: 1; min-width: 0; }
+.rbtns { display: flex; gap: 0.3rem; flex: none; }
+.rbtn { width: 2.4rem; height: 2.4rem; border-radius: 0.6rem; border: 1px solid var(--line); background: var(--surface, var(--card)); color: var(--accent); font-size: 1.05rem; line-height: 1; cursor: pointer; }
+.rbtn:disabled { opacity: 0.3; cursor: default; }
+.rbtn:not(:disabled):active { background: var(--accent-soft); }
+.rows.reord .th { flex: none; width: 3.2rem; height: 2.2rem; border-radius: 0.45rem; overflow: hidden; background: var(--tint); display: grid; place-items: center; }
+.rows.reord .th img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.rows.reord .th.ph .ic-box { width: 1.4rem; height: 1.4rem; opacity: 0.75; }
+.rows.reord .rn { font-weight: 600; line-height: 1.25; }
+@media (max-width: 380px) { .rbtn { width: 2.2rem; height: 2.2rem; } .rows.reord .th { display: none; } }

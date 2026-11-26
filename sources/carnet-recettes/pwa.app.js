@@ -236,7 +236,8 @@
       sum: str(o.sum, 200) || ing.slice(0, 4).join(', '), ts: typeof o.ts === 'number' ? o.ts : 0,
       meals: cleanMeals(o.meals), status: cleanStatus(o.status), pairs: cleanPairs(o.pairs, id)
     };
-    var ph = cleanPhoto(o.photo); if (ph) out.photo = ph;   // champ absent quand il n'y a pas de photo (fichier inchangé pour les autres fiches)
+    var ph = cleanPhoto(o.photo); if (ph) out.photo = ph;
+    if (typeof o.pos === 'number' && o.pos >= 0 && o.pos < 10000 && Math.floor(o.pos) === o.pos) out.pos = o.pos;   // rang choisi à la main dans son type   // champ absent quand il n'y a pas de photo (fichier inchangé pour les autres fiches)
     return out;
   }
   function parseRecipes(data) {
@@ -316,8 +317,21 @@
     rec.pairs = i >= 0 ? out[i].pairs.slice() : [];
     var ph = op.photo !== undefined ? cleanPhoto(op.photo) : (i >= 0 ? (out[i].photo || '') : '');   // la photo ne change que si l'opération le dit
     if (ph) rec.photo = ph; else delete rec.photo;
+    if (i >= 0 && out[i].type === rec.type && out[i].pos !== undefined) rec.pos = out[i].pos; else delete rec.pos;   // le rang ne vaut que dans le même type
     if (i >= 0) out[i] = rec; else out.unshift(rec);
     return out;
+  }
+  /* Ordre manuel d'un type : les fiches citées prennent leur rang, les autres (ajoutées entre-temps) passent en tête */
+  function applyReorder(list, ro) {
+    if (!ro || !tById[ro.type] || !Array.isArray(ro.ids)) return list;
+    var rank = Object.create(null);
+    ro.ids.slice(0, 2000).forEach(function (id, k) { if (typeof id === 'string' && rank[id] === undefined) rank[id] = k; });
+    return list.map(function (r) {
+      if (r.type !== ro.type) return r;
+      var c = {}; Object.keys(r).forEach(function (k) { c[k] = r[k]; });
+      if (rank[r.id] !== undefined) c.pos = rank[r.id]; else delete c.pos;
+      return c;
+    });
   }
   /* Remplit plusieurs fiches d'un coup (import depuis NotebookLM) : seuls les champs de contenu changent */
   function applyFill(list, items) {
@@ -345,6 +359,7 @@
         if (op.pair) list = applyPair(list, op);
         if (op.pairs) list = applyPairs(list, op.pairs);
         if (op.fill) list = applyFill(list, op.fill);
+        if (op.reorder) list = applyReorder(list, op.reorder);
         var ord = op.order ? parseOrder(op.order) : rm.order;
         var dis = op.dismiss ? cleanDismissed(rm.dismissed.concat([op.dismiss])) : rm.dismissed;
         var body = { message: message.slice(0, 120), content: b64enc(JSON.stringify({ recipes: list, typeOrder: ord, dismissed: dis }, null, 1) + '\n'), branch: BRANCH };
@@ -660,7 +675,8 @@
     bt.appendChild(el('p', 'sub', fstat ? items.length + ' sur ' + plural(all.length, un[0], un[1]) : (items.length ? plural(items.length, un[0], un[1]) : 'Aucune ' + un[0] + ' pour l’instant')));
     ban.appendChild(bt);
     view.appendChild(ban);
-    if (canEdit()) showBar([barAdd('#ajouter/' + t.id, '+ Ajouter à ' + t.label)]);
+    if (reordT && reordT !== t.id) reordT = null;
+    if (canEdit() && reordT !== t.id) showBar([barAdd('#ajouter/' + t.id, '+ Ajouter à ' + t.label)]);
     var hint = syncHint(); if (hint) view.appendChild(hint);
     var fb = all.length ? filterBar() : null; if (fb) view.appendChild(fb);
     if (all.length && !items.length) {
@@ -677,7 +693,61 @@
       view.appendChild(box);
       return;
     }
+    if (reordT === t.id) { reorderList(t, byManual(all)); return; }
+    if (canEdit() && !fstat && all.length > 1) {
+      var rb0 = el('div', 'reordbar'), ro0 = el('button', 'btn small ghost', '↕ Réorganiser'); ro0.type = 'button';
+      ro0.onclick = function () { reordT = t.id; route(true); };
+      rb0.appendChild(ro0); view.appendChild(rb0);
+    }
     view.appendChild(rowList(items, true));
+  }
+  /* Mode « Réorganiser » : flèches devant chaque fiche, un seul enregistrement à la fin */
+  var reordT = null;
+  function reorderList(t, start) {
+    var seq = start.slice(), focusId = null, focusAct = '';
+    var bar = el('div', 'reordbar');
+    var saveB = el('button', 'btn', 'Enregistrer l’ordre'); saveB.type = 'button';
+    var cancelB = el('button', 'btn ghost', 'Annuler'); cancelB.type = 'button';
+    bar.appendChild(saveB); bar.appendChild(cancelB);
+    view.appendChild(el('p', 'help', 'Touchez ▲ ou ▼ pour monter ou descendre une ' + unitOf(t.id)[0] + ', ⤒ pour la mettre tout en haut. Rien n’est enregistré avant « Enregistrer l’ordre ».'));
+    view.appendChild(bar);
+    var err = el('p', 'err'); err.setAttribute('role', 'alert'); view.appendChild(err);
+    var ul = el('ul', 'rows reord'); view.appendChild(ul);
+    var anyThumb = seq.some(function (r) { return !!r.photo || !!thumbSrc(r.url) || !!vignetteOf(r); });
+    function mv(k, to) { var x = seq.splice(k, 1)[0]; seq.splice(to, 0, x); }
+    function draw() {
+      ul.textContent = '';
+      seq.forEach(function (r, k) {
+        var li = el('li', 'rrow');
+        var btns = el('span', 'rbtns');
+        [['top', '⤒', 'Mettre tout en haut', k === 0, function () { mv(k, 0); }],
+         ['up', '▲', 'Monter', k === 0, function () { mv(k, k - 1); }],
+         ['down', '▼', 'Descendre', k === seq.length - 1, function () { mv(k, k + 1); }]].forEach(function (d) {
+          var b = el('button', 'rbtn', d[1]); b.type = 'button'; b.setAttribute('aria-label', d[2] + ' : ' + r.name); b.setAttribute('data-act', d[0]);
+          b.disabled = d[3];
+          b.onclick = function () { d[4](); focusId = r.id; focusAct = d[0]; draw(); };
+          btns.appendChild(b);
+        });
+        li.appendChild(btns);
+        if (anyThumb) li.appendChild(fillThumb(el('span', 'th'), r));
+        li.appendChild(el('span', 'rn', r.name));
+        li.setAttribute('data-id', r.id);
+        ul.appendChild(li);
+      });
+      if (focusId) {   // garder le doigt sur la même fiche pour enchaîner les déplacements
+        var row = ul.querySelector('li[data-id="' + focusId + '"]');
+        var b2 = row && (row.querySelector('button[data-act="' + focusAct + '"]:not(:disabled)') || row.querySelector('button:not(:disabled)'));
+        if (b2) { try { b2.focus({ preventScroll: true }); } catch (e) {} try { row.scrollIntoView({ block: 'nearest' }); } catch (e) {} }
+      }
+    }
+    draw();
+    cancelB.onclick = function () { reordT = null; route(true); };
+    saveB.onclick = function () {
+      saveB.disabled = true; cancelB.disabled = true; err.textContent = ''; saveB.textContent = 'Enregistrement…';
+      commit({ reorder: { type: t.id, ids: seq.map(function (r) { return r.id; }) } }, 'Ordre de « ' + t.label + ' »').then(function () {
+        reordT = null; route(true);
+      }, function (e) { saveB.disabled = false; cancelB.disabled = false; saveB.textContent = 'Enregistrer l’ordre'; err.textContent = writeError(e); });
+    };
   }
 
   /* Liste condensée : une ligne par recette */
@@ -703,7 +773,7 @@
   var expanded = Object.create(null);   // groupes dépliés (vue Repas), conservés tant que l'appli reste ouverte
   var GROUP_MAX = 3;
   function rowList(items, showMeals, key, combo) {
-    items = bySrc(items);   // YouTube, puis Facebook, puis maison (ordre d'origine conservé dans chaque groupe)
+    items = byManual(items);   // ordre choisi à la main ; à défaut YouTube, puis Facebook, puis maison
     var ul = el('ul', 'rows');
     var extra = [];
     var anyThumb = items.some(function (r) { return !!r.photo || !!thumbSrc(r.url) || !!vignetteOf(r); });   // si au moins une miniature, les autres lignes gardent la même place
@@ -1122,6 +1192,14 @@
     var l = r.url ? linkInfo(r.url).label : '';
     if (SRC_SVG.hasOwnProperty(l)) return l;
     return (r.src === 'YouTube' || r.src === 'Facebook') ? r.src : 'Maison';   // ni YouTube ni Facebook : « maison »
+  }
+  function byManual(list) {   // ordre choisi à la main s'il existe (fiches sans rang en tête), sinon regroupement par origine
+    var base = bySrc(list);
+    if (!list.some(function (r) { return r.pos !== undefined; })) return base;
+    var at = Object.create(null); base.forEach(function (r, k) { at[r.id] = k; });
+    return base.slice().sort(function (a, b) {
+      return (a.pos === undefined ? -1 : a.pos) - (b.pos === undefined ? -1 : b.pos) || at[a.id] - at[b.id];
+    });
   }
   function bySrc(list) { return list.slice().sort(function (a, b) { return SRC_RANK[srcOf(a)] - SRC_RANK[srcOf(b)]; }); }
   function srcBadge(r) {
@@ -1925,7 +2003,7 @@
   function route(quiet) {
     var h = (location.hash || '').replace(/^#/, '');
     var restoreQ = (quiet !== true && h === 'a-identifier' && /^classer\//.test(prevH) && qBack) ? qBack.y : null;   // retour du formulaire « Classer » : même position dans la liste
-    if (quiet !== true) prevH = h;
+    if (quiet !== true) { prevH = h; reordT = null; }   // changer d'écran quitte le mode « Réorganiser »
     formActive = false;
     clearBar();
     view.textContent = '';
