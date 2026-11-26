@@ -218,13 +218,15 @@
     cleanPairs(ch.add, A.id).forEach(function (b) { if (by[b]) { unlink(b); A.pairs.push(b); } });   // une fiche retirée entre-temps est ignorée
     return out;
   }
+  // Photo personnelle : seulement un fichier du dossier photos/ du dépôt (jamais une adresse extérieure)
+  function cleanPhoto(v) { return (typeof v === 'string' && /^photos\/[a-z0-9][a-z0-9-]{2,80}\.jpg$/.test(v)) ? v : ''; }
   function normalize(o) {
     if (!o || typeof o !== 'object') return null;
     var id = typeof o.id === 'string' ? o.id : '';
     if (!/^[a-z0-9][a-z0-9-]{1,59}$/.test(id) || RESERVED[id] || tById[id]) return null;
     var name = str(o.name, 120); if (!name) return null;
     var ing = cleanList(o.ing, 60, 400);
-    return {
+    var out = {
       id: id, name: name, type: tById[o.type] ? o.type : 'aclasser',
       cook: str(o.cook, 60), servings: str(o.servings, 60),
       src: str(o.src, 40) || 'Ajoutée', date: (typeof o.date === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(o.date)) ? o.date : '',
@@ -234,6 +236,8 @@
       sum: str(o.sum, 200) || ing.slice(0, 4).join(', '), ts: typeof o.ts === 'number' ? o.ts : 0,
       meals: cleanMeals(o.meals), status: cleanStatus(o.status), pairs: cleanPairs(o.pairs, id)
     };
+    var ph = cleanPhoto(o.photo); if (ph) out.photo = ph;   // champ absent quand il n'y a pas de photo (fichier inchangé pour les autres fiches)
+    return out;
   }
   function parseRecipes(data) {
     var seen = Object.create(null), out = [];
@@ -310,6 +314,8 @@
     if (op.del) { if (i >= 0) out.splice(i, 1); return out; }
     var rec = normalize(op.rec); if (!rec) throw new Error('invalide');
     rec.pairs = i >= 0 ? out[i].pairs.slice() : [];
+    var ph = op.photo !== undefined ? cleanPhoto(op.photo) : (i >= 0 ? (out[i].photo || '') : '');   // la photo ne change que si l'opération le dit
+    if (ph) rec.photo = ph; else delete rec.photo;
     if (i >= 0) out[i] = rec; else out.unshift(rec);
     return out;
   }
@@ -700,7 +706,7 @@
     items = bySrc(items);   // YouTube, puis Facebook, puis maison (ordre d'origine conservé dans chaque groupe)
     var ul = el('ul', 'rows');
     var extra = [];
-    var anyThumb = items.some(function (r) { return !!thumbSrc(r.url) || !!vignetteOf(r); });   // si au moins une miniature, les autres lignes gardent la même place
+    var anyThumb = items.some(function (r) { return !!r.photo || !!thumbSrc(r.url) || !!vignetteOf(r); });   // si au moins une miniature, les autres lignes gardent la même place
     items.forEach(function (r, i) {
       var li = el('li');
       if (key && i >= GROUP_MAX) { extra.push(li); li.hidden = !expanded[key]; }
@@ -837,7 +843,13 @@
       if (vg) { h.className = 'hero vg'; h.setAttribute('data-vg', vg); h.innerHTML = '<svg viewBox="7 4 50 34.4" preserveAspectRatio="xMidYMid slice" aria-hidden="true" focusable="false">' + VG[vg] + '</svg>'; }
       else { h.className = 'hero'; h.appendChild(icon(r.type)); }
     };
-    if (hs) {
+    var ps = photoSrc(r);
+    if (ps) {
+      h.className = 'hero hasphoto own';
+      var pim = el('img', 'heroimg'); pim.alt = ''; pim.loading = 'eager'; pim.decoding = 'async'; pim.referrerPolicy = 'no-referrer'; pim.src = ps;
+      pim.onerror = function () { if (hs) { h.textContent = ''; h.className = 'hero hasphoto'; var a2 = el('a', 'herolink'); a2.href = r.url; a2.target = '_blank'; a2.rel = 'noopener noreferrer'; a2.setAttribute('aria-label', 'Ouvrir la vidéo'); var i2 = thumbImg(hs, 'heroimg'); i2.onerror = heroArt; a2.appendChild(i2); a2.appendChild(el('span', 'play', '▶')); h.appendChild(a2); } else heroArt(); };
+      h.appendChild(pim);
+    } else if (hs) {
       h.className = 'hero hasphoto';
       var ha = el('a', 'herolink'); ha.href = r.url; ha.target = '_blank'; ha.rel = 'noopener noreferrer'; ha.setAttribute('aria-label', 'Ouvrir la vidéo');
       var hi = thumbImg(hs, 'heroimg'); hi.loading = 'eager';
@@ -845,6 +857,30 @@
       ha.appendChild(hi); ha.appendChild(el('span', 'play', '▶')); h.appendChild(ha);
     } else heroArt();
     view.appendChild(h);
+    if (canEdit()) {   // photo personnelle : ajouter, changer, retirer
+      var pr = el('div', 'photorow'), perr2 = el('p', 'err'), pst = el('p', 'status');
+      perr2.setAttribute('role', 'alert'); pst.setAttribute('aria-live', 'polite');
+      var setBusy = function (on) { Array.prototype.forEach.call(pr.querySelectorAll('button'), function (x) { x.disabled = on; }); };
+      var pin = photoInput(function (fl) {
+        perr2.textContent = ''; pst.textContent = 'Préparation de la photo…'; setBusy(true);
+        var old = r.photo;
+        shrinkPhoto(fl).then(function (shot) { pst.textContent = 'Envoi de la photo…'; return uploadPhoto(r.id, shot); })
+          .then(function (path) { return commit({ id: r.id, rec: r, photo: path }, 'Photo de « ' + r.name + ' »'); })
+          .then(function () { dropPhotoFile(old); route(true); }, function (e) { setBusy(false); pst.textContent = ''; perr2.textContent = photoError(e); });
+      });
+      var pb = el('button', 'btn small ghost', r.photo ? 'Changer la photo' : '📷 Ajouter une photo'); pb.type = 'button'; pb.onclick = function () { pin.click(); };
+      pr.appendChild(pb); pr.appendChild(pin);
+      if (r.photo) {
+        var px = el('button', 'btn small ghost', 'Retirer la photo'); px.type = 'button';
+        px.onclick = function () {
+          perr2.textContent = ''; pst.textContent = 'Retrait…'; setBusy(true); var old = r.photo;
+          commit({ id: r.id, rec: r, photo: '' }, 'Retire la photo de « ' + r.name + ' »').then(function () { dropPhotoFile(old); route(true); },
+            function (e) { setBusy(false); pst.textContent = ''; perr2.textContent = writeError(e); });
+        };
+        pr.appendChild(px);
+      }
+      view.appendChild(pr); view.appendChild(perr2); view.appendChild(pst);
+    }
     view.appendChild(el('h1', null, r.name));
     if (r.cook) { var mc = el('div', 'meta'); mc.appendChild(el('span', 'tag', r.cook)); view.appendChild(mc); }
     if (r.servings) view.appendChild(el('p', 'serv', 'Pour ' + r.servings.charAt(0).toLowerCase() + r.servings.slice(1)));
@@ -1154,7 +1190,7 @@
   }
   // Remplit une case miniature : image YouTube, sinon vignette illustrée, sinon icône du type
   function fillThumb(th, r) {
-    var ts = thumbSrc(r.url);
+    var ts = photoSrc(r) || thumbSrc(r.url);
     var art = function () {
       th.textContent = ''; var vg = vignetteOf(r);
       if (vg) { th.className = 'th vg'; th.setAttribute('data-vg', vg); th.innerHTML = '<svg viewBox="7 4 50 34.4" aria-hidden="true" focusable="false">' + VG[vg] + '</svg>'; }
@@ -1162,6 +1198,47 @@
     };
     if (ts) { var im = thumbImg(ts, null); im.onerror = art; th.appendChild(im); } else art();
     return th;
+  }
+  /* Photos personnelles : réduites dans l'appli, rangées dans photos/ du dépôt, affichées avant tout le reste */
+  var photoCache = Object.create(null);   // photo tout juste envoyée : affichée depuis la mémoire, sans attendre GitHub
+  function photoSrc(r) { return r.photo ? (photoCache[r.photo] || 'https://raw.githubusercontent.com/' + cfg.repo + '/' + BRANCH + '/' + r.photo) : ''; }
+  function shrinkPhoto(file) {
+    return new Promise(function (ok, ko) {
+      if (!file || !/^image\//.test(file.type || '')) return ko(new Error('type'));
+      if (file.size > 40e6) return ko(new Error('taille'));
+      var u = URL.createObjectURL(file), im = new Image();
+      im.onload = function () {
+        var W = im.naturalWidth, H = im.naturalHeight, k = Math.min(1, 720 / Math.max(W, H, 1));
+        var c = document.createElement('canvas'); c.width = Math.max(1, Math.round(W * k)); c.height = Math.max(1, Math.round(H * k));
+        var g = c.getContext('2d'); g.fillStyle = '#FFFFFF'; g.fillRect(0, 0, c.width, c.height); g.drawImage(im, 0, 0, c.width, c.height);
+        URL.revokeObjectURL(u);
+        var d = c.toDataURL('image/jpeg', 0.72); ok({ url: d, b64: d.slice(d.indexOf(',') + 1) });
+      };
+      im.onerror = function () { URL.revokeObjectURL(u); ko(new Error('lecture')); };
+      im.src = u;
+    });
+  }
+  function photoError(e) {
+    var m = e && e.message;
+    if (m === 'type' || m === 'lecture') return 'Ce fichier n’est pas une photo lisible (essayez une photo JPEG ou PNG).';
+    if (m === 'taille') return 'Cette photo est trop lourde.';
+    return writeError(e);
+  }
+  function uploadPhoto(id, shot) {
+    var path = 'photos/' + id + '-' + Date.now().toString(36) + '.jpg';
+    return api('/repos/' + cfg.repo + '/contents/' + path, { method: 'PUT', body: JSON.stringify({ message: 'Photo : ' + id, content: shot.b64, branch: BRANCH }) })
+      .then(function () { photoCache[path] = shot.url; return path; });
+  }
+  function dropPhotoFile(path) {   // nettoyage de l'ancienne photo : au mieux, sans bloquer
+    if (!cleanPhoto(path)) return;
+    api('/repos/' + cfg.repo + '/contents/' + path + '?ref=' + BRANCH).then(function (j) {
+      return api('/repos/' + cfg.repo + '/contents/' + path, { method: 'DELETE', body: JSON.stringify({ message: 'Retire la photo ' + path, sha: j.sha, branch: BRANCH }) });
+    }).catch(function () {});
+  }
+  function photoInput(onPick) {
+    var inp = el('input'); inp.type = 'file'; inp.accept = 'image/*'; inp.hidden = true;
+    inp.onchange = function () { var fl = inp.files && inp.files[0]; inp.value = ''; if (fl) onPick(fl); };
+    return inp;
   }
   // Miniature d'une vidéo YouTube (image publique, sans clé ni compte). Autres sites : pas de miniature.
   function ytId(u) {
@@ -1400,6 +1477,29 @@
     var taTips = textArea('f-tips', rec && rec.tips.join('\n'), 'Laisser reposer la pâte 5 minutes.');
     taTips.style.minHeight = '5rem';
     fTips = field('f-tips', 'Astuces (facultatif)', taTips, 'Une astuce par ligne.'); f.appendChild(fTips);
+    // Photo (facultatif) : choisie ici, envoyée au moment d'enregistrer
+    var newShot = null, dropPhoto = false;
+    var pbox = el('div', 'field fphoto'), pprev = el('div', 'fphoto-prev'), pmsg = el('p', 'help');
+    var pchoose = el('button', 'btn small ghost', ''); pchoose.type = 'button';
+    var pdel = el('button', 'btn small ghost', 'Retirer la photo'); pdel.type = 'button';
+    var drawPhoto = function () {
+      pprev.textContent = '';
+      var src = newShot ? newShot.url : (!dropPhoto && rec && rec.photo ? photoSrc(rec) : '');
+      if (src) { var pi = el('img'); pi.alt = 'Aperçu de la photo'; pi.src = src; pprev.appendChild(pi); }
+      pprev.hidden = !src; pdel.hidden = !src;
+      pchoose.textContent = src ? 'Changer la photo' : '📷 Ajouter une photo';
+    };
+    var fpin = photoInput(function (fl) {
+      pmsg.textContent = 'Préparation…';
+      shrinkPhoto(fl).then(function (shot) { newShot = shot; dropPhoto = false; pmsg.textContent = ''; drawPhoto(); }, function (e) { pmsg.textContent = photoError(e); });
+    });
+    pchoose.onclick = function () { fpin.click(); };
+    pdel.onclick = function () { newShot = null; dropPhoto = true; drawPhoto(); };
+    var pbtns = el('div', 'photorow'); pbtns.appendChild(pchoose); pbtns.appendChild(pdel); pbtns.appendChild(fpin);
+    var plab = el('span', 'lbl', 'Photo (facultatif)');
+    pbox.appendChild(plab); pbox.appendChild(pprev); pbox.appendChild(pbtns); pbox.appendChild(pmsg);
+    if (canEdit()) f.appendChild(pbox);
+    drawPhoto();
 
     var err = el('p', 'err'); err.setAttribute('role', 'alert');
     var status = el('p', 'status'); status.setAttribute('aria-live', 'polite');
@@ -1450,8 +1550,13 @@
         status: cleanStatus((f.querySelector('input[name="status"]:checked') || {}).value),
         meals: TIPTYPES[type] ? [] : cleanMeals(Array.prototype.map.call(f.querySelectorAll('input[name="meal"]:checked:not(:disabled)'), function (x) { return x.value; }))
       };
-      save.disabled = true; topSave.disabled = true; status.textContent = 'Enregistrement…';
-      commit({ id: id, rec: out, dismiss: pre ? pre.key : undefined }, (rec ? 'Modifie : ' : 'Ajoute : ') + name).then(function () {
+      save.disabled = true; topSave.disabled = true; status.textContent = newShot ? 'Envoi de la photo…' : 'Enregistrement…';
+      var oldPhoto = rec ? rec.photo : '';
+      (newShot ? uploadPhoto(id, newShot) : Promise.resolve(dropPhoto ? '' : undefined)).then(function (ph) {
+        status.textContent = 'Enregistrement…';
+        return commit({ id: id, rec: out, dismiss: pre ? pre.key : undefined, photo: ph }, (rec ? 'Modifie : ' : 'Ajoute : ') + name).then(function () { return ph; });
+      }).then(function (ph) {
+        if (ph !== undefined && oldPhoto && oldPhoto !== ph) dropPhotoFile(oldPhoto);
         if (pre) { flash = '« ' + name + ' » enregistrée.'; location.hash = '#a-identifier'; } else location.hash = '#' + id;
       }, function (e) {
         save.disabled = false; topSave.disabled = false; status.textContent = ''; err.textContent = writeError(e);

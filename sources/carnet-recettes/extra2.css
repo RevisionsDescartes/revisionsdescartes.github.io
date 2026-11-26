@@ -154,3 +154,7 @@ body.hasbar { padding-bottom: calc(5.4rem + env(safe-area-inset-bottom, 0px)); }
 .bare-more { width: 100%; }
 .bare-more > summary { cursor: pointer; color: var(--accent, inherit); font-weight: 600; padding: 0.3rem 0; }
 .bare-more > .sheet { margin: 0.6rem 0 0; box-shadow: none; }
+/* Photo personnelle */
+.photorow { display: flex; flex-wrap: wrap; gap: 0.5rem; margin: 0.6rem 0 0; }
+.fphoto-prev img { display: block; width: 100%; max-width: 22rem; aspect-ratio: 16 / 9; object-fit: cover; border-radius: 0.9rem; background: var(--tint); }
+.hero.own .heroimg { border-radius: 1.1rem; }
