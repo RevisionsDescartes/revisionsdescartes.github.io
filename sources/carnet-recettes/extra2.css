@@ -171,3 +171,12 @@ body.hasbar { padding-bottom: calc(5.4rem + env(safe-area-inset-bottom, 0px)); }
 .rows.reord .th.ph .ic-box { width: 1.4rem; height: 1.4rem; opacity: 0.75; }
 .rows.reord .rn { font-weight: 600; line-height: 1.25; }
 @media (max-width: 380px) { .rbtn { width: 2.2rem; height: 2.2rem; } .rows.reord .th { display: none; } }
+/* Réorganiser : poignée ≡ */
+.sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+.reordbar.bottom { margin: 1rem 0 0.4rem; }
+.rhandle { flex: none; width: 2.6rem; height: 2.6rem; display: grid; place-items: center; border: 0; border-radius: 0.6rem; background: transparent; color: var(--muted); cursor: grab; touch-action: none; -webkit-user-select: none; user-select: none; }
+.rhandle svg { width: 1.5rem; height: 1.5rem; }
+.rhandle:focus-visible { outline: 3px solid var(--accent); outline-offset: 1px; }
+.rows.reord.isdrag { -webkit-user-select: none; user-select: none; }
+.rows.reord .rrow.dragging { background: var(--accent-soft); box-shadow: 0 6px 18px rgba(0,0,0,0.18); position: relative; z-index: 2; border-radius: 0.6rem; }
+.rows.reord .rrow.dragging .rhandle { color: var(--accent); cursor: grabbing; }

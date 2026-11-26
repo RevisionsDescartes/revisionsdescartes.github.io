@@ -694,61 +694,102 @@
       return;
     }
     if (reordT === t.id) { reorderList(t, byManual(all)); return; }
-    if (canEdit() && !fstat && all.length > 1) {
-      var rb0 = el('div', 'reordbar'), ro0 = el('button', 'btn small ghost', '↕ Réorganiser'); ro0.type = 'button';
+    view.appendChild(rowList(items, true));
+    if (canEdit() && !fstat && all.length > 1) {   // en bas de la liste
+      var rb0 = el('div', 'reordbar bottom'), ro0 = el('button', 'btn small ghost', '≡ Réorganiser'); ro0.type = 'button';
       ro0.onclick = function () { reordT = t.id; route(true); };
       rb0.appendChild(ro0); view.appendChild(rb0);
     }
-    view.appendChild(rowList(items, true));
   }
-  /* Mode « Réorganiser » : flèches devant chaque fiche, un seul enregistrement à la fin */
+  /* Mode « Réorganiser » : poignée ≡ devant chaque fiche (appuyer puis glisser), un seul enregistrement à la fin */
   var reordT = null;
   function reorderList(t, start) {
-    var seq = start.slice(), focusId = null, focusAct = '';
-    var bar = el('div', 'reordbar');
-    var saveB = el('button', 'btn', 'Enregistrer l’ordre'); saveB.type = 'button';
-    var cancelB = el('button', 'btn ghost', 'Annuler'); cancelB.type = 'button';
-    bar.appendChild(saveB); bar.appendChild(cancelB);
-    view.appendChild(el('p', 'help', 'Touchez ▲ ou ▼ pour monter ou descendre une ' + unitOf(t.id)[0] + ', ⤒ pour la mettre tout en haut. Rien n’est enregistré avant « Enregistrer l’ordre ».'));
-    view.appendChild(bar);
+    var seq = start.slice();
+    var un = unitOf(t.id)[0];
+    function mkBar() {
+      var bar = el('div', 'reordbar');
+      var sb = el('button', 'btn rsave', 'Enregistrer l’ordre'); sb.type = 'button';
+      var cb = el('button', 'btn ghost rcancel', 'Annuler'); cb.type = 'button';
+      bar.appendChild(sb); bar.appendChild(cb); return bar;
+    }
+    view.appendChild(el('p', 'help', 'Appuyez sur ≡ devant une ' + un + ' et faites-la glisser vers le haut ou le bas. Rien n’est enregistré avant « Enregistrer l’ordre ».'));
+    view.appendChild(mkBar());
     var err = el('p', 'err'); err.setAttribute('role', 'alert'); view.appendChild(err);
     var ul = el('ul', 'rows reord'); view.appendChild(ul);
+    view.appendChild(mkBar());
+    var live = el('p', 'sr-only'); live.setAttribute('aria-live', 'polite'); view.appendChild(live);
     var anyThumb = seq.some(function (r) { return !!r.photo || !!thumbSrc(r.url) || !!vignetteOf(r); });
-    function mv(k, to) { var x = seq.splice(k, 1)[0]; seq.splice(to, 0, x); }
-    function draw() {
-      ul.textContent = '';
-      seq.forEach(function (r, k) {
-        var li = el('li', 'rrow');
-        var btns = el('span', 'rbtns');
-        [['top', '⤒', 'Mettre tout en haut', k === 0, function () { mv(k, 0); }],
-         ['up', '▲', 'Monter', k === 0, function () { mv(k, k - 1); }],
-         ['down', '▼', 'Descendre', k === seq.length - 1, function () { mv(k, k + 1); }]].forEach(function (d) {
-          var b = el('button', 'rbtn', d[1]); b.type = 'button'; b.setAttribute('aria-label', d[2] + ' : ' + r.name); b.setAttribute('data-act', d[0]);
-          b.disabled = d[3];
-          b.onclick = function () { d[4](); focusId = r.id; focusAct = d[0]; draw(); };
-          btns.appendChild(b);
-        });
-        li.appendChild(btns);
-        if (anyThumb) li.appendChild(fillThumb(el('span', 'th'), r));
-        li.appendChild(el('span', 'rn', r.name));
-        li.setAttribute('data-id', r.id);
-        ul.appendChild(li);
+    function syncSeq() { seq = Array.prototype.map.call(ul.children, function (li) { return byId[li.getAttribute('data-id')]; }).filter(Boolean); }
+    function say(li) { var k = Array.prototype.indexOf.call(ul.children, li); live.textContent = li.querySelector('.rn').textContent + ' : position ' + (k + 1) + ' sur ' + ul.children.length; }
+    seq.forEach(function (r) {
+      var li = el('li', 'rrow'); li.setAttribute('data-id', r.id);
+      var hd = el('button', 'rhandle'); hd.type = 'button';
+      hd.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M5 7h14M5 12h14M5 17h14" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>';
+      hd.setAttribute('aria-label', 'Déplacer « ' + r.name + ' » (flèches haut et bas)');
+      li.appendChild(hd);
+      if (anyThumb) li.appendChild(fillThumb(el('span', 'th'), r));
+      li.appendChild(el('span', 'rn', r.name));
+      ul.appendChild(li);
+      // Clavier : flèches haut / bas
+      hd.addEventListener('keydown', function (e) {
+        if (e.key === 'ArrowUp' && li.previousElementSibling) { ul.insertBefore(li, li.previousElementSibling); }
+        else if (e.key === 'ArrowDown' && li.nextElementSibling) { ul.insertBefore(li.nextElementSibling, li); }
+        else return;
+        e.preventDefault(); syncSeq(); hd.focus(); say(li);
       });
-      if (focusId) {   // garder le doigt sur la même fiche pour enchaîner les déplacements
-        var row = ul.querySelector('li[data-id="' + focusId + '"]');
-        var b2 = row && (row.querySelector('button[data-act="' + focusAct + '"]:not(:disabled)') || row.querySelector('button:not(:disabled)'));
-        if (b2) { try { b2.focus({ preventScroll: true }); } catch (e) {} try { row.scrollIntoView({ block: 'nearest' }); } catch (e) {} }
-      }
+      // Doigt ou souris : appuyer sur la poignée puis glisser
+      hd.addEventListener('pointerdown', function (e) {
+        if (e.button !== undefined && e.button > 0) return;
+        e.preventDefault();
+        var y = e.clientY, dragging = true, raf = 0;
+        var pid = e.pointerId;   // écoute sur le document : déplacer la ligne dans la liste ferait perdre la capture du pointeur
+        li.classList.add('dragging'); ul.classList.add('isdrag');
+        function place() {
+          var target = null;
+          Array.prototype.some.call(ul.children, function (x) {
+            if (x === li) return false;
+            var b = x.getBoundingClientRect();
+            if (y < b.top + b.height / 2) { target = x; return true; }
+            return false;
+          });
+          if (target) { if (li.nextElementSibling !== target) ul.insertBefore(li, target); }
+          else if (ul.lastElementChild !== li) ul.appendChild(li);
+        }
+        function tick() {   // défilement automatique près des bords de l'écran
+          if (!dragging) return;
+          var edge = 70, h = window.innerHeight, d = 0;
+          if (y < edge) d = -Math.ceil((edge - y) / 6); else if (y > h - edge) d = Math.ceil((y - (h - edge)) / 6);
+          if (d) { window.scrollBy(0, d); place(); }
+          raf = requestAnimationFrame(tick);
+        }
+        raf = requestAnimationFrame(tick);
+        function onMove(ev) { if (ev.pointerId !== pid) return; ev.preventDefault(); y = ev.clientY; place(); }
+        function onUp(ev) {
+          if (ev && ev.pointerId !== pid) return;
+          dragging = false; cancelAnimationFrame(raf);
+          document.removeEventListener('pointermove', onMove); document.removeEventListener('pointerup', onUp); document.removeEventListener('pointercancel', onUp);
+          li.classList.remove('dragging'); ul.classList.remove('isdrag');
+          syncSeq(); say(li);
+        }
+        document.addEventListener('pointermove', onMove, { passive: false }); document.addEventListener('pointerup', onUp); document.addEventListener('pointercancel', onUp);
+      });
+    });
+    var saves = view.querySelectorAll('.rsave'), cancels = view.querySelectorAll('.rcancel');
+    function busy(on, label) {
+      Array.prototype.forEach.call(saves, function (b) { b.disabled = on; b.textContent = label; });
+      Array.prototype.forEach.call(cancels, function (b) { b.disabled = on; });
     }
-    draw();
-    cancelB.onclick = function () { reordT = null; route(true); };
-    saveB.onclick = function () {
-      saveB.disabled = true; cancelB.disabled = true; err.textContent = ''; saveB.textContent = 'Enregistrement…';
-      commit({ reorder: { type: t.id, ids: seq.map(function (r) { return r.id; }) } }, 'Ordre de « ' + t.label + ' »').then(function () {
-        reordT = null; route(true);
-      }, function (e) { saveB.disabled = false; cancelB.disabled = false; saveB.textContent = 'Enregistrer l’ordre'; err.textContent = writeError(e); });
-    };
+    Array.prototype.forEach.call(cancels, function (b) { b.onclick = function () { reordT = null; route(true); }; });
+    Array.prototype.forEach.call(saves, function (b) {
+      b.onclick = function () {
+        busy(true, 'Enregistrement…'); err.textContent = '';
+        commit({ reorder: { type: t.id, ids: seq.map(function (r) { return r.id; }) } }, 'Ordre de « ' + t.label + ' »').then(function () {
+          reordT = null; route(true);
+        }, function (e) { busy(false, 'Enregistrer l’ordre'); err.textContent = writeError(e); try { err.scrollIntoView({ block: 'center' }); } catch (x) {} });
+      };
+    });
   }
+
 
   /* Liste condensée : une ligne par recette */
   function statusChip(id) {
